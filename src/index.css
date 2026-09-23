@@ -1,0 +1,289 @@
+:root,
+[data-theme="light"] {
+  --color-bg: #f4f6fb;
+  --color-bg-surface: #ffffff;
+  --color-card-bg: rgba(255, 255, 255, 0.84);
+  --color-card-border: rgba(2, 132, 199, 0.18);
+  --color-card-border-hover: rgba(2, 132, 199, 0.45);
+  --color-card-shadow: 0 8px 30px rgba(0, 20, 60, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --color-card-shadow-hover: 0 14px 35px rgba(2, 132, 199, 0.16), 0 0 25px rgba(2, 132, 199, 0.12);
+  --color-primary: #0284c7;
+  --color-primary-glow: rgba(2, 132, 199, 0.25);
+  --color-secondary: #7c3aed;
+  --color-accent-1: #d97706;
+  --color-accent-2: #059669;
+  --color-text-main: #0f172a;
+  --color-text-dim: #475569;
+  --color-text-muted: #64748b;
+  --color-navbar-bg: rgba(248, 250, 252, 0.78);
+  --color-navbar-scrolled: rgba(255, 255, 255, 0.94);
+  --color-input-bg: rgba(255, 255, 255, 0.95);
+  --color-input-border: rgba(15, 23, 42, 0.15);
+  --color-input-text: #0f172a;
+  --color-footer-bg: rgba(238, 242, 250, 0.92);
+  --color-glass-subtle: rgba(0, 0, 0, 0.04);
+  --color-badge-bg: rgba(2, 132, 199, 0.08);
+  --color-badge-border: rgba(2, 132, 199, 0.22);
+  --color-timeline-node: #ffffff;
+  --color-btn-primary-bg: linear-gradient(135deg, #0284c7, #0ea5e9);
+  --color-btn-primary-text: #ffffff;
+  --font-main: 'Outfit', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --color-bg: #070a13;
+  --color-bg-surface: #0c1020;
+  --color-card-bg: rgba(12, 17, 34, 0.65);
+  --color-card-border: rgba(0, 242, 254, 0.15);
+  --color-card-border-hover: rgba(0, 242, 254, 0.4);
+  --color-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --color-card-shadow-hover: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.12);
+  --color-primary: #00f2fe;
+  --color-primary-glow: rgba(0, 242, 254, 0.3);
+  --color-secondary: #8a2be2;
+  --color-accent-1: #ffd166;
+  --color-accent-2: #00ff87;
+  --color-text-main: #f8fafc;
+  --color-text-dim: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-navbar-bg: rgba(7, 10, 19, 0.55);
+  --color-navbar-scrolled: rgba(7, 10, 19, 0.9);
+  --color-input-bg: rgba(14, 21, 38, 0.9);
+  --color-input-border: rgba(255, 255, 255, 0.12);
+  --color-input-text: #ffffff;
+  --color-footer-bg: rgba(5, 8, 16, 0.85);
+  --color-glass-subtle: rgba(255, 255, 255, 0.05);
+  --color-badge-bg: rgba(0, 242, 254, 0.08);
+  --color-badge-border: rgba(0, 242, 254, 0.25);
+  --color-timeline-node: #070a13;
+  --color-btn-primary-bg: linear-gradient(135deg, #00f2fe, #00a8ff);
+  --color-btn-primary-text: #050811;
+  --font-main: 'Outfit', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-main);
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* Glassmorphism Card Utility */
+.glass-card {
+  background: var(--color-card-bg);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-card-border);
+  border-radius: 16px;
+  box-shadow: var(--color-card-shadow);
+  transition: var(--transition-smooth), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--color-card-border-hover);
+  box-shadow: var(--color-card-shadow-hover);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #38bdf8 50%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-alt {
+  background: linear-gradient(135deg, var(--color-accent-2) 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Section Header Styles */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--color-primary);
+  background: var(--color-badge-bg);
+  border: 1px solid var(--color-badge-border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 1rem;
+  color: var(--color-text-main);
+  transition: color 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 12px 28px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 20px var(--color-primary-glow);
+  transition: var(--transition-smooth);
+  text-decoration: none;
+  font-family: var(--font-main);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--color-primary-glow);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--color-glass-subtle);
+  color: var(--color-text-main);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 26px;
+  border-radius: 30px;
+  border: 1px solid var(--color-card-border);
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: var(--transition-smooth);
+  text-decoration: none;
+  font-family: var(--font-main);
+}
+
+.btn-secondary:hover {
+  background: var(--color-badge-bg);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+/* CMS Form Styles */
+.cms-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-dim);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+.cms-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: 8px;
+  color: var(--color-input-text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.cms-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary-glow);
+}
+
+.cms-input-inline {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 4px 6px;
+  outline: none;
+}
+
+.cms-input-inline:focus,
+.cms-input-inline:hover {
+  background: var(--color-glass-subtle);
+  border-color: var(--color-primary);
+}
+
+/* Edit Mode Pulse Animation */
+@keyframes pulseEdit {
+  0% {
+    box-shadow: 0 0 0 0 var(--color-primary-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.edit-active-pill {
+  animation: pulseEdit 2s infinite;
+}
