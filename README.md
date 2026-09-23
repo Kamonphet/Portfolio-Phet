@@ -184,7 +184,7 @@ portfolio/
 
 - 🐙 **GitHub:** [@Kamonphet](https://github.com/Kamonphet)
 - 💼 **Repository:** [Portfolio-Phet](https://github.com/Kamonphet/Portfolio-Phet)
-- 📧 **Email:** [krupetch.it@gmail.com](mailto:krupetch.it@gmail.com)
+- 📧 **Email:** [krupetch.it@gmail.com](mailto:kamonpach.siri@gmail.com)
 
 ---
 
