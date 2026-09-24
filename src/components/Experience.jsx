@@ -184,7 +184,7 @@ const Experience = () => {
                   />
                 </p>
 
-                {/* Milestone Kru Petch Sticker */}
+                {/* Milestone Kru Petch Avatar */}
                 <div
                   style={{
                     display: "flex",

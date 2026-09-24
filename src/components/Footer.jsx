@@ -3,7 +3,7 @@ import { usePortfolio } from "../context/PortfolioContext";
 import { FiTerminal, FiArrowUp, FiSettings } from "react-icons/fi";
 
 const Footer = () => {
-  const { data, openCms, t, openStickerGallery } = usePortfolio();
+  const { data, openCms, t } = usePortfolio();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -64,28 +64,6 @@ const Footer = () => {
 
           {/* Quick Actions */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", flexWrap: "wrap" }}>
-            <button
-              onClick={openStickerGallery}
-              style={{
-                background: "var(--color-glass-subtle)",
-                border: "1px solid var(--color-card-border)",
-                color: "var(--color-primary)",
-                padding: "6px 14px",
-                borderRadius: "20px",
-                fontSize: "0.82rem",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                transition: "all 0.2s ease",
-                fontWeight: "600",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--color-primary)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--color-card-border)")}
-            >
-              <span>🎨</span> {t.footer.stickersBtn || "สติกเกอร์ครูเพชร IT"}
-            </button>
-
             <button
               onClick={() => openCms("backup")}
               style={{

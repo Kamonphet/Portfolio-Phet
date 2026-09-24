@@ -12,7 +12,7 @@ import {
 } from "react-icons/fi";
 
 const Hero = () => {
-  const { data, updateHero, t, openStickerGallery } = usePortfolio();
+  const { data, updateHero, t } = usePortfolio();
   const heroRef = useRef(null);
 
   // Scroll parallax for hero elements
@@ -68,11 +68,8 @@ const Hero = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="hero-content-col"
         >
-          {/* Interactive Mascot Greeting Banner */}
-          <motion.div
-            whileHover={{ scale: 1.03, y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={openStickerGallery}
+          {/* Mascot Greeting Banner */}
+          <div
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -82,12 +79,9 @@ const Hero = () => {
               background: "var(--color-glass-subtle)",
               border: "1px solid var(--color-card-border)",
               backdropFilter: "blur(12px)",
-              cursor: "pointer",
               marginBottom: "1rem",
               boxShadow: "0 4px 20px rgba(0, 242, 254, 0.08)",
-              transition: "all 0.3s ease",
             }}
-            title="คลิกเพื่อดูคลังสติกเกอร์ & มาสคอต ครูเพชร IT ทั้ง 18 แบบ"
           >
             <motion.img
               src="/img/hello.png"
@@ -109,20 +103,7 @@ const Hero = () => {
                 "สวัสดีครับ ยินดีต้อนรับครับ :)"
               </span>
             </div>
-            <span
-              style={{
-                fontSize: "0.72rem",
-                background: "var(--color-badge-bg)",
-                border: "1px solid var(--color-badge-border)",
-                padding: "3px 10px",
-                borderRadius: "15px",
-                color: "var(--color-accent-2)",
-                fontWeight: "600",
-              }}
-            >
-              18 สติกเกอร์ 🎨
-            </span>
-          </motion.div>
+          </div>
 
           {/* Status Badge */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "1rem" }}>
@@ -239,17 +220,6 @@ const Hero = () => {
             <button onClick={scrollToContact} className="btn-secondary">
               <FiMail />
               <span>{data.hero.ctaSecondary || t.hero.contactMe}</span>
-            </button>
-
-            <button
-              onClick={openStickerGallery}
-              className="btn-secondary"
-              style={{
-                borderColor: "rgba(0, 242, 254, 0.3)",
-                color: "var(--color-primary)",
-              }}
-            >
-              <span>🎨 คลังสติกเกอร์ (18 แบบ)</span>
             </button>
           </div>
 

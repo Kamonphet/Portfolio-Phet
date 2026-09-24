@@ -150,7 +150,7 @@ const About = () => {
             ))}
           </div>
 
-          {/* Motto Sticker 7.png */}
+          {/* Motto Badge 7.png */}
           <div
             style={{
               marginTop: "1.2rem",

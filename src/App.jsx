@@ -14,7 +14,6 @@ import FloatingCyberObjects from "./components/FloatingCyberObjects";
 import EditModal from "./components/EditModal";
 import AuthModal from "./components/AuthModal";
 import ScrollToTop from "./components/ScrollToTop";
-import KruPetchStickers from "./components/KruPetchStickers";
 
 function PortfolioContent() {
   return (
@@ -49,9 +48,6 @@ function PortfolioContent() {
 
       {/* Floating Scroll To Top Button (Positioned bottom-right) */}
       <ScrollToTop />
-
-      {/* Floating Kru Petch Companion Mascot & Sticker Gallery Drawer (Positioned bottom-left) */}
-      <KruPetchStickers />
     </div>
   );
 }

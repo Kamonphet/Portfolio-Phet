@@ -1,12 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { defaultPortfolioData, UI_TRANSLATIONS, KRU_PETCH_STICKERS } from "../data/defaultData";
+import { defaultPortfolioData, UI_TRANSLATIONS } from "../data/defaultData";
 import { verifyPassword } from "../utils/crypto";
 
 const STORAGE_KEY = "cyber_portfolio_data_v5";
 const LANG_STORAGE_KEY = "cyber_portfolio_lang";
 const AUTH_STORAGE_KEY = "cyber_admin_authenticated";
 const THEME_STORAGE_KEY = "cyber_portfolio_theme_v4";
-const MASCOT_STORAGE_KEY = "cyber_active_mascot";
 
 const PortfolioContext = createContext(null);
 
@@ -134,27 +133,6 @@ export const PortfolioProvider = ({ children }) => {
   const [active3DShape, setActive3DShape] = useState(
     validShapes.includes(currentSavedShape) ? currentSavedShape : "holoCard"
   );
-
-  // Active companion mascot & sticker gallery
-  const [activeMascot, setActiveMascot] = useState(() => {
-    try {
-      return localStorage.getItem(MASCOT_STORAGE_KEY) || "hello";
-    } catch {
-      return "hello";
-    }
-  });
-  const [isStickerGalleryOpen, setIsStickerGalleryOpen] = useState(false);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(MASCOT_STORAGE_KEY, activeMascot);
-    } catch (e) {
-      console.error("Failed to save active mascot", e);
-    }
-  }, [activeMascot]);
-
-  const openStickerGallery = () => setIsStickerGalleryOpen(true);
-  const closeStickerGallery = () => setIsStickerGalleryOpen(false);
 
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -465,12 +443,6 @@ export const PortfolioProvider = ({ children }) => {
         toggleEditMode,
         openCms,
         closeCms,
-        activeMascot,
-        setActiveMascot,
-        isStickerGalleryOpen,
-        setIsStickerGalleryOpen,
-        openStickerGallery,
-        closeStickerGallery,
         isAuthenticated,
         isAuthModalOpen,
         requestAuth,
