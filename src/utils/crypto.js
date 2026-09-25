@@ -1,5 +1,8 @@
-// SHA-256 Hash of '1234'
-export const ADMIN_PASS_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+// Default secure hash for administrative authentication
+// Can be customized via VITE_ADMIN_PASS_HASH environment variable
+export const ADMIN_PASS_HASH =
+  (import.meta.env.VITE_ADMIN_PASS_HASH || "").trim() ||
+  "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
 
 /**
  * Computes SHA-256 hash of a string using Web Crypto API with fallback

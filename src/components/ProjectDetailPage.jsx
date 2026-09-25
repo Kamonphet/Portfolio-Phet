@@ -21,6 +21,7 @@ import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
 import EditModal from "./EditModal";
 import AuthModal from "./AuthModal";
+import { sanitizeUrl } from "../utils/security";
 
 const ProjectDetailPage = () => {
   const { id } = useParams();
@@ -284,9 +285,9 @@ const ProjectDetailPage = () => {
         >
           {project.demoUrl && (
             <a
-              href={project.demoUrl}
+              href={sanitizeUrl(project.demoUrl)}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="btn-primary"
               style={{
                 padding: "12px 28px",
@@ -305,9 +306,9 @@ const ProjectDetailPage = () => {
 
           {project.githubUrl && (
             <a
-              href={project.githubUrl}
+              href={sanitizeUrl(project.githubUrl)}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="btn-secondary"
               style={{
                 padding: "12px 26px",

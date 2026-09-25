@@ -14,7 +14,13 @@ import {
   FiTrash2,
   FiCheck,
   FiLayers,
+  FiImage,
+  FiLink,
+  FiUploadCloud,
+  FiLoader,
 } from "react-icons/fi";
+import { uploadPortfolioImage } from "../lib/portfolioService";
+import { validateImageFile } from "../utils/security";
 
 const TABS = [
   { id: "profile", label: "Profile & Bio", icon: <FiUser /> },
@@ -66,12 +72,56 @@ const EditModal = () => {
     title: "",
     category: "Web App",
     desc: "",
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80",
+    image: "/img/main.png",
     techStr: "React, Node.js, WebGL",
     demoUrl: "",
     githubUrl: "",
     featured: true,
   });
+
+  // Project Image Upload & URL Management State
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [newProjImageMode, setNewProjImageMode] = useState("url"); // 'url' | 'upload'
+  const [editingImageProjId, setEditingImageProjId] = useState(null);
+
+  const handleUploadNewProjectImage = async (file) => {
+    if (!file) return;
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      setUploadError(validation.error);
+      return;
+    }
+    setUploadError("");
+    setIsUploadingImage(true);
+    const res = await uploadPortfolioImage(file, "projects");
+    setIsUploadingImage(false);
+    if (res.success) {
+      setNewProject((prev) => ({ ...prev, image: res.url }));
+    } else {
+      setUploadError(res.error || "อัพโหลดรูปภาพไม่สำเร็จ");
+    }
+  };
+
+  const handleUploadExistingProjectImage = async (file, projId) => {
+    if (!file) return;
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      alert(validation.error);
+      return;
+    }
+    setIsUploadingImage(true);
+    const res = await uploadPortfolioImage(file, "projects");
+    setIsUploadingImage(false);
+    if (res.success) {
+      const updated = (data?.projects || []).map((p) =>
+        p.id === projId ? { ...p, image: res.url } : p
+      );
+      updateProjects(updated);
+    } else {
+      alert(res.error || "อัพโหลดรูปภาพไม่สำเร็จ");
+    }
+  };
 
   // New Experience Form State
   const [newExp, setNewExp] = useState({
@@ -130,7 +180,7 @@ const EditModal = () => {
       title: newProject.title,
       category: newProject.category,
       desc: newProject.desc,
-      image: newProject.image || "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+      image: newProject.image || "/img/main.png",
       tech,
       demoUrl: newProject.demoUrl || "#",
       githubUrl: newProject.githubUrl || "#",
@@ -140,12 +190,13 @@ const EditModal = () => {
       title: "",
       category: "Web App",
       desc: "",
-      image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80",
+      image: "/img/main.png",
       techStr: "React, Node.js, WebGL",
       demoUrl: "",
       githubUrl: "",
       featured: true,
     });
+    setUploadError("");
   };
 
   const handleAddNewExp = (e) => {
@@ -637,25 +688,147 @@ const EditModal = () => {
                   />
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                  <div>
-                    <label className="cms-label">Tech Tags (comma separated)</label>
-                    <input
-                      className="cms-input"
-                      placeholder="React, Three.js, Docker"
-                      value={newProject.techStr}
-                      onChange={(e) => setNewProject({ ...newProject, techStr: e.target.value })}
-                    />
+                <div>
+                  <label className="cms-label">Tech Tags (comma separated)</label>
+                  <input
+                    className="cms-input"
+                    placeholder="React, Three.js, Docker"
+                    value={newProject.techStr}
+                    onChange={(e) => setNewProject({ ...newProject, techStr: e.target.value })}
+                  />
+                </div>
+
+                {/* Project Image Selection (URL or File Upload) */}
+                <div style={{ background: "rgba(0, 0, 0, 0.25)", padding: "12px", borderRadius: "10px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "6px" }}>
+                    <label className="cms-label" style={{ margin: 0, display: "flex", alignItems: "center", gap: "6px" }}>
+                      <FiImage /> รูปภาพผลงาน (Project Image)
+                    </label>
+                    <div style={{ display: "flex", gap: "6px" }}>
+                      <button
+                        type="button"
+                        onClick={() => setNewProjImageMode("url")}
+                        style={{
+                          background: newProjImageMode === "url" ? "var(--color-primary)" : "rgba(255, 255, 255, 0.05)",
+                          color: newProjImageMode === "url" ? "#000" : "var(--color-text-dim)",
+                          border: "none",
+                          borderRadius: "6px",
+                          padding: "4px 10px",
+                          fontSize: "0.78rem",
+                          fontWeight: "600",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                      >
+                        <FiLink size={12} /> แนบลิงก์รูป
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setNewProjImageMode("upload")}
+                        style={{
+                          background: newProjImageMode === "upload" ? "var(--color-primary)" : "rgba(255, 255, 255, 0.05)",
+                          color: newProjImageMode === "upload" ? "#000" : "var(--color-text-dim)",
+                          border: "none",
+                          borderRadius: "6px",
+                          padding: "4px 10px",
+                          fontSize: "0.78rem",
+                          fontWeight: "600",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                      >
+                        <FiUploadCloud size={12} /> อัพโหลดไฟล์
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <label className="cms-label">Preview Image URL</label>
-                    <input
-                      className="cms-input"
-                      placeholder="https://..."
-                      value={newProject.image}
-                      onChange={(e) => setNewProject({ ...newProject, image: e.target.value })}
-                    />
-                  </div>
+
+                  {newProjImageMode === "url" ? (
+                    <div>
+                      <input
+                        className="cms-input"
+                        placeholder="https://... หรือ /img/main.png"
+                        value={newProject.image}
+                        onChange={(e) => setNewProject({ ...newProject, image: e.target.value })}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <label
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: "16px",
+                          border: "1.5px dashed var(--color-primary)",
+                          borderRadius: "8px",
+                          background: "rgba(0, 242, 254, 0.04)",
+                          cursor: isUploadingImage ? "wait" : "pointer",
+                          textAlign: "center",
+                        }}
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: "none" }}
+                          disabled={isUploadingImage}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleUploadNewProjectImage(file);
+                          }}
+                        />
+                        {isUploadingImage ? (
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-primary)" }}>
+                            <FiLoader size={20} style={{ animation: "spin 1s linear infinite" }} />
+                            <span style={{ fontSize: "0.85rem" }}>กำลังอัพโหลดและประมวลผลรูปภาพ...</span>
+                          </div>
+                        ) : (
+                          <>
+                            <FiUploadCloud size={24} style={{ color: "var(--color-primary)", marginBottom: "4px" }} />
+                            <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-text-main)" }}>
+                              คลิกเพื่อเลือกไฟล์รูปภาพจากเครื่อง
+                            </span>
+                            <span style={{ fontSize: "0.75rem", color: "var(--color-text-dim)" }}>
+                              รองรับ PNG, JPG, WEBP, GIF (สูงสุด 8MB)
+                            </span>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  )}
+
+                  {uploadError && (
+                    <div style={{ color: "#ff4757", fontSize: "0.78rem", marginTop: "6px" }}>
+                      {uploadError}
+                    </div>
+                  )}
+
+                  {/* Thumbnail Preview */}
+                  {newProject.image && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "10px" }}>
+                      <img
+                        src={newProject.image}
+                        alt="Preview"
+                        style={{
+                          width: "60px",
+                          height: "45px",
+                          objectFit: "cover",
+                          borderRadius: "6px",
+                          border: "1px solid var(--color-primary)",
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                      <span style={{ fontSize: "0.78rem", color: "var(--color-accent-2)" }}>
+                        ✔ ภาพตัวอย่างพร้อมใช้งาน
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
@@ -715,17 +888,38 @@ const EditModal = () => {
                       alignItems: "flex-start",
                     }}
                   >
-                    <img
-                      src={proj.image}
-                      alt={proj.title}
-                      style={{
-                        width: "90px",
-                        height: "70px",
-                        objectFit: "cover",
-                        borderRadius: "6px",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                      }}
-                    />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px", alignItems: "center", minWidth: "90px" }}>
+                      <img
+                        src={proj.image}
+                        alt={proj.title}
+                        style={{
+                          width: "90px",
+                          height: "70px",
+                          objectFit: "cover",
+                          borderRadius: "6px",
+                          border: "1px solid rgba(255,255,255,0.15)",
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setEditingImageProjId(editingImageProjId === proj.id ? null : proj.id)}
+                        style={{
+                          background: editingImageProjId === proj.id ? "var(--color-primary)" : "rgba(255, 255, 255, 0.08)",
+                          color: editingImageProjId === proj.id ? "#000" : "var(--color-text-dim)",
+                          border: "none",
+                          borderRadius: "4px",
+                          padding: "3px 6px",
+                          fontSize: "0.72rem",
+                          fontWeight: "600",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                      >
+                        <FiImage size={11} /> {editingImageProjId === proj.id ? "ปิด" : "เปลี่ยนรูป"}
+                      </button>
+                    </div>
                     <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <input
@@ -763,6 +957,68 @@ const EditModal = () => {
                           updateProjects(updated);
                         }}
                       />
+
+                      {/* Image Edit Drawer for existing project */}
+                      {editingImageProjId === proj.id && (
+                        <div
+                          style={{
+                            background: "rgba(0, 0, 0, 0.3)",
+                            border: "1px solid var(--color-primary)",
+                            borderRadius: "8px",
+                            padding: "10px",
+                            marginTop: "4px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "8px",
+                          }}
+                        >
+                          <div style={{ fontSize: "0.8rem", fontWeight: "600", color: "var(--color-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                            <FiImage /> จัดการรูปภาพผลงาน (Edit Image URL / Upload)
+                          </div>
+                          <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+                            <input
+                              className="cms-input"
+                              style={{ flex: 1, minWidth: "200px", fontSize: "0.82rem", padding: "6px 10px", margin: 0 }}
+                              placeholder="แนบลิงก์รูปภาพ URL..."
+                              value={proj.image}
+                              onChange={(e) => {
+                                const updated = (data?.projects || []).map((p) =>
+                                  p.id === proj.id ? { ...p, image: e.target.value } : p
+                                );
+                                updateProjects(updated);
+                              }}
+                            />
+                            <label
+                              style={{
+                                background: "var(--color-primary)",
+                                color: "#000",
+                                padding: "6px 14px",
+                                borderRadius: "6px",
+                                fontSize: "0.78rem",
+                                fontWeight: "bold",
+                                cursor: isUploadingImage ? "wait" : "pointer",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                disabled={isUploadingImage}
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handleUploadExistingProjectImage(file, proj.id);
+                                }}
+                              />
+                              <FiUploadCloud size={14} />
+                              <span>{isUploadingImage ? "กำลังอัพ..." : "อัพโหลดไฟล์"}</span>
+                            </label>
+                          </div>
+                        </div>
+                      )}
                       <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", fontSize: "0.75rem" }}>
                         {proj.tech.map((t, idx) => (
                           <span

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePortfolio } from "../context/PortfolioContext";
 import EditableText from "./EditableText";
+import { sanitizeUrl } from "../utils/security";
 import {
   FiFolder,
   FiExternalLink,
@@ -278,9 +279,9 @@ const Projects = ({ showAll = false }) => {
           <div style={{ display: "flex", gap: "10px" }}>
             {project.demoUrl && (
               <a
-                href={project.demoUrl}
+                href={sanitizeUrl(project.demoUrl)}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="btn-primary"
                 style={{ padding: "6px 14px", fontSize: "0.82rem", borderRadius: "8px" }}
               >
@@ -290,9 +291,9 @@ const Projects = ({ showAll = false }) => {
             )}
             {project.githubUrl && (
               <a
-                href={project.githubUrl}
+                href={sanitizeUrl(project.githubUrl)}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="btn-secondary"
                 style={{ padding: "6px 14px", fontSize: "0.82rem", borderRadius: "8px" }}
               >

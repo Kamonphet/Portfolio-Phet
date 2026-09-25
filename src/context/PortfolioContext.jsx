@@ -36,7 +36,8 @@ const deepMergeLangData = (defaultLang, savedLang) => {
   const sanitizedProjects =
     Array.isArray(savedLang.projects) && savedLang.projects.length > 0
       ? savedLang.projects.map((proj, idx) => {
-          if (!proj.image || proj.image.includes("unsplash") || proj.image.startsWith("http")) {
+          // Only fallback if image is completely missing or is an old unsplash placeholder
+          if (!proj.image || proj.image.includes("unsplash.com")) {
             const fallback = defaultLang.projects[idx] || defaultLang.projects[0];
             return {
               ...proj,

@@ -208,3 +208,89 @@ export const unsubscribeFromPortfolio = (channel) => {
     } catch (e) {}
   }
 };
+
+// ─────────────────────────────────────────────
+// STORAGE — Upload Image with Cloud + Base64 Fallback
+// ─────────────────────────────────────────────
+export const uploadPortfolioImage = async (file, folder = 'projects') => {
+  if (!file) return { success: false, error: 'ไม่ได้เลือกไฟล์ภาพ' };
+
+  if (!file.type || !file.type.startsWith('image/')) {
+    return { success: false, error: 'กรุณาเลือกไฟล์ภาพที่ถูกต้อง (PNG, JPG, WEBP, GIF)' };
+  }
+
+  // Max 8MB
+  if (file.size > 8 * 1024 * 1024) {
+    return { success: false, error: 'ขนาดไฟล์ภาพต้องไม่เกิน 8MB' };
+  }
+
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      const fileExt = file.name.split('.').pop() || 'png';
+      const cleanFileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+      const filePath = `${folder}/${cleanFileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('portfolio-media')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true,
+        });
+
+      if (!error && data) {
+        const { data: urlData } = supabase.storage
+          .from('portfolio-media')
+          .getPublicUrl(filePath);
+
+        if (urlData?.publicUrl) {
+          return { success: true, url: urlData.publicUrl, isCloud: true };
+        }
+      }
+    } catch (err) {
+      console.warn('[Supabase Storage] Upload error, falling back to local encoding:', err.message);
+    }
+  }
+
+  // High-reliability Fallback: Read as Base64 Data URL so user is never blocked
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      resolve({ success: true, url: e.target.result, isCloud: false });
+    };
+    reader.onerror = () => {
+      resolve({ success: false, error: 'ไม่สามารถอ่านไฟล์ภาพได้' });
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+// ─────────────────────────────────────────────
+// CONTACT — Save message to contact_messages table
+// ─────────────────────────────────────────────
+export const saveContactMessage = async ({ name, email, subject, message }) => {
+  const supabase = getSupabase();
+  if (!supabase) return { success: false, error: 'Database not connected' };
+
+  try {
+    const { data, error } = await supabase.from('contact_messages').insert([
+      {
+        name: name?.trim() || 'Anonymous',
+        email: email?.trim(),
+        subject: subject?.trim() || 'General Inquiry',
+        message: message?.trim(),
+        created_at: new Date().toISOString(),
+      },
+    ]);
+
+    if (error) {
+      // If table doesn't exist yet, don't break UI
+      console.warn('[Supabase] contact_messages write note:', error.message);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+};

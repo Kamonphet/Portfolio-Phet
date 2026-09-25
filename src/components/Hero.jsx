@@ -10,6 +10,7 @@ import {
   FiLinkedin,
   FiTwitter,
 } from "react-icons/fi";
+import { sanitizeUrl } from "../utils/security";
 
 const Hero = () => {
   const { data, updateHero, t } = usePortfolio();
@@ -230,9 +231,9 @@ const Hero = () => {
             </span>
             {data.contact.github && (
               <a
-                href={data.contact.github}
+                href={sanitizeUrl(data.contact.github)}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 style={{
                   color: "var(--color-text-dim)",
                   fontSize: "1.2rem",
@@ -247,9 +248,9 @@ const Hero = () => {
             )}
             {data.contact.linkedin && (
               <a
-                href={data.contact.linkedin}
+                href={sanitizeUrl(data.contact.linkedin)}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 style={{
                   color: "var(--color-text-dim)",
                   fontSize: "1.2rem",
@@ -264,9 +265,9 @@ const Hero = () => {
             )}
             {data.contact.twitter && (
               <a
-                href={data.contact.twitter}
+                href={sanitizeUrl(data.contact.twitter)}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 style={{
                   color: "var(--color-text-dim)",
                   fontSize: "1.2rem",
