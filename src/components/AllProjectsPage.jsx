@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { usePortfolio } from "../context/PortfolioContext";
 import { FiArrowLeft } from "react-icons/fi";
 import BackgroundCanvas from "./BackgroundCanvas";
@@ -28,8 +29,8 @@ const AllProjectsPage = () => {
             padding: "7rem 1.5rem 0",
           }}
         >
-          <a
-            href="/"
+          <Link
+            to="/"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -55,7 +56,7 @@ const AllProjectsPage = () => {
           >
             <FiArrowLeft size={18} />
             <span>{t.projects.backToHome || "กลับหน้าหลัก"}</span>
-          </a>
+          </Link>
         </div>
 
         {/* Full Projects Grid */}

@@ -201,7 +201,7 @@ const AuthModal = () => {
               <input
                 ref={inputRef}
                 type={showPassword ? "text" : "password"}
-                placeholder={isTh ? "ใส่รหัสผ่าน (เช่น 1234)" : "Enter passcode (e.g. 1234)"}
+                placeholder={isTh ? "ใส่รหัสผ่านความปลอดภัย" : "Enter security passcode"}
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -285,34 +285,22 @@ const AuthModal = () => {
               <span>{isVerifying ? (isTh ? "กำลังตรวจสอบ..." : "Verifying...") : (isTh ? "ปลดล็อกเข้าสู่ระบบ" : "Unlock & Edit")}</span>
             </button>
 
-            {/* Hint for user convenience */}
+            {/* Security Indicator */}
             <div
               style={{
                 textAlign: "center",
-                fontSize: "0.78rem",
+                fontSize: "0.75rem",
                 color: "var(--color-text-muted)",
-                marginTop: "0.4rem",
+                marginTop: "0.5rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                opacity: 0.8,
               }}
             >
-              <span>{isTh ? "รหัสเริ่มต้นคือ " : "Default passcode: "}</span>
-              <button
-                type="button"
-                onClick={() => {
-                  setPassword("1234");
-                  setError(false);
-                }}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--color-primary)",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                }}
-              >
-                1234
-              </button>
-              <span style={{ marginLeft: "4px", opacity: 0.7 }}>(SHA-256 Hashed)</span>
+              <FiLock size={12} />
+              <span>{isTh ? "ระบบความปลอดภัยเข้ารหัส SHA-256" : "Secured with SHA-256 Authentication"}</span>
             </div>
           </form>
         </motion.div>

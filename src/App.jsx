@@ -16,6 +16,7 @@ import EditModal from "./components/EditModal";
 import AuthModal from "./components/AuthModal";
 import ScrollToTop from "./components/ScrollToTop";
 import AllProjectsPage from "./components/AllProjectsPage";
+import ProjectDetailPage from "./components/ProjectDetailPage";
 
 function PortfolioContent() {
   return (
@@ -45,7 +46,7 @@ function PortfolioContent() {
       {/* Visual Content Management Modal */}
       <EditModal />
 
-      {/* Security Auth Passcode Modal (1234) */}
+      {/* Security Auth Passcode Modal */}
       <AuthModal />
 
       {/* Floating Scroll To Top Button (Positioned bottom-right) */}
@@ -60,6 +61,7 @@ function App() {
       <Routes>
         <Route path="/" element={<PortfolioContent />} />
         <Route path="/projects" element={<AllProjectsPage />} />
+        <Route path="/projects/:id" element={<ProjectDetailPage />} />
       </Routes>
     </PortfolioProvider>
   );

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePortfolio } from "../context/PortfolioContext";
 import EditableText from "./EditableText";
@@ -9,7 +10,6 @@ import {
   FiPlus,
   FiTrash2,
   FiEye,
-  FiX,
   FiStar,
   FiChevronLeft,
   FiChevronRight,
@@ -20,9 +20,9 @@ const CAROUSEL_LIMIT = 6;
 const AUTO_PLAY_INTERVAL = 4000;
 
 const Projects = ({ showAll = false }) => {
+  const navigate = useNavigate();
   const { data, updateProjects, removeProject, isEditMode, openCms, t } = usePortfolio();
   const [activeCategory, setActiveCategory] = useState("All");
-  const [selectedProject, setSelectedProject] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef(null);
@@ -120,7 +120,11 @@ const Projects = ({ showAll = false }) => {
           overflow: "hidden",
           cursor: "pointer",
         }}
-        onClick={() => setSelectedProject(project)}
+        onClick={() => {
+          if (!isEditMode) {
+            navigate(`/projects/${project.id}`);
+          }
+        }}
       >
         <img
           src={project.image}
@@ -299,15 +303,24 @@ const Projects = ({ showAll = false }) => {
           </div>
 
           <button
-            onClick={() => setSelectedProject(project)}
+            onClick={() => navigate(`/projects/${project.id}`)}
             style={{
               background: "transparent",
               border: "none",
               color: "var(--color-text-dim)",
               cursor: "pointer",
               fontSize: "1.1rem",
+              transition: "color 0.2s ease, transform 0.2s ease",
             }}
-            title="View details"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "var(--color-primary)";
+              e.currentTarget.style.transform = "scale(1.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "var(--color-text-dim)";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+            title={t?.projects?.viewDetails || "ดูรายละเอียดเต็ม"}
           >
             <FiEye />
           </button>
@@ -495,29 +508,36 @@ const Projects = ({ showAll = false }) => {
           )}
 
           {/* "View All" Button */}
-          {allProjects.length > CAROUSEL_LIMIT && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              style={{ textAlign: "center", marginTop: "2.5rem" }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            style={{ textAlign: "center", marginTop: "2.8rem" }}
+          >
+            <button
+              onClick={() => navigate("/projects")}
+              className="btn-primary"
+              style={{
+                padding: "14px 38px",
+                fontSize: "1rem",
+                fontWeight: "600",
+                borderRadius: "30px",
+                gap: "10px",
+                display: "inline-flex",
+                alignItems: "center",
+                cursor: "pointer",
+                boxShadow: "0 0 25px var(--color-primary-glow)",
+                border: "none",
+                transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-3px)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
             >
-              <a
-                href="/projects"
-                className="btn-primary"
-                style={{
-                  padding: "14px 36px",
-                  fontSize: "1rem",
-                  borderRadius: "30px",
-                  gap: "10px",
-                }}
-              >
-                <span>{t.projects.viewAll || "ดูผลงานทั้งหมด"}</span>
-                <FiArrowRight size={18} />
-              </a>
-            </motion.div>
-          )}
+              <span>{t.projects.viewAll || "ดูผลงานทั้งหมด & เพิ่มเติม"}</span>
+              <FiArrowRight size={18} />
+            </button>
+          </motion.div>
 
           {/* Manage button for edit mode */}
           {isEditMode && (
@@ -560,141 +580,6 @@ const Projects = ({ showAll = false }) => {
           </AnimatePresence>
         </motion.div>
       )}
-
-      {/* Project Detail Popup Modal */}
-      <AnimatePresence>
-        {selectedProject && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              background: "rgba(3, 6, 15, 0.88)",
-              backdropFilter: "blur(14px)",
-              WebkitBackdropFilter: "blur(14px)",
-              zIndex: 99998,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "1rem",
-            }}
-            onClick={(e) => {
-              if (e.target === e.currentTarget) setSelectedProject(null);
-            }}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              style={{
-                width: "100%",
-                maxWidth: "700px",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                background: "var(--color-bg-surface)",
-                border: "1px solid var(--color-card-border)",
-                borderRadius: "16px",
-                boxShadow: "var(--color-card-shadow-hover)",
-                position: "relative",
-                color: "var(--color-text-main)",
-              }}
-            >
-              <div style={{ width: "100%", maxHeight: "360px", background: "rgba(0, 0, 0, 0.4)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                <img
-                  src={selectedProject.image}
-                  alt={selectedProject.title}
-                  style={{ width: "100%", height: "auto", maxHeight: "360px", objectFit: "contain" }}
-                />
-              </div>
-              <button
-                onClick={() => setSelectedProject(null)}
-                style={{
-                  position: "absolute",
-                  top: "14px",
-                  right: "14px",
-                  background: "var(--color-glass-subtle)",
-                  backdropFilter: "blur(8px)",
-                  border: "1px solid var(--color-card-border)",
-                  borderRadius: "50%",
-                  width: "36px",
-                  height: "36px",
-                  color: "var(--color-text-main)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <FiX size={18} />
-              </button>
-
-              <div style={{ padding: "2rem" }}>
-                <span
-                  style={{
-                    color: "var(--color-primary)",
-                    fontSize: "0.85rem",
-                    fontFamily: "var(--font-mono)",
-                    fontWeight: "600",
-                  }}
-                >
-                  CATEGORY // {selectedProject.category}
-                </span>
-                <h2 style={{ margin: "0.5rem 0 1rem 0", fontSize: "1.8rem", color: "var(--color-text-main)" }}>
-                  {selectedProject.title}
-                </h2>
-                <p style={{ color: "var(--color-text-dim)", lineHeight: "1.7", marginBottom: "1.5rem" }}>
-                  {selectedProject.desc}
-                </p>
-
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "2rem" }}>
-                  {selectedProject.tech.map((t, idx) => (
-                    <span
-                      key={idx}
-                      style={{
-                        background: "var(--color-badge-bg)",
-                        color: "var(--color-primary)",
-                        border: "1px solid var(--color-badge-border)",
-                        padding: "4px 10px",
-                        borderRadius: "6px",
-                        fontSize: "0.85rem",
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-                  {selectedProject.demoUrl && (
-                    <a
-                      href={selectedProject.demoUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-primary"
-                    >
-                      <span>{t.projects.launchApp}</span>
-                      <FiExternalLink />
-                    </a>
-                  )}
-                  {selectedProject.githubUrl && (
-                    <a
-                      href={selectedProject.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-secondary"
-                    >
-                      <FiGithub />
-                      <span>{t.projects.sourceRepo}</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Carousel CSS */}
       <style>{`
