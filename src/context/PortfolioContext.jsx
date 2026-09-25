@@ -12,16 +12,10 @@ import {
   fetchAllData,
   saveLanguageData,
   initSupabaseFromLocalData,
-  pushAllDataToCloud,
-  testSupabaseConnection,
   subscribeToPortfolio,
   unsubscribeFromPortfolio,
 } from "../lib/portfolioService";
-import {
-  getSupabaseConfig,
-  setSupabaseLocalConfig,
-  clearSupabaseLocalConfig,
-} from "../lib/supabase";
+import { isSupabaseConfigured } from "../lib/supabase";
 
 const STORAGE_KEY = "cyber_portfolio_data_v5";
 const LANG_STORAGE_KEY = "cyber_portfolio_lang";
@@ -156,11 +150,8 @@ export const PortfolioProvider = ({ children }) => {
   });
 
   // ── Cloud sync state ──────────────────────────────────────
-  const [cloudConfig, setCloudConfig] = useState(() => getSupabaseConfig());
-  const isSupabaseConfigured = cloudConfig.isConfigured;
-
   const [isDbSyncing, setIsDbSyncing] = useState(false);   // true while saving to Supabase
-  const [isDbLoading, setIsDbLoading] = useState(cloudConfig.isConfigured);  // true on initial cloud fetch
+  const [isDbLoading, setIsDbLoading] = useState(isSupabaseConfigured);  // true on initial cloud fetch
   const [dbSyncedAt, setDbSyncedAt] = useState(null);      // timestamp of last successful sync
 
   // Refs to prevent feedback loops with real-time subscription
@@ -185,53 +176,20 @@ export const PortfolioProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
 
-  // ──────────────────────────────────────────────────────────
-  // Cloud fetch helper
-  // ──────────────────────────────────────────────────────────
-  const loadFromCloud = useCallback(async (customData) => {
-    const config = getSupabaseConfig();
-    if (!config.isConfigured) return;
+  // ══════════════════════════════════════════════════════════
+  // EFFECT 1 — Initial cloud fetch (runs on mount)
+  // ══════════════════════════════════════════════════════════
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
 
-    setIsDbLoading(true);
-    try {
-      const cloudData = await fetchAllData();
-      if (cloudData && Object.keys(cloudData).length > 0) {
-        const merged = {
-          th: deepMergeLangData(defaultPortfolioData.th, cloudData.th || null),
-          en: deepMergeLangData(defaultPortfolioData.en, cloudData.en || null),
-          settings: {
-            ...defaultPortfolioData.settings,
-            ...(cloudData.settings || {}),
-          },
-        };
+    let cancelled = false;
 
-        isUpdatingFromRealtime.current = true;
-        setAllData(merged);
-        setDbSyncedAt(new Date());
-        setTimeout(() => { isUpdatingFromRealtime.current = false; }, 100);
-        console.log("[Supabase] Loaded cloud data ✅");
-      } else {
-        const dataToPush = customData || allData;
-        await initSupabaseFromLocalData(dataToPush);
-        setDbSyncedAt(new Date());
-        console.log("[Supabase] Initialised cloud with local data ✅");
-      }
-    } catch (err) {
-      console.error("[Supabase] Cloud load error:", err);
-    } finally {
-      setIsDbLoading(false);
-    }
-  }, [allData]);
-
-  // Cloud management methods
-  const saveCloudCredentials = async (url, anonKey) => {
-    setSupabaseLocalConfig(url, anonKey);
-    const updated = getSupabaseConfig();
-    setCloudConfig(updated);
-    if (updated.isConfigured) {
+    const loadFromCloud = async () => {
       setIsDbLoading(true);
       try {
         const cloudData = await fetchAllData();
+        if (cancelled) return;
+
         if (cloudData && Object.keys(cloudData).length > 0) {
           const merged = {
             th: deepMergeLangData(defaultPortfolioData.th, cloudData.th || null),
@@ -245,76 +203,23 @@ export const PortfolioProvider = ({ children }) => {
           setAllData(merged);
           setDbSyncedAt(new Date());
           setTimeout(() => { isUpdatingFromRealtime.current = false; }, 100);
+          console.log("[Supabase] Loaded cloud data ✅");
         } else {
           await initSupabaseFromLocalData(allData);
           setDbSyncedAt(new Date());
+          console.log("[Supabase] Initialised cloud with local data ✅");
         }
-      } catch (e) {
-        console.error("Error connecting with new credentials:", e);
+      } catch (err) {
+        console.error("[Supabase] Cloud load error:", err);
       } finally {
-        setIsDbLoading(false);
+        if (!cancelled) setIsDbLoading(false);
       }
-    }
-  };
+    };
 
-  const removeCloudCredentials = () => {
-    clearSupabaseLocalConfig();
-    setCloudConfig(getSupabaseConfig());
-    setDbSyncedAt(null);
-  };
-
-  const testCloudConnection = async () => {
-    return await testSupabaseConnection();
-  };
-
-  const pushToCloud = async () => {
-    setIsDbSyncing(true);
-    try {
-      const res = await pushAllDataToCloud(allData);
-      if (res.success) {
-        setDbSyncedAt(new Date());
-      }
-      return res;
-    } finally {
-      setIsDbSyncing(false);
-    }
-  };
-
-  const pullFromCloud = async () => {
-    setIsDbLoading(true);
-    try {
-      const cloudData = await fetchAllData();
-      if (cloudData && Object.keys(cloudData).length > 0) {
-        const merged = {
-          th: deepMergeLangData(defaultPortfolioData.th, cloudData.th || null),
-          en: deepMergeLangData(defaultPortfolioData.en, cloudData.en || null),
-          settings: {
-            ...defaultPortfolioData.settings,
-            ...(cloudData.settings || {}),
-          },
-        };
-        isUpdatingFromRealtime.current = true;
-        setAllData(merged);
-        setDbSyncedAt(new Date());
-        setTimeout(() => { isUpdatingFromRealtime.current = false; }, 100);
-        return { success: true, message: "Downloaded cloud data successfully!" };
-      }
-      return { success: false, error: "No cloud data found." };
-    } catch (err) {
-      return { success: false, error: err.message };
-    } finally {
-      setIsDbLoading(false);
-    }
-  };
-
-  // ══════════════════════════════════════════════════════════
-  // EFFECT 1 — Initial cloud fetch (runs on mount or config change)
-  // ══════════════════════════════════════════════════════════
-  useEffect(() => {
-    if (!cloudConfig.isConfigured) return;
     loadFromCloud();
+    return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cloudConfig.url, cloudConfig.anonKey]);
+  }, []);
 
   // ══════════════════════════════════════════════════════════
   // EFFECT 2 — Sync allData → localStorage (immediate)
@@ -411,7 +316,7 @@ export const PortfolioProvider = ({ children }) => {
     });
 
     return () => unsubscribeFromPortfolio(channel);
-  }, [cloudConfig.url, cloudConfig.anonKey, isSupabaseConfigured]);
+  }, []);
 
   // ══════════════════════════════════════════════════════════
   // EFFECT 5 — language / theme persistence
@@ -573,17 +478,11 @@ export const PortfolioProvider = ({ children }) => {
         toggleTheme,
         isDarkMode: theme === "dark",
         t,
-        // Supabase sync indicators & methods
+        // Supabase sync indicators
         isSupabaseConfigured,
-        cloudConfig,
         isDbLoading,
         isDbSyncing,
         dbSyncedAt,
-        saveCloudCredentials,
-        removeCloudCredentials,
-        testCloudConnection,
-        pushToCloud,
-        pullFromCloud,
         // Edit / CMS
         isEditMode,
         isCmsOpen,

@@ -1,6 +1,6 @@
 import React from "react";
 import { usePortfolio } from "../context/PortfolioContext";
-import { FiTerminal, FiArrowUp, FiSettings, FiCloud, FiCloudOff, FiLoader } from "react-icons/fi";
+import { FiTerminal, FiArrowUp, FiSettings, FiCloud, FiLoader } from "react-icons/fi";
 
 const Footer = () => {
   const { data, openCms, t, isSupabaseConfigured, isDbLoading, isDbSyncing, dbSyncedAt } = usePortfolio();
@@ -131,67 +131,52 @@ const Footer = () => {
             <span>{t.footer.crafted}</span>
           </div>
 
-          {/* Cloud sync badge */}
+          {/* Cloud sync indicator (read-only) */}
           {isSupabaseConfigured && (
             <div
-              onClick={() => openCms("database")}
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: "6px",
                 fontSize: "0.78rem",
-                padding: "4px 10px",
+                padding: "4px 12px",
                 borderRadius: "20px",
-                cursor: "pointer",
                 background: isDbLoading || isDbSyncing
-                  ? "rgba(255, 209, 102, 0.1)"
-                  : "rgba(0, 255, 135, 0.1)",
+                  ? "rgba(255, 209, 102, 0.08)"
+                  : "rgba(0, 255, 135, 0.08)",
                 border: `1px solid ${
                   isDbLoading || isDbSyncing
-                    ? "rgba(255, 209, 102, 0.3)"
-                    : "rgba(0, 255, 135, 0.3)"
+                    ? "rgba(255, 209, 102, 0.25)"
+                    : "rgba(0, 255, 135, 0.25)"
                 }`,
                 color: isDbLoading || isDbSyncing
                   ? "var(--color-accent-1)"
                   : "var(--color-accent-2)",
-                transition: "all 0.2s ease",
+                userSelect: "none",
               }}
-              title={dbSyncedAt ? `Last synced: ${dbSyncedAt.toLocaleTimeString()} - คลิกเพื่อจัดการ Cloud Database` : "คลิกเพื่อจัดการ Cloud Database"}
+              title={dbSyncedAt ? `Database Connected & Synced: ${dbSyncedAt.toLocaleTimeString()}` : "Database Connected"}
             >
               {isDbLoading || isDbSyncing ? (
                 <>
                   <FiLoader size={11} style={{ animation: "spin 1s linear infinite" }} />
-                  <span>{isDbLoading ? "กำลังโหลดจาก Cloud..." : "กำลังบันทึก..."}</span>
+                  <span>{isDbLoading ? "กำลังเชื่อมต่อ..." : "กำลังบันทึก..."}</span>
                 </>
               ) : (
                 <>
-                  <FiCloud size={11} />
-                  <span>Cloud Synced {dbSyncedAt ? dbSyncedAt.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) : ""}</span>
+                  <span
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      background: "var(--color-accent-2)",
+                      boxShadow: "0 0 8px var(--color-accent-2)",
+                      display: "inline-block",
+                    }}
+                  />
+                  <FiCloud size={12} />
+                  <span>Database Connected</span>
                 </>
               )}
-            </div>
-          )}
-
-          {!isSupabaseConfigured && (
-            <div
-              onClick={() => openCms("database")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                fontSize: "0.78rem",
-                color: "var(--color-text-muted)",
-                opacity: 0.8,
-                cursor: "pointer",
-                padding: "4px 10px",
-                borderRadius: "20px",
-                border: "1px dashed var(--color-card-border)",
-                transition: "all 0.2s ease",
-              }}
-              title="คลิกเพื่อเชื่อมต่อ Supabase Database ฟรี"
-            >
-              <FiCloudOff size={11} />
-              <span>Local only (คลิกเพื่อต่อ Database)</span>
             </div>
           )}
         </div>
