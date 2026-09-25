@@ -30,6 +30,35 @@ export const defaultPortfolioData = {
         { label: "สื่อการสอน & โปรเจกต์", value: "40+" },
         { label: "CTF / กิจกรรมไซเบอร์", value: "100+" },
         { label: "ความพึงพอใจผู้เรียน", value: "99%" }
+      ],
+      education: [
+        {
+          id: "edu1",
+          degree: "ประกาศนียบัตรวิชาชีพ (ปวช.)",
+          field: "สาขาคอมพิวเตอร์ธุรกิจ",
+          institution: "วิทยาลัยเทคนิค (ตัวอย่าง)",
+          period: "2558 - 2561",
+          image: "/img/edu-school.jpg",
+          description: "เรียนรู้พื้นฐานด้านคอมพิวเตอร์ การเขียนโปรแกรม และระบบเครือข่าย"
+        },
+        {
+          id: "edu2",
+          degree: "ปริญญาตรี (ค.บ.)",
+          field: "สาขาคอมพิวเตอร์ศึกษา",
+          institution: "มหาวิทยาลัยราชภัฏ (ตัวอย่าง)",
+          period: "2562 - 2565",
+          image: "/img/edu-university.jpg",
+          description: "ศึกษาด้านการสอนวิทยาการคำนวณ เทคโนโลยีสารสนเทศ และหลักสูตรการศึกษา"
+        },
+        {
+          id: "edu3",
+          degree: "ปริญญาโท (กำลังศึกษา)",
+          field: "สาขาเทคโนโลยีและนวัตกรรมการศึกษา",
+          institution: "มหาวิทยาลัย (ตัวอย่าง)",
+          period: "2566 - ปัจจุบัน",
+          image: "/img/edu-graduate.jpg",
+          description: "วิจัยเกี่ยวกับการบูรณาการ AI และ Cybersecurity ในการจัดการเรียนรู้ยุคดิจิทัล"
+        }
       ]
     },
     skills: [
@@ -177,6 +206,35 @@ export const defaultPortfolioData = {
         { label: "Educational Projects", value: "40+" },
         { label: "CTF Challenges Solved", value: "100+" },
         { label: "Student Satisfaction", value: "99%" }
+      ],
+      education: [
+        {
+          id: "edu1",
+          degree: "Vocational Certificate",
+          field: "Business Computer",
+          institution: "Technical College (Example)",
+          period: "2015 - 2018",
+          image: "/img/edu-school.jpg",
+          description: "Studied computer fundamentals, programming basics, and networking."
+        },
+        {
+          id: "edu2",
+          degree: "Bachelor of Education (B.Ed.)",
+          field: "Computer Education",
+          institution: "Rajabhat University (Example)",
+          period: "2019 - 2022",
+          image: "/img/edu-university.jpg",
+          description: "Studied computing science education, IT, and curriculum design."
+        },
+        {
+          id: "edu3",
+          degree: "Master's Degree (In Progress)",
+          field: "Educational Technology & Innovation",
+          institution: "University (Example)",
+          period: "2023 - Present",
+          image: "/img/edu-graduate.jpg",
+          description: "Researching AI and Cybersecurity integration in digital-age learning."
+        }
       ]
     },
     skills: [
@@ -328,6 +386,8 @@ export const UI_TRANSLATIONS = {
       titleHighlight: "วิศวกรรม & การออกแบบ",
       terminal: "TERMINAL // ข้อมูลสังเขป",
       verified: "โค้ดคุณภาพสูง & มีความปลอดภัย",
+      educationTitle: "ประวัติการศึกษา",
+      educationHighlight: "เส้นทางวิชาการ",
     },
     skills: {
       badge: "TECH_STACK // ความเชี่ยวชาญ",
@@ -349,6 +409,8 @@ export const UI_TRANSLATIONS = {
       featured: "ผลงานเด่น",
       launchApp: "เปิดใช้งานเว็บจริง",
       sourceRepo: "ดูโค้ดบน GitHub",
+      viewAll: "ดูผลงานทั้งหมด",
+      backToHome: "กลับหน้าหลัก",
     },
     experience: {
       badge: "JOURNEY // เส้นทางการทำงาน",
@@ -412,6 +474,8 @@ export const UI_TRANSLATIONS = {
       heading: "Uniting pedagogy, software engineering, and cybersecurity.",
       terminal: "TERMINAL // BIO_MANIFEST",
       verified: "Verified Pedagogy & Security Mindset",
+      educationTitle: "Education",
+      educationHighlight: "Academic Journey",
     },
     skills: {
       badge: "TECH_STACK // CAPABILITIES",
@@ -433,6 +497,8 @@ export const UI_TRANSLATIONS = {
       featured: "Featured",
       launchApp: "Launch Live App",
       sourceRepo: "Source Repository",
+      viewAll: "View All Projects",
+      backToHome: "Back to Home",
     },
     experience: {
       badge: "JOURNEY // CAREER_TRACK",

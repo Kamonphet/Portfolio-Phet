@@ -1,4 +1,5 @@
 import React from "react";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import { PortfolioProvider } from "./context/PortfolioContext";
 import Navbar from "./components/Navbar";
@@ -14,6 +15,7 @@ import FloatingCyberObjects from "./components/FloatingCyberObjects";
 import EditModal from "./components/EditModal";
 import AuthModal from "./components/AuthModal";
 import ScrollToTop from "./components/ScrollToTop";
+import AllProjectsPage from "./components/AllProjectsPage";
 
 function PortfolioContent() {
   return (
@@ -55,7 +57,10 @@ function PortfolioContent() {
 function App() {
   return (
     <PortfolioProvider>
-      <PortfolioContent />
+      <Routes>
+        <Route path="/" element={<PortfolioContent />} />
+        <Route path="/projects" element={<AllProjectsPage />} />
+      </Routes>
     </PortfolioProvider>
   );
 }

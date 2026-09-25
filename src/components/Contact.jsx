@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { usePortfolio } from "../context/PortfolioContext";
 import EditableText from "./EditableText";
 import confetti from "canvas-confetti";
+import emailjs from "@emailjs/browser";
 import {
   FiMail,
   FiSend,
@@ -14,10 +15,32 @@ import {
   FiCopy,
   FiCheck,
   FiCheckCircle,
+  FiAlertCircle,
 } from "react-icons/fi";
+
+// ============================================================
+// EmailJS Configuration
+// ============================================================
+// To set this up for real email delivery to kamonpach.siri@gmail.com:
+//
+// 1. Go to https://www.emailjs.com/ and create a free account
+// 2. Add an Email Service (Gmail) → you'll get a SERVICE_ID
+// 3. Create an Email Template with these variables:
+//    - {{from_name}}  → sender's name
+//    - {{from_email}} → sender's email
+//    - {{subject}}    → subject line
+//    - {{message}}    → message body
+//    Set the "To Email" in the template to: kamonpach.siri@gmail.com
+// 4. Copy your Public Key from Account → General
+// 5. Replace the values below:
+// ============================================================
+const EMAILJS_SERVICE_ID = "service_portfolio";    // Replace with your actual service ID
+const EMAILJS_TEMPLATE_ID = "template_contact";    // Replace with your actual template ID
+const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY_HERE";  // Replace with your actual public key
 
 const Contact = () => {
   const { data, updateContact, t } = usePortfolio();
+  const formRef = useRef(null);
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -26,6 +49,7 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleCopyEmail = () => {
@@ -34,14 +58,28 @@ const Contact = () => {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formState.name || !formState.email || !formState.message) return;
 
     setIsSubmitting(true);
+    setErrorMsg("");
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Send email via EmailJS
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formState.name,
+          from_email: formState.email,
+          subject: formState.subject || "Portfolio Contact Form",
+          message: formState.message,
+          to_email: "kamonpach.siri@gmail.com",
+        },
+        EMAILJS_PUBLIC_KEY
+      );
+
       setIsSuccess(true);
 
       // Trigger Confetti Fireworks
@@ -58,7 +96,15 @@ const Contact = () => {
 
       setFormState({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setIsSuccess(false), 6000);
-    }, 1200);
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      setErrorMsg(
+        "ส่งข้อความไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หรือติดต่อผ่านอีเมลโดยตรง"
+      );
+      setTimeout(() => setErrorMsg(""), 8000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -355,13 +401,14 @@ const Contact = () => {
             {t.contact.formTitle}
           </h3>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+          <form ref={formRef} onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }} className="form-row">
               <div>
                 <label className="cms-label">{t.contact.nameLabel}</label>
                 <input
                   required
                   type="text"
+                  name="from_name"
                   placeholder={t.contact.namePlaceholder}
                   className="cms-input"
                   value={formState.name}
@@ -373,6 +420,7 @@ const Contact = () => {
                 <input
                   required
                   type="email"
+                  name="from_email"
                   placeholder={t.contact.emailPlaceholder}
                   className="cms-input"
                   value={formState.email}
@@ -385,6 +433,7 @@ const Contact = () => {
               <label className="cms-label">{t.contact.subjectLabel}</label>
               <input
                 type="text"
+                name="subject"
                 placeholder={t.contact.subjectPlaceholder}
                 className="cms-input"
                 value={formState.subject}
@@ -397,6 +446,7 @@ const Contact = () => {
               <textarea
                 required
                 rows="5"
+                name="message"
                 placeholder={t.contact.messagePlaceholder}
                 className="cms-input"
                 value={formState.message}
@@ -414,12 +464,15 @@ const Contact = () => {
                 fontSize: "1rem",
                 borderRadius: "10px",
                 marginTop: "0.5rem",
+                opacity: isSubmitting ? 0.7 : 1,
+                cursor: isSubmitting ? "not-allowed" : "pointer",
               }}
             >
               <FiSend />
               <span>{isSubmitting ? t.contact.sendingBtn : t.contact.sendBtn}</span>
             </button>
 
+            {/* Success Message */}
             {isSuccess && (
               <motion.div
                 initial={{ opacity: 0, y: 10, scale: 0.96 }}
@@ -453,6 +506,29 @@ const Contact = () => {
                     {t.contact.successMsg}
                   </div>
                 </div>
+              </motion.div>
+            )}
+
+            {/* Error Message */}
+            {errorMsg && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                style={{
+                  background: "rgba(255, 71, 87, 0.12)",
+                  border: "1px solid rgba(255, 71, 87, 0.5)",
+                  color: "#ff4757",
+                  padding: "14px 18px",
+                  borderRadius: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  fontSize: "0.92rem",
+                  fontWeight: "600",
+                }}
+              >
+                <FiAlertCircle size={22} />
+                <span>{errorMsg}</span>
               </motion.div>
             )}
           </form>

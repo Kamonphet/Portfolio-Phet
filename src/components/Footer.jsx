@@ -1,9 +1,9 @@
 import React from "react";
 import { usePortfolio } from "../context/PortfolioContext";
-import { FiTerminal, FiArrowUp, FiSettings } from "react-icons/fi";
+import { FiTerminal, FiArrowUp, FiSettings, FiCloud, FiCloudOff, FiLoader } from "react-icons/fi";
 
 const Footer = () => {
-  const { data, openCms, t } = usePortfolio();
+  const { data, openCms, t, isSupabaseConfigured, isDbLoading, isDbSyncing, dbSyncedAt } = usePortfolio();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -130,6 +130,70 @@ const Footer = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <span>{t.footer.crafted}</span>
           </div>
+
+          {/* Cloud sync badge */}
+          {isSupabaseConfigured && (
+            <div
+              onClick={() => openCms("database")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "0.78rem",
+                padding: "4px 10px",
+                borderRadius: "20px",
+                cursor: "pointer",
+                background: isDbLoading || isDbSyncing
+                  ? "rgba(255, 209, 102, 0.1)"
+                  : "rgba(0, 255, 135, 0.1)",
+                border: `1px solid ${
+                  isDbLoading || isDbSyncing
+                    ? "rgba(255, 209, 102, 0.3)"
+                    : "rgba(0, 255, 135, 0.3)"
+                }`,
+                color: isDbLoading || isDbSyncing
+                  ? "var(--color-accent-1)"
+                  : "var(--color-accent-2)",
+                transition: "all 0.2s ease",
+              }}
+              title={dbSyncedAt ? `Last synced: ${dbSyncedAt.toLocaleTimeString()} - คลิกเพื่อจัดการ Cloud Database` : "คลิกเพื่อจัดการ Cloud Database"}
+            >
+              {isDbLoading || isDbSyncing ? (
+                <>
+                  <FiLoader size={11} style={{ animation: "spin 1s linear infinite" }} />
+                  <span>{isDbLoading ? "กำลังโหลดจาก Cloud..." : "กำลังบันทึก..."}</span>
+                </>
+              ) : (
+                <>
+                  <FiCloud size={11} />
+                  <span>Cloud Synced {dbSyncedAt ? dbSyncedAt.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) : ""}</span>
+                </>
+              )}
+            </div>
+          )}
+
+          {!isSupabaseConfigured && (
+            <div
+              onClick={() => openCms("database")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "0.78rem",
+                color: "var(--color-text-muted)",
+                opacity: 0.8,
+                cursor: "pointer",
+                padding: "4px 10px",
+                borderRadius: "20px",
+                border: "1px dashed var(--color-card-border)",
+                transition: "all 0.2s ease",
+              }}
+              title="คลิกเพื่อเชื่อมต่อ Supabase Database ฟรี"
+            >
+              <FiCloudOff size={11} />
+              <span>Local only (คลิกเพื่อต่อ Database)</span>
+            </div>
+          )}
         </div>
       </div>
     </footer>

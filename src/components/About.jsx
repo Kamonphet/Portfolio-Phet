@@ -7,10 +7,13 @@ import {
   FiCheckCircle,
   FiGlobe,
   FiTerminal,
+  FiBookOpen,
 } from "react-icons/fi";
 
 const About = () => {
   const { data, updateAbout, t } = usePortfolio();
+
+  const education = data?.about?.education || [];
 
   return (
     <section id="about" className="content-section">
@@ -314,6 +317,7 @@ const About = () => {
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
           gap: "1.2rem",
+          marginBottom: "4rem",
         }}
       >
         {(data?.about?.stats || []).map((stat, idx) => (
@@ -366,6 +370,109 @@ const About = () => {
         ))}
       </div>
 
+      {/* ============================================= */}
+      {/* Education Timeline Section */}
+      {/* ============================================= */}
+      {education.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+          {/* Education Header */}
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <div className="section-badge">
+              <FiBookOpen />
+              <span>EDUCATION // {t.about.educationTitle || "ประวัติการศึกษา"}</span>
+            </div>
+            <h2 className="section-title" style={{ fontSize: "2rem" }}>
+              {t.about.educationTitle || "ประวัติการศึกษา"}{" "}
+              <span className="gradient-text">{t.about.educationHighlight || "เส้นทางวิชาการ"}</span>
+            </h2>
+          </div>
+
+          {/* Timeline */}
+          <div className="edu-timeline">
+            {/* Vertical Timeline Line */}
+            <div className="edu-timeline-line" />
+
+            {education.map((edu, idx) => (
+              <motion.div
+                key={edu.id || idx}
+                className={`edu-timeline-item ${idx % 2 === 0 ? "edu-timeline-left" : "edu-timeline-right"}`}
+                initial={{ opacity: 0, x: idx % 2 === 0 ? -60 : 60 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.7, delay: idx * 0.15, ease: "easeOut" }}
+              >
+                {/* Timeline Node (Dot) */}
+                <div className="edu-timeline-node">
+                  <div className="edu-timeline-node-inner" />
+                </div>
+
+                {/* Timeline Card */}
+                <motion.div
+                  className="glass-card edu-timeline-card"
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {/* Top accent line */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "3px",
+                      background: idx === 0
+                        ? "linear-gradient(90deg, #0284c7, #38bdf8)"
+                        : idx === 1
+                        ? "linear-gradient(90deg, #7c3aed, #a855f7)"
+                        : "linear-gradient(90deg, #059669, #34d399)",
+                      borderRadius: "16px 16px 0 0",
+                    }}
+                  />
+
+                  <div className="edu-timeline-card-content">
+                    {/* Institution Image */}
+                    <div className="edu-timeline-img-wrap">
+                      <img
+                        src={edu.image}
+                        alt={edu.institution}
+                        className="edu-timeline-img"
+                      />
+                    </div>
+
+                    {/* Text Content */}
+                    <div className="edu-timeline-text">
+                      {/* Period Badge */}
+                      <span className="edu-timeline-period">
+                        📅 {edu.period}
+                      </span>
+
+                      {/* Degree */}
+                      <h4 className="edu-timeline-degree">{edu.degree}</h4>
+
+                      {/* Field */}
+                      <p className="edu-timeline-field">{edu.field}</p>
+
+                      {/* Institution */}
+                      <p className="edu-timeline-institution">
+                        🏫 {edu.institution}
+                      </p>
+
+                      {/* Description */}
+                      <p className="edu-timeline-desc">{edu.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
       <style>{`
         @media (max-width: 960px) {
           .about-grid {
@@ -377,6 +484,204 @@ const About = () => {
           .about-stats-grid {
             grid-template-columns: repeat(2, 1fr) !important;
             gap: 0.8rem !important;
+          }
+        }
+
+        /* ===== Education Timeline Styles ===== */
+        .edu-timeline {
+          position: relative;
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 2rem 0;
+        }
+
+        .edu-timeline-line {
+          position: absolute;
+          left: 50%;
+          top: 0;
+          bottom: 0;
+          width: 3px;
+          background: linear-gradient(
+            180deg,
+            var(--color-primary) 0%,
+            var(--color-secondary) 50%,
+            var(--color-accent-2) 100%
+          );
+          transform: translateX(-50%);
+          border-radius: 3px;
+          opacity: 0.5;
+        }
+
+        .edu-timeline-item {
+          position: relative;
+          width: 50%;
+          padding: 0 2.5rem 3rem;
+        }
+
+        .edu-timeline-left {
+          left: 0;
+          text-align: right;
+          padding-right: 3rem;
+        }
+
+        .edu-timeline-right {
+          left: 50%;
+          text-align: left;
+          padding-left: 3rem;
+        }
+
+        /* Node */
+        .edu-timeline-node {
+          position: absolute;
+          top: 8px;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: var(--color-bg);
+          border: 3px solid var(--color-primary);
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .edu-timeline-node-inner {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: var(--color-primary);
+          animation: eduNodePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes eduNodePulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        .edu-timeline-left .edu-timeline-node {
+          right: -10px;
+        }
+
+        .edu-timeline-right .edu-timeline-node {
+          left: -10px;
+        }
+
+        /* Card */
+        .edu-timeline-card {
+          position: relative;
+          overflow: hidden;
+          border-radius: 16px !important;
+        }
+
+        .edu-timeline-card-content {
+          padding: 1.5rem;
+          display: flex;
+          gap: 1.2rem;
+          align-items: flex-start;
+          text-align: left;
+        }
+
+        .edu-timeline-left .edu-timeline-card-content {
+          flex-direction: row-reverse;
+          text-align: right;
+        }
+
+        /* Image */
+        .edu-timeline-img-wrap {
+          flex-shrink: 0;
+          width: 72px;
+          height: 72px;
+          border-radius: 14px;
+          overflow: hidden;
+          border: 2px solid var(--color-card-border);
+          background: var(--color-glass-subtle);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .edu-timeline-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        /* Text */
+        .edu-timeline-period {
+          display: inline-block;
+          font-family: var(--font-mono);
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: var(--color-primary);
+          background: var(--color-badge-bg);
+          border: 1px solid var(--color-badge-border);
+          padding: 3px 10px;
+          border-radius: 12px;
+          margin-bottom: 8px;
+        }
+
+        .edu-timeline-degree {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: var(--color-text-main);
+          margin: 0 0 4px 0;
+        }
+
+        .edu-timeline-field {
+          font-size: 0.92rem;
+          color: var(--color-secondary);
+          font-weight: 600;
+          margin: 0 0 6px 0;
+        }
+
+        .edu-timeline-institution {
+          font-size: 0.85rem;
+          color: var(--color-text-dim);
+          margin: 0 0 8px 0;
+          font-weight: 500;
+        }
+
+        .edu-timeline-desc {
+          font-size: 0.84rem;
+          color: var(--color-text-muted);
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        /* Responsive: Stack vertically on mobile */
+        @media (max-width: 768px) {
+          .edu-timeline-line {
+            left: 20px;
+          }
+
+          .edu-timeline-item {
+            width: 100%;
+            padding: 0 0 2.5rem 3.5rem;
+          }
+
+          .edu-timeline-left,
+          .edu-timeline-right {
+            left: 0;
+            text-align: left;
+            padding-left: 3.5rem;
+            padding-right: 0;
+          }
+
+          .edu-timeline-left .edu-timeline-node,
+          .edu-timeline-right .edu-timeline-node {
+            left: 10px;
+            right: auto;
+          }
+
+          .edu-timeline-left .edu-timeline-card-content {
+            flex-direction: row;
+            text-align: left;
+          }
+
+          .edu-timeline-img-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
           }
         }
       `}</style>
