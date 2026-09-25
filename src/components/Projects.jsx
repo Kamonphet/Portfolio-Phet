@@ -22,7 +22,7 @@ const AUTO_PLAY_INTERVAL = 4000;
 
 const Projects = ({ showAll = false }) => {
   const navigate = useNavigate();
-  const { data, updateProjects, removeProject, isEditMode, openCms, t } = usePortfolio();
+  const { data, updateProjects, removeProject, isEditMode, openCms, t, language } = usePortfolio();
   const [activeCategory, setActiveCategory] = useState("All");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -336,7 +336,7 @@ const Projects = ({ showAll = false }) => {
                 cursor: "pointer",
                 fontSize: "1.1rem",
               }}
-              title="Delete Project"
+              title={language === "th" ? "ลบผลงานนี้" : "Delete Project"}
             >
               <FiTrash2 />
             </button>

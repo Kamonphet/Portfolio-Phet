@@ -45,7 +45,7 @@ const ICON_MAP = {
 };
 
 const Skills = () => {
-  const { data, updateSkills, removeSkill, isEditMode, openCms, t } = usePortfolio();
+  const { data, updateSkills, removeSkill, isEditMode, openCms, t, language } = usePortfolio();
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const categories = t.skills.categories || ["All", "Frontend", "Backend", "Security", "3D & Creative", "DevOps"];
@@ -335,7 +335,7 @@ const Skills = () => {
                         cursor: "pointer",
                         fontSize: "0.9rem",
                       }}
-                      title="Delete Skill"
+                      title={language === "th" ? "ลบทักษะนี้" : "Delete Skill"}
                     >
                       <FiTrash2 />
                     </button>

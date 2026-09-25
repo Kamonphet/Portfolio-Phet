@@ -22,15 +22,6 @@ import {
 import { uploadPortfolioImage } from "../lib/portfolioService";
 import { validateImageFile } from "../utils/security";
 
-const TABS = [
-  { id: "profile", label: "Profile & Bio", icon: <FiUser /> },
-  { id: "skills", label: "Skills & Tech", icon: <FiCode /> },
-  { id: "projects", label: "Projects", icon: <FiFolder /> },
-  { id: "experience", label: "Experience", icon: <FiBriefcase /> },
-  { id: "contact", label: "Contact & Links", icon: <FiMail /> },
-  { id: "backup", label: "Import / Export", icon: <FiDownload /> },
-];
-
 const EditModal = () => {
   const {
     data,
@@ -56,6 +47,17 @@ const EditModal = () => {
     importData,
     resetToDefault,
   } = usePortfolio();
+
+  const isTh = language === "th";
+
+  const tabs = [
+    { id: "profile", label: isTh ? "ข้อมูลส่วนตัว & ประวัติ" : "Profile & Bio", icon: <FiUser /> },
+    { id: "skills", label: isTh ? "ทักษะ & ความเชี่ยวชาญ" : "Skills & Tech", icon: <FiCode /> },
+    { id: "projects", label: isTh ? "จัดการผลงาน & โปรเจกต์" : "Projects", icon: <FiFolder /> },
+    { id: "experience", label: isTh ? "ประสบการณ์ & ไทม์ไลน์" : "Experience", icon: <FiBriefcase /> },
+    { id: "contact", label: isTh ? "ข้อมูลติดต่อ & โซเชียล" : "Contact & Links", icon: <FiMail /> },
+    { id: "backup", label: isTh ? "สำรอง & นำเข้าข้อมูล" : "Import / Export", icon: <FiDownload /> },
+  ];
 
   const [importJsonText, setImportJsonText] = useState("");
   const [importStatus, setImportStatus] = useState(null);
@@ -99,7 +101,7 @@ const EditModal = () => {
     if (res.success) {
       setNewProject((prev) => ({ ...prev, image: res.url }));
     } else {
-      setUploadError(res.error || "อัพโหลดรูปภาพไม่สำเร็จ");
+      setUploadError(res.error || (isTh ? "อัพโหลดรูปภาพไม่สำเร็จ" : "Failed to upload image"));
     }
   };
 
@@ -119,7 +121,7 @@ const EditModal = () => {
       );
       updateProjects(updated);
     } else {
-      alert(res.error || "อัพโหลดรูปภาพไม่สำเร็จ");
+      alert(res.error || (isTh ? "อัพโหลดรูปภาพไม่สำเร็จ" : "Failed to upload image"));
     }
   };
 
@@ -137,10 +139,16 @@ const EditModal = () => {
     if (!importJsonText.trim()) return;
     const res = importData(importJsonText);
     if (res.success) {
-      setImportStatus({ type: "success", text: "Successfully imported portfolio data!" });
+      setImportStatus({
+        type: "success",
+        text: isTh ? "นำเข้าข้อมูลพอร์ตโฟลิโอเรียบร้อยแล้ว!" : "Successfully imported portfolio data!",
+      });
       setImportJsonText("");
     } else {
-      setImportStatus({ type: "error", text: "Error importing JSON. Please check syntax." });
+      setImportStatus({
+        type: "error",
+        text: isTh ? "เกิดข้อผิดพลาดในการนำเข้าไฟล์ JSON กรุณาตรวจสอบรูปแบบ" : "Error importing JSON. Please check syntax.",
+      });
     }
   };
 
@@ -152,9 +160,15 @@ const EditModal = () => {
       const content = event.target?.result;
       const res = importData(content);
       if (res.success) {
-        setImportStatus({ type: "success", text: "Data restored from file!" });
+        setImportStatus({
+          type: "success",
+          text: isTh ? "กู้คืนข้อมูลจากไฟล์เรียบร้อยแล้ว!" : "Data restored from file!",
+        });
       } else {
-        setImportStatus({ type: "error", text: "Invalid JSON file" });
+        setImportStatus({
+          type: "error",
+          text: isTh ? "ไฟล์ JSON ไม่ถูกต้องหรือไม่ตรงตามโครงสร้าง" : "Invalid JSON file",
+        });
       }
     };
     reader.readAsText(file);
@@ -266,7 +280,8 @@ const EditModal = () => {
               <FiLayers />
             </span>
             <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "700", letterSpacing: "0.5px" }}>
-              PORTFOLIO DATA MANAGER // <span style={{ color: "var(--color-primary)" }}>LIVE CMS</span>
+              {isTh ? "ระบบจัดการข้อมูลพอร์ตโฟลิโอ // " : "PORTFOLIO DATA MANAGER // "}
+              <span style={{ color: "var(--color-primary)" }}>LIVE CMS</span>
             </h2>
           </div>
 
@@ -285,7 +300,9 @@ const EditModal = () => {
                 fontWeight: "700",
               }}
             >
-              <span style={{ color: "var(--color-text-dim)", fontSize: "0.75rem" }}>Language:</span>
+              <span style={{ color: "var(--color-text-dim)", fontSize: "0.75rem" }}>
+                {isTh ? "ภาษา:" : "Language:"}
+              </span>
               <button
                 onClick={toggleLanguage}
                 style={{
@@ -315,6 +332,7 @@ const EditModal = () => {
 
             <button
               onClick={closeCms}
+              title={isTh ? "ปิดหน้าต่างจัดการข้อมูล" : "Close CMS"}
               style={{
                 background: "rgba(255, 255, 255, 0.05)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -345,7 +363,7 @@ const EditModal = () => {
             gap: "6px",
           }}
         >
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setCmsTab(tab.id)}
@@ -384,10 +402,12 @@ const EditModal = () => {
           {/* PROFILE & BIO TAB */}
           {cmsTab === "profile" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
-              <h3 style={{ margin: "0 0 0.5rem 0", color: "var(--color-primary)" }}>Hero Section</h3>
+              <h3 style={{ margin: "0 0 0.5rem 0", color: "var(--color-primary)" }}>
+                {isTh ? "ส่วนหัวโปรไฟล์ (Hero Section)" : "Hero Section"}
+              </h3>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <div>
-                  <label className="cms-label">Display Name</label>
+                  <label className="cms-label">{isTh ? "ชื่อที่แสดงบนหน้าเว็บ (Display Name)" : "Display Name"}</label>
                   <input
                     className="cms-input"
                     value={data?.hero?.name || ""}
@@ -395,7 +415,7 @@ const EditModal = () => {
                   />
                 </div>
                 <div>
-                  <label className="cms-label">Greeting / Code Tag</label>
+                  <label className="cms-label">{isTh ? "คำทักทาย / แท็กโค้ด (Greeting Tag)" : "Greeting / Code Tag"}</label>
                   <input
                     className="cms-input"
                     value={data?.hero?.greeting || ""}
@@ -405,7 +425,7 @@ const EditModal = () => {
               </div>
 
               <div>
-                <label className="cms-label">Professional Title / Headline</label>
+                <label className="cms-label">{isTh ? "ตำแหน่งวิชาชีพ / คำโปรยหลัก (Professional Title)" : "Professional Title / Headline"}</label>
                 <input
                   className="cms-input"
                   value={data?.hero?.title || ""}
@@ -414,7 +434,7 @@ const EditModal = () => {
               </div>
 
               <div>
-                <label className="cms-label">Hero Tagline / Subtitle</label>
+                <label className="cms-label">{isTh ? "สโลแกน / คำอธิบายเป้าหมาย (Hero Tagline)" : "Hero Tagline / Subtitle"}</label>
                 <textarea
                   rows="2"
                   className="cms-input"
@@ -425,7 +445,7 @@ const EditModal = () => {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <div>
-                  <label className="cms-label">Availability Status</label>
+                  <label className="cms-label">{isTh ? "สถานะความพร้อม (Availability Status)" : "Availability Status"}</label>
                   <input
                     className="cms-input"
                     value={data?.hero?.status || ""}
@@ -433,7 +453,7 @@ const EditModal = () => {
                   />
                 </div>
                 <div>
-                  <label className="cms-label">Avatar / Profile Image URL</label>
+                  <label className="cms-label">{isTh ? "ลิงก์รูปภาพโปรไฟล์ (Avatar Image URL)" : "Avatar / Profile Image URL"}</label>
                   <input
                     className="cms-input"
                     value={data?.about?.avatarUrl || ""}
@@ -442,9 +462,11 @@ const EditModal = () => {
                 </div>
               </div>
 
-              <h3 style={{ margin: "1.5rem 0 0.5rem 0", color: "var(--color-primary)" }}>About Section</h3>
+              <h3 style={{ margin: "1.5rem 0 0.5rem 0", color: "var(--color-primary)" }}>
+                {isTh ? "ส่วนเกี่ยวกับฉัน (About Section)" : "About Section"}
+              </h3>
               <div>
-                <label className="cms-label">About Heading</label>
+                <label className="cms-label">{isTh ? "หัวข้อเกี่ยวกับฉัน (About Heading)" : "About Heading"}</label>
                 <input
                   className="cms-input"
                   value={data?.about?.heading || ""}
@@ -453,7 +475,7 @@ const EditModal = () => {
               </div>
 
               <div>
-                <label className="cms-label">Bio Paragraphs (1 per line)</label>
+                <label className="cms-label">{isTh ? "เนื้อหาแนะนำตัว (แยกย่อหน้าด้วยการเว้น 2 บรรทัด)" : "Bio Paragraphs (separated by blank lines)"}</label>
                 <textarea
                   rows="4"
                   className="cms-input"
@@ -466,7 +488,9 @@ const EditModal = () => {
                 />
               </div>
 
-              <h4 style={{ margin: "1rem 0 0.5rem 0", color: "var(--color-secondary)" }}>Quick Stats Metrics</h4>
+              <h4 style={{ margin: "1rem 0 0.5rem 0", color: "var(--color-secondary)" }}>
+                {isTh ? "ตัวเลขสถิติเด่น (Quick Stats Metrics)" : "Quick Stats Metrics"}
+              </h4>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem" }}>
                 {(data?.about?.stats || []).map((st, idx) => (
                   <div key={idx} style={{ background: "rgba(255,255,255,0.03)", padding: "10px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.08)" }}>
@@ -490,9 +514,11 @@ const EditModal = () => {
           {cmsTab === "skills" && (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                <h3 style={{ margin: 0, color: "var(--color-primary)" }}>Skills & Tech Stack</h3>
+                <h3 style={{ margin: 0, color: "var(--color-primary)" }}>
+                  {isTh ? "ทักษะและความเชี่ยวชาญ (Skills & Tech Stack)" : "Skills & Tech Stack"}
+                </h3>
                 <span style={{ fontSize: "0.85rem", color: "var(--color-text-dim)" }}>
-                  {(data?.skills || []).length} skills active
+                  {isTh ? `เปิดใช้งาน ${(data?.skills || []).length} ทักษะ` : `${(data?.skills || []).length} skills active`}
                 </span>
               </div>
 
@@ -512,30 +538,32 @@ const EditModal = () => {
                 }}
               >
                 <div>
-                  <label className="cms-label">Skill Name</label>
+                  <label className="cms-label">{isTh ? "ชื่อทักษะ" : "Skill Name"}</label>
                   <input
                     className="cms-input"
-                    placeholder="e.g. Next.js, Rust, CTF..."
+                    placeholder={isTh ? "เช่น Next.js, Docker, CTF, Three.js..." : "e.g. Next.js, Rust, CTF..."}
                     value={newSkill.name}
                     onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="cms-label">Category</label>
+                  <label className="cms-label">{isTh ? "หมวดหมู่" : "Category"}</label>
                   <select
                     className="cms-input"
                     value={newSkill.category}
                     onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
                   >
-                    <option value="Frontend">Frontend</option>
-                    <option value="Backend">Backend</option>
-                    <option value="Security">Security / CTF</option>
-                    <option value="3D & Creative">3D & Creative</option>
-                    <option value="DevOps">DevOps & Cloud</option>
+                    <option value="Frontend">{isTh ? "ส่วนติดต่อผู้ใช้ (Frontend)" : "Frontend"}</option>
+                    <option value="Backend">{isTh ? "ระบบเบื้องหลัง (Backend)" : "Backend"}</option>
+                    <option value="Security">{isTh ? "ความปลอดภัยไซเบอร์ (Security / CTF)" : "Security / CTF"}</option>
+                    <option value="3D & Creative">{isTh ? "3D & มีเดียสร้างสรรค์" : "3D & Creative"}</option>
+                    <option value="DevOps">{isTh ? "เดฟออปส์ & คลาวด์ (DevOps & Cloud)" : "DevOps & Cloud"}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="cms-label">Level ({newSkill.level}%)</label>
+                  <label className="cms-label">
+                    {isTh ? `ระดับ (${newSkill.level}%)` : `Level (${newSkill.level}%)`}
+                  </label>
                   <input
                     type="range"
                     min="10"
@@ -561,7 +589,7 @@ const EditModal = () => {
                     height: "42px",
                   }}
                 >
-                  <FiPlus /> Add
+                  <FiPlus /> {isTh ? "เพิ่มทักษะ" : "Add"}
                 </button>
               </form>
 
@@ -593,6 +621,7 @@ const EditModal = () => {
                       />
                       <button
                         onClick={() => removeSkill(skill.id)}
+                        title={isTh ? "ลบทักษะนี้" : "Delete Skill"}
                         style={{
                           background: "transparent",
                           border: "none",
@@ -631,9 +660,11 @@ const EditModal = () => {
           {cmsTab === "projects" && (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                <h3 style={{ margin: 0, color: "var(--color-primary)" }}>Project Showcase</h3>
+                <h3 style={{ margin: 0, color: "var(--color-primary)" }}>
+                  {isTh ? "จัดการคลังผลงานและโปรเจกต์" : "Project Showcase"}
+                </h3>
                 <span style={{ fontSize: "0.85rem", color: "var(--color-text-dim)" }}>
-                  {(data?.projects || []).length} projects published
+                  {isTh ? `เผยแพร่แล้ว ${(data?.projects || []).length} รายการ` : `${(data?.projects || []).length} projects published`}
                 </span>
               </div>
 
@@ -651,48 +682,51 @@ const EditModal = () => {
                   gap: "10px",
                 }}
               >
-                <div style={{ fontWeight: "600", color: "var(--color-accent-1)" }}>Add New Project</div>
+                <div style={{ fontWeight: "600", color: "var(--color-accent-1)" }}>
+                  {isTh ? "เพิ่มผลงาน / โปรเจกต์ใหม่" : "Add New Project"}
+                </div>
                 <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "10px" }}>
                   <div>
-                    <label className="cms-label">Project Title</label>
+                    <label className="cms-label">{isTh ? "ชื่อผลงาน / โปรเจกต์ *" : "Project Title *"}</label>
                     <input
                       className="cms-input"
-                      placeholder="e.g. Cyber Matrix Security Tool"
+                      placeholder={isTh ? "เช่น ระบบห้องปฏิบัติการความมั่นคงปลอดภัยไซเบอร์ (CTF Lab)" : "e.g. Cyber Matrix Security Tool"}
                       value={newProject.title}
                       onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="cms-label">Category</label>
+                    <label className="cms-label">{isTh ? "หมวดหมู่ผลงาน" : "Category"}</label>
                     <select
                       className="cms-input"
                       value={newProject.category}
                       onChange={(e) => setNewProject({ ...newProject, category: e.target.value })}
                     >
-                      <option value="Web App">Web App</option>
-                      <option value="3D & Creative">3D & Creative</option>
-                      <option value="Security">Security / CTF</option>
-                      <option value="Mobile">Mobile</option>
+                      <option value="EdTech & Web">{isTh ? "เทคโนโลยีการศึกษา & เว็บ (EdTech)" : "EdTech & Web"}</option>
+                      <option value="Security">{isTh ? "ความปลอดภัยไซเบอร์ (Security / CTF)" : "Security / CTF"}</option>
+                      <option value="Web App">{isTh ? "เว็บแอปพลิเคชัน (Web App)" : "Web App"}</option>
+                      <option value="3D & Creative">{isTh ? "3D & มีเดียสร้างสรรค์" : "3D & Creative"}</option>
+                      <option value="Mobile">{isTh ? "แอปพลิเคชันมือถือ (Mobile)" : "Mobile"}</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="cms-label">Description</label>
+                  <label className="cms-label">{isTh ? "รายละเอียดผลงาน *" : "Description *"}</label>
                   <textarea
                     rows="2"
                     className="cms-input"
-                    placeholder="Brief description of the project..."
+                    placeholder={isTh ? "อธิบายจุดเด่น เทคโนโลยีที่ใช้ และผลสัมฤทธิ์ของผลงาน..." : "Brief description of the project..."}
                     value={newProject.desc}
                     onChange={(e) => setNewProject({ ...newProject, desc: e.target.value })}
                   />
                 </div>
 
                 <div>
-                  <label className="cms-label">Tech Tags (comma separated)</label>
+                  <label className="cms-label">{isTh ? "แท็กเทคโนโลยี (คั่นด้วยจุลภาค , )" : "Tech Tags (comma separated)"}</label>
                   <input
                     className="cms-input"
-                    placeholder="React, Three.js, Docker"
+                    placeholder={isTh ? "เช่น React, Three.js, Docker, Cybersecurity" : "React, Three.js, Docker"}
                     value={newProject.techStr}
                     onChange={(e) => setNewProject({ ...newProject, techStr: e.target.value })}
                   />
@@ -702,7 +736,7 @@ const EditModal = () => {
                 <div style={{ background: "rgba(0, 0, 0, 0.25)", padding: "12px", borderRadius: "10px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "6px" }}>
                     <label className="cms-label" style={{ margin: 0, display: "flex", alignItems: "center", gap: "6px" }}>
-                      <FiImage /> รูปภาพผลงาน (Project Image)
+                      <FiImage /> {isTh ? "รูปภาพผลงาน (Project Image)" : "Project Image"}
                     </label>
                     <div style={{ display: "flex", gap: "6px" }}>
                       <button
@@ -722,7 +756,7 @@ const EditModal = () => {
                           gap: "4px",
                         }}
                       >
-                        <FiLink size={12} /> แนบลิงก์รูป
+                        <FiLink size={12} /> {isTh ? "แนบลิงก์รูป (URL)" : "Image URL"}
                       </button>
                       <button
                         type="button"
@@ -741,7 +775,7 @@ const EditModal = () => {
                           gap: "4px",
                         }}
                       >
-                        <FiUploadCloud size={12} /> อัพโหลดไฟล์
+                        <FiUploadCloud size={12} /> {isTh ? "อัพโหลดไฟล์ภาพ" : "Upload File"}
                       </button>
                     </div>
                   </div>
@@ -750,7 +784,7 @@ const EditModal = () => {
                     <div>
                       <input
                         className="cms-input"
-                        placeholder="https://... หรือ /img/main.png"
+                        placeholder={isTh ? "ใส่ลิงก์รูปภาพ เช่น /img/main.png หรือ https://..." : "https://... or /img/main.png"}
                         value={newProject.image}
                         onChange={(e) => setNewProject({ ...newProject, image: e.target.value })}
                       />
@@ -784,16 +818,18 @@ const EditModal = () => {
                         {isUploadingImage ? (
                           <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-primary)" }}>
                             <FiLoader size={20} style={{ animation: "spin 1s linear infinite" }} />
-                            <span style={{ fontSize: "0.85rem" }}>กำลังอัพโหลดและประมวลผลรูปภาพ...</span>
+                            <span style={{ fontSize: "0.85rem" }}>
+                              {isTh ? "กำลังอัพโหลดและประมวลผลรูปภาพ..." : "Uploading and processing image..."}
+                            </span>
                           </div>
                         ) : (
                           <>
                             <FiUploadCloud size={24} style={{ color: "var(--color-primary)", marginBottom: "4px" }} />
                             <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-text-main)" }}>
-                              คลิกเพื่อเลือกไฟล์รูปภาพจากเครื่อง
+                              {isTh ? "คลิกเพื่อเลือกไฟล์รูปภาพจากเครื่อง" : "Click to select image file from device"}
                             </span>
                             <span style={{ fontSize: "0.75rem", color: "var(--color-text-dim)" }}>
-                              รองรับ PNG, JPG, WEBP, GIF (สูงสุด 8MB)
+                              {isTh ? "รองรับ PNG, JPG, WEBP, GIF (สูงสุด 8MB)" : "Supports PNG, JPG, WEBP, GIF (Max 8MB)"}
                             </span>
                           </>
                         )}
@@ -825,7 +861,7 @@ const EditModal = () => {
                         }}
                       />
                       <span style={{ fontSize: "0.78rem", color: "var(--color-accent-2)" }}>
-                        ✔ ภาพตัวอย่างพร้อมใช้งาน
+                        {isTh ? "✔ ภาพตัวอย่างพร้อมใช้งาน" : "✔ Image preview ready"}
                       </span>
                     </div>
                   )}
@@ -833,19 +869,19 @@ const EditModal = () => {
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                   <div>
-                    <label className="cms-label">Live Demo URL</label>
+                    <label className="cms-label">{isTh ? "ลิงก์เปิดดูผลงานจริง (Live Demo URL)" : "Live Demo URL"}</label>
                     <input
                       className="cms-input"
-                      placeholder="https://myproject.com"
+                      placeholder={isTh ? "เช่น https://myproject.com" : "https://myproject.com"}
                       value={newProject.demoUrl}
                       onChange={(e) => setNewProject({ ...newProject, demoUrl: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="cms-label">GitHub Repository URL</label>
+                    <label className="cms-label">{isTh ? "ลิงก์ซอร์สโค้ด (GitHub Repository URL)" : "GitHub Repository URL"}</label>
                     <input
                       className="cms-input"
-                      placeholder="https://github.com/..."
+                      placeholder={isTh ? "เช่น https://github.com/..." : "https://github.com/..."}
                       value={newProject.githubUrl}
                       onChange={(e) => setNewProject({ ...newProject, githubUrl: e.target.value })}
                     />
@@ -869,7 +905,7 @@ const EditModal = () => {
                     marginTop: "6px",
                   }}
                 >
-                  <FiPlus /> Add Project to Portfolio
+                  <FiPlus /> {isTh ? "+ เพิ่มผลงานลงในคลังพอร์ตโฟลิโอ" : "+ Add Project to Portfolio"}
                 </button>
               </form>
 
@@ -917,7 +953,7 @@ const EditModal = () => {
                           gap: "4px",
                         }}
                       >
-                        <FiImage size={11} /> {editingImageProjId === proj.id ? "ปิด" : "เปลี่ยนรูป"}
+                        <FiImage size={11} /> {editingImageProjId === proj.id ? (isTh ? "ปิด" : "Close") : (isTh ? "เปลี่ยนรูป" : "Change Image")}
                       </button>
                     </div>
                     <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -925,6 +961,7 @@ const EditModal = () => {
                         <input
                           className="cms-input-inline"
                           style={{ fontWeight: "bold", fontSize: "1rem" }}
+                          placeholder={isTh ? "ชื่อผลงาน..." : "Project title..."}
                           value={proj.title}
                           onChange={(e) => {
                             const updated = (data?.projects || []).map((p) =>
@@ -935,6 +972,7 @@ const EditModal = () => {
                         />
                         <button
                           onClick={() => removeProject(proj.id)}
+                          title={isTh ? "ลบผลงานนี้" : "Delete Project"}
                           style={{
                             background: "transparent",
                             border: "none",
@@ -949,6 +987,7 @@ const EditModal = () => {
                         rows="2"
                         className="cms-input"
                         style={{ fontSize: "0.85rem", padding: "6px" }}
+                        placeholder={isTh ? "รายละเอียดผลงาน..." : "Project description..."}
                         value={proj.desc}
                         onChange={(e) => {
                           const updated = (data?.projects || []).map((p) =>
@@ -973,13 +1012,13 @@ const EditModal = () => {
                           }}
                         >
                           <div style={{ fontSize: "0.8rem", fontWeight: "600", color: "var(--color-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
-                            <FiImage /> จัดการรูปภาพผลงาน (Edit Image URL / Upload)
+                            <FiImage /> {isTh ? "จัดการรูปภาพผลงาน (แนบลิงก์ URL หรือ อัพโหลดภาพใหม่)" : "Manage Project Image (URL or Upload)"}
                           </div>
                           <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
                             <input
                               className="cms-input"
                               style={{ flex: 1, minWidth: "200px", fontSize: "0.82rem", padding: "6px 10px", margin: 0 }}
-                              placeholder="แนบลิงก์รูปภาพ URL..."
+                              placeholder={isTh ? "แนบลิงก์รูปภาพ URL..." : "Image URL link..."}
                               value={proj.image}
                               onChange={(e) => {
                                 const updated = (data?.projects || []).map((p) =>
@@ -1014,7 +1053,7 @@ const EditModal = () => {
                                 }}
                               />
                               <FiUploadCloud size={14} />
-                              <span>{isUploadingImage ? "กำลังอัพ..." : "อัพโหลดไฟล์"}</span>
+                              <span>{isUploadingImage ? (isTh ? "กำลังอัพ..." : "Uploading...") : (isTh ? "อัพโหลดไฟล์" : "Upload File")}</span>
                             </label>
                           </div>
                         </div>
@@ -1045,7 +1084,9 @@ const EditModal = () => {
           {cmsTab === "experience" && (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                <h3 style={{ margin: 0, color: "var(--color-primary)" }}>Career & Milestones</h3>
+                <h3 style={{ margin: 0, color: "var(--color-primary)" }}>
+                  {isTh ? "ประวัติการทำงาน & ผลงานโดดเด่น" : "Career & Milestones"}
+                </h3>
               </div>
 
               {/* Add Exp Form */}
@@ -1062,42 +1103,44 @@ const EditModal = () => {
                   gap: "10px",
                 }}
               >
-                <div style={{ fontWeight: "600", color: "var(--color-accent-2)" }}>Add Experience Item</div>
+                <div style={{ fontWeight: "600", color: "var(--color-accent-2)" }}>
+                  {isTh ? "เพิ่มประวัติ / ประสบการณ์ใหม่" : "Add Experience Item"}
+                </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
                   <div>
-                    <label className="cms-label">Role Title</label>
+                    <label className="cms-label">{isTh ? "ตำแหน่ง / บทบาท" : "Role Title"}</label>
                     <input
                       className="cms-input"
-                      placeholder="e.g. Senior Security Analyst"
+                      placeholder={isTh ? "เช่น ครูผู้สอนกลุ่มสาระวิทยาศาสตร์และเทคโนโลยี" : "e.g. Senior Security Analyst"}
                       value={newExp.role}
                       onChange={(e) => setNewExp({ ...newExp, role: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="cms-label">Company / Team</label>
+                    <label className="cms-label">{isTh ? "หน่วยงาน / สถาบัน / องค์กร" : "Company / Team"}</label>
                     <input
                       className="cms-input"
-                      placeholder="e.g. Alpha CyberSec"
+                      placeholder={isTh ? "เช่น โรงเรียน... หรือ บริษัท..." : "e.g. Alpha CyberSec"}
                       value={newExp.company}
                       onChange={(e) => setNewExp({ ...newExp, company: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="cms-label">Period</label>
+                    <label className="cms-label">{isTh ? "ช่วงเวลาปฏิบัติงาน" : "Period"}</label>
                     <input
                       className="cms-input"
-                      placeholder="2022 - 2024"
+                      placeholder={isTh ? "เช่น 2024 - ปัจจุบัน" : "2022 - 2024"}
                       value={newExp.period}
                       onChange={(e) => setNewExp({ ...newExp, period: e.target.value })}
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="cms-label">Description</label>
+                  <label className="cms-label">{isTh ? "รายละเอียดหน้าที่และความสำเร็จ" : "Description"}</label>
                   <textarea
                     rows="2"
                     className="cms-input"
-                    placeholder="Key contributions and achievements..."
+                    placeholder={isTh ? "สรุปภาระงาน ผลงานดีเด่น หรือนวัตกรรมที่พัฒนา..." : "Key contributions and achievements..."}
                     value={newExp.description}
                     onChange={(e) => setNewExp({ ...newExp, description: e.target.value })}
                   />
@@ -1118,7 +1161,7 @@ const EditModal = () => {
                     gap: "6px",
                   }}
                 >
-                  <FiPlus /> Add Experience
+                  <FiPlus /> {isTh ? "+ เพิ่มประสบการณ์" : "+ Add Experience"}
                 </button>
               </form>
 
@@ -1176,6 +1219,7 @@ const EditModal = () => {
                         />
                         <button
                           onClick={() => removeExperience(exp.id)}
+                          title={isTh ? "ลบรายการนี้" : "Delete Experience"}
                           style={{ background: "transparent", border: "none", color: "#ff4757", cursor: "pointer" }}
                         >
                           <FiTrash2 />
@@ -1203,10 +1247,12 @@ const EditModal = () => {
           {/* CONTACT TAB */}
           {cmsTab === "contact" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
-              <h3 style={{ margin: "0 0 0.5rem 0", color: "var(--color-primary)" }}>Contact Information & Social Links</h3>
+              <h3 style={{ margin: "0 0 0.5rem 0", color: "var(--color-primary)" }}>
+                {isTh ? "ข้อมูลติดต่อและโซเชียลมีเดีย (Contact Information & Social Links)" : "Contact Information & Social Links"}
+              </h3>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <div>
-                  <label className="cms-label">Email Address</label>
+                  <label className="cms-label">{isTh ? "ที่อยู่อีเมล (Email Address)" : "Email Address"}</label>
                   <input
                     className="cms-input"
                     value={data?.contact?.email || ""}
@@ -1214,7 +1260,7 @@ const EditModal = () => {
                   />
                 </div>
                 <div>
-                  <label className="cms-label">Location / Base</label>
+                  <label className="cms-label">{isTh ? "สถานที่ปฏิบัติงาน / จังหวัด (Location)" : "Location / Base"}</label>
                   <input
                     className="cms-input"
                     value={data?.contact?.location || ""}
@@ -1225,7 +1271,7 @@ const EditModal = () => {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <div>
-                  <label className="cms-label">GitHub URL</label>
+                  <label className="cms-label">{isTh ? "ลิงก์ GitHub Profile" : "GitHub URL"}</label>
                   <input
                     className="cms-input"
                     value={data?.contact?.github || ""}
@@ -1233,7 +1279,7 @@ const EditModal = () => {
                   />
                 </div>
                 <div>
-                  <label className="cms-label">LinkedIn URL</label>
+                  <label className="cms-label">{isTh ? "ลิงก์ LinkedIn Profile" : "LinkedIn URL"}</label>
                   <input
                     className="cms-input"
                     value={data?.contact?.linkedin || ""}
@@ -1244,7 +1290,7 @@ const EditModal = () => {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <div>
-                  <label className="cms-label">Twitter / X URL</label>
+                  <label className="cms-label">{isTh ? "ลิงก์ Twitter / X Profile" : "Twitter / X URL"}</label>
                   <input
                     className="cms-input"
                     value={data?.contact?.twitter || ""}
@@ -1252,7 +1298,7 @@ const EditModal = () => {
                   />
                 </div>
                 <div>
-                  <label className="cms-label">Discord Tag</label>
+                  <label className="cms-label">{isTh ? "Discord Tag" : "Discord Tag"}</label>
                   <input
                     className="cms-input"
                     value={data?.contact?.discord || ""}
@@ -1262,7 +1308,7 @@ const EditModal = () => {
               </div>
 
               <div>
-                <label className="cms-label">Availability Note</label>
+                <label className="cms-label">{isTh ? "หมายเหตุสถานะการติดต่อ / รับงาน (Availability Note)" : "Availability Note"}</label>
                 <input
                   className="cms-input"
                   value={data?.contact?.availability || ""}
@@ -1276,9 +1322,13 @@ const EditModal = () => {
           {cmsTab === "backup" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
               <div>
-                <h3 style={{ margin: "0 0 0.5rem 0", color: "var(--color-primary)" }}>Data Backup & Portability</h3>
+                <h3 style={{ margin: "0 0 0.5rem 0", color: "var(--color-primary)" }}>
+                  {isTh ? "สำรองและกู้คืนข้อมูลพอร์ตโฟลิโอ" : "Data Backup & Portability"}
+                </h3>
                 <p style={{ color: "var(--color-text-dim)", fontSize: "0.9rem", margin: 0 }}>
-                  You can export your complete portfolio as a JSON file, or paste/upload a backup to restore it anywhere.
+                  {isTh
+                    ? "คุณสามารถส่งออก (Export) ข้อมูลทั้งหมดเป็นไฟล์ JSON เพื่อสำรองไว้ หรืออัพโหลด/วางไฟล์ JSON เพื่อกู้คืนข้อมูลได้ทุกเมื่อ"
+                    : "You can export your complete portfolio as a JSON file, or paste/upload a backup to restore it anywhere."}
                 </p>
               </div>
 
@@ -1299,7 +1349,7 @@ const EditModal = () => {
                     gap: "8px",
                   }}
                 >
-                  <FiDownload /> Download Backup (JSON)
+                  <FiDownload /> {isTh ? "ดาวน์โหลดไฟล์สำรอง (JSON)" : "Download Backup (JSON)"}
                 </button>
 
                 <label
@@ -1315,15 +1365,21 @@ const EditModal = () => {
                     gap: "8px",
                   }}
                 >
-                  <FiUpload /> Upload JSON File
+                  <FiUpload /> {isTh ? "อัพโหลดไฟล์ JSON จากเครื่อง" : "Upload JSON File"}
                   <input type="file" accept=".json" onChange={handleFileImport} style={{ display: "none" }} />
                 </label>
 
                 <button
                   onClick={() => {
-                    if (window.confirm("Are you sure you want to reset all portfolio data to defaults?")) {
+                    const confirmMsg = isTh
+                      ? "คุณแน่ใจหรือไม่ว่าต้องการคืนค่าข้อมูลพอร์ตโฟลิโอทั้งหมดเป็นค่าเริ่มต้น?"
+                      : "Are you sure you want to reset all portfolio data to defaults?";
+                    if (window.confirm(confirmMsg)) {
                       resetToDefault();
-                      setImportStatus({ type: "success", text: "Portfolio reset to original template!" });
+                      setImportStatus({
+                        type: "success",
+                        text: isTh ? "คืนค่าพอร์ตโฟลิโอสู่ค่าเริ่มต้นเรียบร้อยแล้ว!" : "Portfolio reset to original template!",
+                      });
                     }
                   }}
                   style={{
@@ -1340,13 +1396,15 @@ const EditModal = () => {
                     marginLeft: "auto",
                   }}
                 >
-                  <FiRotateCcw /> Reset to Default
+                  <FiRotateCcw /> {isTh ? "คืนค่าเริ่มต้นทั้งหมด" : "Reset to Default"}
                 </button>
               </div>
 
               {/* Paste JSON box */}
               <div>
-                <label className="cms-label">Or Paste JSON Configuration Below</label>
+                <label className="cms-label">
+                  {isTh ? "หรือวางชุดข้อมูล JSON ด้านล่างนี้เพื่อนำเข้า" : "Or Paste JSON Configuration Below"}
+                </label>
                 <textarea
                   rows="6"
                   className="cms-input"
@@ -1368,7 +1426,7 @@ const EditModal = () => {
                     cursor: "pointer",
                   }}
                 >
-                  Apply Pasted JSON
+                  {isTh ? "บันทึกและนำเข้าข้อมูล JSON" : "Apply Pasted JSON"}
                 </button>
               </div>
 
@@ -1405,7 +1463,7 @@ const EditModal = () => {
           }}
         >
           <span style={{ fontSize: "0.85rem", color: "var(--color-accent-2)", display: "flex", alignItems: "center", gap: "6px" }}>
-            <FiCheck /> Auto-saved to browser storage
+            <FiCheck /> {isTh ? "บันทึกข้อมูลอัตโนมัติเรียบร้อยแล้ว" : "Auto-saved to browser storage"}
           </span>
           <button
             onClick={closeCms}
@@ -1419,7 +1477,7 @@ const EditModal = () => {
               cursor: "pointer",
             }}
           >
-            Done Editing
+            {isTh ? "เสร็จสิ้นการแก้ไข" : "Done Editing"}
           </button>
         </div>
       </div>

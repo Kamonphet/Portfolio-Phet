@@ -231,7 +231,7 @@ const Experience = () => {
                         cursor: "pointer",
                         fontSize: "0.9rem",
                       }}
-                      title="Delete experience entry"
+                      title={t.experience.remove || "ลบรายการนี้"}
                     >
                       <FiTrash2 /> {t.experience.remove}
                     </button>
