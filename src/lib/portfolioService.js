@@ -215,13 +215,29 @@ export const unsubscribeFromPortfolio = (channel) => {
 export const uploadPortfolioImage = async (file, folder = 'projects') => {
   if (!file) return { success: false, error: 'ไม่ได้เลือกไฟล์ภาพ' };
 
-  if (!file.type || !file.type.startsWith('image/')) {
-    return { success: false, error: 'กรุณาเลือกไฟล์ภาพที่ถูกต้อง (PNG, JPG, WEBP, GIF)' };
+  const mime = (file.type || '').toLowerCase();
+  const name = (file.name || '').toLowerCase();
+  const allowedExts = ['.jpg', '.jpeg', '.png', '.webp'];
+  const allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+
+  const hasValidExt = allowedExts.some((ext) => name.endsWith(ext));
+  const hasValidMime = allowedMimes.includes(mime);
+
+  if (
+    mime.includes('gif') ||
+    mime.includes('svg') ||
+    mime.includes('bmp') ||
+    name.endsWith('.gif') ||
+    name.endsWith('.svg') ||
+    name.endsWith('.bmp') ||
+    (!hasValidMime && !hasValidExt)
+  ) {
+    return { success: false, error: 'ระบบรองรับเฉพาะไฟล์รูปภาพประเภท .jpg, .png, .webp เท่านั้น' };
   }
 
-  // Max 8MB
-  if (file.size > 8 * 1024 * 1024) {
-    return { success: false, error: 'ขนาดไฟล์ภาพต้องไม่เกิน 8MB' };
+  // Max 5MB
+  if (file.size > 5 * 1024 * 1024) {
+    return { success: false, error: 'ขนาดไฟล์ภาพต้องไม่เกิน 5MB' };
   }
 
   const supabase = getSupabase();

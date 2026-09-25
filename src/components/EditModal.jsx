@@ -20,7 +20,7 @@ import {
   FiLoader,
 } from "react-icons/fi";
 import { uploadPortfolioImage } from "../lib/portfolioService";
-import { validateImageFile } from "../utils/security";
+import { validateImageFile, validateImageUrl } from "../utils/security";
 
 const EditModal = () => {
   const {
@@ -74,7 +74,7 @@ const EditModal = () => {
     title: "",
     category: "Web App",
     desc: "",
-    image: "/img/main.png",
+    image: "",
     techStr: "React, Node.js, WebGL",
     demoUrl: "",
     githubUrl: "",
@@ -89,7 +89,7 @@ const EditModal = () => {
 
   const handleUploadNewProjectImage = async (file) => {
     if (!file) return;
-    const validation = validateImageFile(file);
+    const validation = validateImageFile(file, 5 * 1024 * 1024, isTh);
     if (!validation.valid) {
       setUploadError(validation.error);
       return;
@@ -107,7 +107,7 @@ const EditModal = () => {
 
   const handleUploadExistingProjectImage = async (file, projId) => {
     if (!file) return;
-    const validation = validateImageFile(file);
+    const validation = validateImageFile(file, 5 * 1024 * 1024, isTh);
     if (!validation.valid) {
       alert(validation.error);
       return;
@@ -122,6 +122,21 @@ const EditModal = () => {
       updateProjects(updated);
     } else {
       alert(res.error || (isTh ? "อัพโหลดรูปภาพไม่สำเร็จ" : "Failed to upload image"));
+    }
+  };
+
+  const handleProjectImageUrlChange = (urlVal) => {
+    setNewProject((prev) => ({ ...prev, image: urlVal }));
+    const trimmed = urlVal.trim();
+    if (!trimmed) {
+      setUploadError("");
+      return;
+    }
+    const check = validateImageUrl(trimmed, isTh);
+    if (!check.valid) {
+      setUploadError(check.error);
+    } else {
+      setUploadError("");
     }
   };
 
@@ -189,12 +204,30 @@ const EditModal = () => {
   const handleAddNewProject = (e) => {
     e.preventDefault();
     if (!newProject.title.trim()) return;
+
+    // Validate Project Image
+    const imgUrl = (newProject.image || "").trim();
+    if (!imgUrl) {
+      setUploadError(
+        isTh
+          ? "กรุณาระบุรูปภาพผลงาน (ใส่ลิงก์รูปภาพ หรือ อัพโหลดไฟล์ภาพ)"
+          : "Please provide a project image (URL link or Upload file)."
+      );
+      return;
+    }
+
+    const imgValidation = validateImageUrl(imgUrl, isTh);
+    if (!imgValidation.valid) {
+      setUploadError(imgValidation.error);
+      return;
+    }
+
     const tech = newProject.techStr.split(",").map((t) => t.trim()).filter(Boolean);
     addProject({
       title: newProject.title,
       category: newProject.category,
       desc: newProject.desc,
-      image: newProject.image || "/img/main.png",
+      image: imgUrl,
       tech,
       demoUrl: newProject.demoUrl || "#",
       githubUrl: newProject.githubUrl || "#",
@@ -204,7 +237,7 @@ const EditModal = () => {
       title: "",
       category: "Web App",
       desc: "",
-      image: "/img/main.png",
+      image: "",
       techStr: "React, Node.js, WebGL",
       demoUrl: "",
       githubUrl: "",
@@ -456,8 +489,18 @@ const EditModal = () => {
                   <label className="cms-label">{isTh ? "ลิงก์รูปภาพโปรไฟล์ (Avatar Image URL)" : "Avatar / Profile Image URL"}</label>
                   <input
                     className="cms-input"
+                    placeholder={isTh ? "ใส่ URL รูปภาพโปรไฟล์ เช่น https://... (ห้ามใส่ Path)" : "Avatar image URL e.g. https://... (no paths)"}
                     value={data?.about?.avatarUrl || ""}
                     onChange={(e) => updateAbout({ avatarUrl: e.target.value })}
+                    onBlur={(e) => {
+                      const val = (e.target.value || "").trim();
+                      if (val && !val.startsWith("data:")) {
+                        const check = validateImageUrl(val, isTh);
+                        if (!check.valid) {
+                          alert(check.error);
+                        }
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -784,9 +827,13 @@ const EditModal = () => {
                     <div>
                       <input
                         className="cms-input"
-                        placeholder={isTh ? "ใส่ลิงก์รูปภาพ เช่น /img/main.png หรือ https://..." : "https://... or /img/main.png"}
+                        placeholder={
+                          isTh
+                            ? "ใส่ URL ลิงก์รูปภาพ เช่น https://images.unsplash.com/... (ห้ามใส่ Path)"
+                            : "Full image URL e.g. https://... (no local paths allowed)"
+                        }
                         value={newProject.image}
-                        onChange={(e) => setNewProject({ ...newProject, image: e.target.value })}
+                        onChange={(e) => handleProjectImageUrlChange(e.target.value)}
                       />
                     </div>
                   ) : (
@@ -807,7 +854,7 @@ const EditModal = () => {
                       >
                         <input
                           type="file"
-                          accept="image/*"
+                          accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                           style={{ display: "none" }}
                           disabled={isUploadingImage}
                           onChange={(e) => {
@@ -829,7 +876,7 @@ const EditModal = () => {
                               {isTh ? "คลิกเพื่อเลือกไฟล์รูปภาพจากเครื่อง" : "Click to select image file from device"}
                             </span>
                             <span style={{ fontSize: "0.75rem", color: "var(--color-text-dim)" }}>
-                              {isTh ? "รองรับ PNG, JPG, WEBP, GIF (สูงสุด 8MB)" : "Supports PNG, JPG, WEBP, GIF (Max 8MB)"}
+                              {isTh ? "รองรับเฉพาะ .jpg, .png, .webp (ขนาดไม่เกิน 5MB)" : "Supports .jpg, .png, .webp only (Max 5MB)"}
                             </span>
                           </>
                         )}
@@ -1018,13 +1065,23 @@ const EditModal = () => {
                             <input
                               className="cms-input"
                               style={{ flex: 1, minWidth: "200px", fontSize: "0.82rem", padding: "6px 10px", margin: 0 }}
-                              placeholder={isTh ? "แนบลิงก์รูปภาพ URL..." : "Image URL link..."}
+                              placeholder={isTh ? "ใส่ URL ลิงก์รูปภาพ เช่น https://... (ห้ามใส่ Path)" : "Image URL e.g. https://... (no paths)"}
                               value={proj.image}
                               onChange={(e) => {
+                                const val = e.target.value;
                                 const updated = (data?.projects || []).map((p) =>
-                                  p.id === proj.id ? { ...p, image: e.target.value } : p
+                                  p.id === proj.id ? { ...p, image: val } : p
                                 );
                                 updateProjects(updated);
+                              }}
+                              onBlur={(e) => {
+                                const val = (e.target.value || "").trim();
+                                if (val) {
+                                  const check = validateImageUrl(val, isTh);
+                                  if (!check.valid) {
+                                    alert(check.error);
+                                  }
+                                }
                               }}
                             />
                             <label
@@ -1044,7 +1101,7 @@ const EditModal = () => {
                             >
                               <input
                                 type="file"
-                                accept="image/*"
+                                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                                 style={{ display: "none" }}
                                 disabled={isUploadingImage}
                                 onChange={(e) => {
