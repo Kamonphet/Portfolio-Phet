@@ -1,22 +1,22 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Clean up any legacy localStorage entries for security
-try {
-  if (typeof localStorage !== 'undefined') {
-    localStorage.removeItem('cyber_supabase_url');
-    localStorage.removeItem('cyber_supabase_anon_key');
-  }
-} catch (e) {}
+// Project credentials from Supabase
+const DEFAULT_SUPABASE_URL = 'https://nhsudgerhyqjrnwxdcbo.supabase.co';
+const DEFAULT_SUPABASE_KEY = 'sb_publishable_hvFvHt0zY6aMRjgqWVgKcQ_wVrE6D9O';
 
 /**
- * Returns configuration strictly from environment variables (.env)
+ * Returns configuration from environment variables (.env) with safe defaults
  */
 export const getSupabaseConfig = () => {
-  const url = (import.meta.env.VITE_SUPABASE_URL || '').trim();
+  const url = (
+    import.meta.env.VITE_SUPABASE_URL ||
+    DEFAULT_SUPABASE_URL
+  ).trim();
+
   const anonKey = (
     import.meta.env.VITE_SUPABASE_ANON_KEY ||
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-    ''
+    DEFAULT_SUPABASE_KEY
   ).trim();
 
   return {
@@ -50,7 +50,7 @@ export const getSupabase = () => {
 };
 
 /**
- * Check if Supabase is configured via .env
+ * Check if Supabase is configured
  */
 export const checkIsSupabaseConfigured = () => {
   return getSupabaseConfig().isConfigured;
