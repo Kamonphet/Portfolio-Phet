@@ -68,7 +68,7 @@ const Contact = () => {
     setErrorMsg("");
 
     try {
-      // 1. Save message to Supabase contact_messages database table
+      // 1. Save message to Google Sheets contact_messages table
       saveContactMessage({
         name: formState.name,
         email: formState.email,

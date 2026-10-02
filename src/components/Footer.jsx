@@ -59,7 +59,7 @@ const Footer = () => {
             </span>
           </div>
 
-          {/* Single Clean Supabase Connected Badge */}
+          {/* Single Clean Google Sheets Connected Badge */}
           {isSupabaseConfigured && (
             <div
               style={{
@@ -88,14 +88,14 @@ const Footer = () => {
               }}
               title={
                 dbSyncedAt
-                  ? `เชื่อมต่อ Supabase แล้ว - ซิงค์ล่าสุด: ${dbSyncedAt.toLocaleTimeString("th-TH")}`
-                  : "เชื่อมต่อ Supabase Database แล้ว"
+                  ? `เชื่อมต่อ Google Sheets แล้ว - ซิงค์ล่าสุด: ${dbSyncedAt.toLocaleTimeString("th-TH")}`
+                  : "เชื่อมต่อ Google Sheets API แล้ว"
               }
             >
               {isDbLoading || isDbSyncing ? (
                 <>
                   <FiLoader size={12} style={{ animation: "spin 1s linear infinite" }} />
-                  <span>กำลังซิงค์ Supabase...</span>
+                  <span>กำลังซิงค์ Google Sheets...</span>
                 </>
               ) : (
                 <>
@@ -110,7 +110,7 @@ const Footer = () => {
                     }}
                   />
                   <FiDatabase size={12} />
-                  <span>Supabase Connected</span>
+                  <span>Google Sheets Connected</span>
                 </>
               )}
             </div>

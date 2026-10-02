@@ -1,216 +1,179 @@
 /**
  * portfolioService.js
  * --------------------------------------------------
- * Data-access layer between PortfolioContext and Supabase.
+ * Data-access layer between PortfolioContext and Google Sheets API (Google Apps Script).
  *
- * Table schema (one row per language: 'th', 'en', 'settings')
- *
- * portfolio_data:
- *   id          BIGSERIAL PRIMARY KEY
- *   language    TEXT UNIQUE NOT NULL   -- 'th' | 'en' | 'settings'
- *   hero        JSONB
- *   about       JSONB
- *   skills      JSONB
- *   projects    JSONB
- *   experience  JSONB
- *   contact     JSONB
- *   settings    JSONB
- *   updated_at  TIMESTAMPTZ DEFAULT NOW()
+ * Sheet schema (one row per language in 'portfolio_data' tab):
+ * - language: 'th' | 'en' | 'settings'
+ * - hero: JSON string
+ * - about: JSON string
+ * - skills: JSON string
+ * - projects: JSON string
+ * - experience: JSON string
+ * - contact: JSON string
+ * - settings: JSON string
+ * - updated_at: ISO timestamp
  */
 
-import { getSupabase } from './supabase';
-
-const TABLE = 'portfolio_data';
+import { callApi, isApiConfigured } from './googleSheetsApi';
 
 // ─────────────────────────────────────────────
-// TEST CONNECTION — check if URL, key and table work
+// TEST CONNECTION — check if Google Sheets API works
 // ─────────────────────────────────────────────
-export const testSupabaseConnection = async () => {
-  const supabase = getSupabase();
-  if (!supabase) {
+export const testApiConnection = async () => {
+  if (!isApiConfigured) {
     return {
       success: false,
-      error: 'Supabase credentials not configured. Please provide URL and Anon Key.',
+      error: 'Google Sheets API URL is not configured. Please set VITE_GOOGLE_SHEETS_API_URL in .env',
     };
   }
 
   try {
-    const { data, error } = await supabase.from(TABLE).select('language').limit(1);
-
-    if (error) {
-      if (error.code === '42P01' || error.message?.includes('does not exist')) {
-        return {
-          success: false,
-          isMissingTable: true,
-          error: `Table '${TABLE}' does not exist yet. Please run the SQL schema in your Supabase SQL Editor.`,
-        };
-      }
+    const res = await callApi('ping', 'GET');
+    if (res && res.success) {
       return {
-        success: false,
-        error: error.message || 'Error querying database.',
+        success: true,
+        message: 'Successfully connected to Google Sheets API! 🚀',
+        sheetName: res.sheetName,
       };
     }
 
     return {
-      success: true,
-      message: 'Successfully connected to Supabase!',
-      rowsFound: data?.length || 0,
+      success: false,
+      error: res?.error || 'Failed to ping Google Sheets API.',
     };
   } catch (err) {
     return {
       success: false,
-      error: err.message || 'Connection failed.',
+      error: err.message || 'Connection to Google Sheets failed.',
     };
   }
 };
+
+// Backward-compatible alias
+export const testSupabaseConnection = testApiConnection;
 
 // ─────────────────────────────────────────────
 // READ  — fetch ALL rows and reconstruct the
 //         { th, en, settings } allData object
 // ─────────────────────────────────────────────
 export const fetchAllData = async () => {
-  const supabase = getSupabase();
-  if (!supabase) return null;
+  if (!isApiConfigured) return null;
 
   try {
-    const { data, error } = await supabase.from(TABLE).select('*');
-    if (error) throw error;
-    if (!data || data.length === 0) return null;
+    const res = await callApi('fetchAll', 'GET');
+    if (!res || !res.success || !res.data) {
+      return null;
+    }
 
-    const result = {};
-    data.forEach((row) => {
-      if (row.language === 'settings') {
-        result.settings = row.settings || {};
-      } else {
-        result[row.language] = {
-          hero:       row.hero       || {},
-          about:      row.about      || {},
-          skills:     row.skills     || [],
-          projects:   row.projects   || [],
-          experience: row.experience || [],
-          contact:    row.contact    || {},
-        };
-      }
-    });
+    const { data } = res;
+    if (Object.keys(data).length === 0) return null;
 
-    return result;
+    return {
+      th: data.th || null,
+      en: data.en || null,
+      settings: data.settings || {},
+    };
   } catch (err) {
-    console.error('[Supabase] fetchAllData error:', err.message);
+    console.error('[Google Sheets] fetchAllData error:', err.message);
     return null;
   }
 };
 
 // ─────────────────────────────────────────────
-// WRITE — upsert an entire language row
+// WRITE — save an entire language row
 // ─────────────────────────────────────────────
 export const saveLanguageData = async (language, langData) => {
-  const supabase = getSupabase();
-  if (!supabase) return false;
+  if (!isApiConfigured) return false;
 
   try {
-    const payload =
-      language === 'settings'
-        ? { language, settings: langData, updated_at: new Date().toISOString() }
-        : {
-            language,
-            hero:       langData.hero       || null,
-            about:      langData.about      || null,
-            skills:     langData.skills     || null,
-            projects:   langData.projects   || null,
-            experience: langData.experience || null,
-            contact:    langData.contact    || null,
-            updated_at: new Date().toISOString(),
-          };
+    const res = await callApi('saveLanguage', 'POST', {
+      language,
+      data: langData,
+    });
 
-    const { error } = await supabase
-      .from(TABLE)
-      .upsert(payload, { onConflict: 'language' });
+    if (res && res.success) {
+      return true;
+    }
 
-    if (error) throw error;
-    return true;
+    console.warn(`[Google Sheets] saveLanguageData('${language}') note:`, res?.error);
+    return false;
   } catch (err) {
-    console.error(`[Supabase] saveLanguageData('${language}') error:`, err.message);
+    console.error(`[Google Sheets] saveLanguageData('${language}') error:`, err.message);
     return false;
   }
 };
 
 // ─────────────────────────────────────────────
-// PUSH ALL — upsert th, en, settings rows
+// PUSH ALL — save th, en, settings rows
 // ─────────────────────────────────────────────
 export const pushAllDataToCloud = async (allData) => {
-  const supabase = getSupabase();
-  if (!supabase || !allData) return { success: false, error: 'Database not configured' };
+  if (!isApiConfigured || !allData) {
+    return { success: false, error: 'Google Sheets API not configured' };
+  }
 
   try {
-    const writes = [];
-    if (allData.th) writes.push(saveLanguageData('th', allData.th));
-    if (allData.en) writes.push(saveLanguageData('en', allData.en));
-    if (allData.settings) writes.push(saveLanguageData('settings', allData.settings));
-
-    const results = await Promise.all(writes);
-    const success = results.every(Boolean);
-
-    if (success) {
-      return { success: true, message: 'All portfolio data uploaded to Supabase!' };
-    } else {
-      return { success: false, error: 'Failed to write one or more datasets.' };
+    const res = await callApi('saveAll', 'POST', {
+      data: allData.th || allData,
+      settings: allData.settings,
+    });
+    if (res && res.success) {
+      return { success: true, message: 'All portfolio data uploaded to Google Sheets!' };
     }
+    return { success: false, error: res?.error || 'Failed to save all data.' };
   } catch (err) {
     return { success: false, error: err.message };
   }
 };
 
 // ─────────────────────────────────────────────
-// INIT — push current allData → Supabase if DB
+// INIT — push current allData → Google Sheets if Sheet
 //        is empty (first-time migration)
 // ─────────────────────────────────────────────
-export const initSupabaseFromLocalData = async (allData) => {
-  const supabase = getSupabase();
-  if (!supabase) return;
+export const initCloudFromLocalData = async (allData) => {
+  if (!isApiConfigured) return;
 
   const existing = await fetchAllData();
-  if (existing && Object.keys(existing).length > 0) return; // already has data
+  if (existing && (existing.th || existing.en || existing.settings)) return; // already has data
 
   await pushAllDataToCloud(allData);
-  console.log('[Supabase] Initial data pushed to cloud ✅');
+  console.log('[Google Sheets] Initial data pushed to sheet ✅');
 };
 
+// Backward-compatible alias
+export const initSupabaseFromLocalData = initCloudFromLocalData;
+
 // ─────────────────────────────────────────────
-// REALTIME — subscribe to table changes
-// Returns the channel object so caller can unsubscribe
+// REALTIME / POLLING — Poll for external updates
 // ─────────────────────────────────────────────
 export const subscribeToPortfolio = (onRowChange) => {
-  const supabase = getSupabase();
-  if (!supabase) return null;
+  if (!isApiConfigured) return null;
 
-  try {
-    const channel = supabase
-      .channel('portfolio_realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: TABLE },
-        (payload) => onRowChange(payload)
-      )
-      .subscribe();
+  // Poll every 60 seconds for updates made in Google Sheets
+  const intervalId = setInterval(async () => {
+    try {
+      const data = await fetchAllData();
+      if (data) {
+        if (data.th) onRowChange({ new: { language: 'th', ...data.th } });
+        if (data.en) onRowChange({ new: { language: 'en', ...data.en } });
+        if (data.settings) onRowChange({ new: { language: 'settings', settings: data.settings } });
+      }
+    } catch {
+      // Ignore polling errors in background
+    }
+  }, 60000);
 
-    return channel;
-  } catch (err) {
-    console.error('[Supabase] Realtime subscription error:', err);
-    return null;
-  }
+  return intervalId;
 };
 
 export const unsubscribeFromPortfolio = (channel) => {
-  const supabase = getSupabase();
-  if (channel && supabase) {
-    try {
-      supabase.removeChannel(channel);
-    } catch (e) {}
+  if (channel) {
+    clearInterval(channel);
   }
 };
 
 // ─────────────────────────────────────────────
-// STORAGE — Upload Image with Cloud + Base64 Fallback
+// STORAGE — Upload Image to Google Drive + Base64 Fallback
 // ─────────────────────────────────────────────
 export const uploadPortfolioImage = async (file, folder = 'projects') => {
   if (!file) return { success: false, error: 'ไม่ได้เลือกไฟล์ภาพ' };
@@ -240,72 +203,65 @@ export const uploadPortfolioImage = async (file, folder = 'projects') => {
     return { success: false, error: 'ขนาดไฟล์ภาพต้องไม่เกิน 5MB' };
   }
 
-  const supabase = getSupabase();
-  if (supabase) {
+  // แปลงไฟล์เป็น Base64 Data URL
+  const base64DataUrl = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+
+  if (!base64DataUrl) {
+    return { success: false, error: 'ไม่สามารถอ่านไฟล์ภาพได้' };
+  }
+
+  // พยายามอัปโหลดขึ้น Google Drive ผ่าน Google Apps Script API
+  if (isApiConfigured) {
     try {
       const fileExt = file.name.split('.').pop() || 'png';
       const cleanFileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-      const filePath = `${folder}/${cleanFileName}`;
 
-      const { data, error } = await supabase.storage
-        .from('portfolio-media')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: true,
-        });
+      const res = await callApi('uploadImage', 'POST', {
+        base64: base64DataUrl,
+        filename: cleanFileName,
+        mimeType: mime || 'image/png',
+        extension: fileExt,
+        folder,
+      });
 
-      if (!error && data) {
-        const { data: urlData } = supabase.storage
-          .from('portfolio-media')
-          .getPublicUrl(filePath);
-
-        if (urlData?.publicUrl) {
-          return { success: true, url: urlData.publicUrl, isCloud: true };
-        }
+      if (res && res.success && res.url) {
+        return { success: true, url: res.url, isCloud: true };
       }
     } catch (err) {
-      console.warn('[Supabase Storage] Upload error, falling back to local encoding:', err.message);
+      console.warn('[Google Sheets / Drive] Upload error, falling back to local encoding:', err.message);
     }
   }
 
-  // High-reliability Fallback: Read as Base64 Data URL so user is never blocked
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      resolve({ success: true, url: e.target.result, isCloud: false });
-    };
-    reader.onerror = () => {
-      resolve({ success: false, error: 'ไม่สามารถอ่านไฟล์ภาพได้' });
-    };
-    reader.readAsDataURL(file);
-  });
+  // High-reliability Fallback: Base64 Data URL ทำงานได้เสมอแม้ไม่ได้ต่อ Cloud
+  return { success: true, url: base64DataUrl, isCloud: false };
 };
 
 // ─────────────────────────────────────────────
-// CONTACT — Save message to contact_messages table
+// CONTACT — Save message to contact_messages Google Sheet tab
 // ─────────────────────────────────────────────
 export const saveContactMessage = async ({ name, email, subject, message }) => {
-  const supabase = getSupabase();
-  if (!supabase) return { success: false, error: 'Database not connected' };
+  if (!isApiConfigured) {
+    return { success: false, error: 'Google Sheets API not configured' };
+  }
 
   try {
-    const { data, error } = await supabase.from('contact_messages').insert([
-      {
-        name: name?.trim() || 'Anonymous',
-        email: email?.trim(),
-        subject: subject?.trim() || 'General Inquiry',
-        message: message?.trim(),
-        created_at: new Date().toISOString(),
-      },
-    ]);
+    const res = await callApi('saveContactMessage', 'POST', {
+      name: name?.trim() || 'Anonymous',
+      email: email?.trim(),
+      subject: subject?.trim() || 'General Inquiry',
+      message: message?.trim(),
+    });
 
-    if (error) {
-      // If table doesn't exist yet, don't break UI
-      console.warn('[Supabase] contact_messages write note:', error.message);
-      return { success: false, error: error.message };
+    if (res && res.success) {
+      return { success: true, messageId: res.messageId };
     }
 
-    return { success: true, data };
+    return { success: false, error: res?.error || 'Failed to save message to Google Sheet' };
   } catch (err) {
     return { success: false, error: err.message };
   }

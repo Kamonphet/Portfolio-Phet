@@ -188,7 +188,7 @@ export function validateImageUrl(url, isTh = true) {
       }
     } else {
       // If no file extension in pathname, check search query or known CDNs
-      const isKnownImageCdn = /(images\.unsplash\.com|cloudinary\.com|supabase\.co|imgur\.com|githubusercontent\.com|res\.cloudinary\.com|cdn\.)/i.test(parsed.hostname);
+      const isKnownImageCdn = /(images\.unsplash\.com|cloudinary\.com|supabase\.co|googleusercontent\.com|google\.com|imgur\.com|githubusercontent\.com|res\.cloudinary\.com|cdn\.)/i.test(parsed.hostname);
       const hasImageParam = /format=(jpe?g|png|webp)/i.test(parsed.search);
 
       if (!isKnownImageCdn && !hasImageParam) {

@@ -12,7 +12,6 @@ import {
   FiSettings,
   FiMenu,
   FiX,
-  FiGlobe,
   FiLock,
   FiSun,
   FiMoon,
@@ -21,8 +20,6 @@ import {
 const Navbar = () => {
   const {
     data,
-    language,
-    toggleLanguage,
     theme,
     toggleTheme,
     isDarkMode,
@@ -210,37 +207,6 @@ const Navbar = () => {
               {isDarkMode ? <FiSun size={17} /> : <FiMoon size={17} />}
             </motion.div>
           </motion.button>
-
-          {/* Language Toggle Switch (TH / EN) - Always Visible */}
-          <button
-            onClick={toggleLanguage}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              background: "var(--color-glass-subtle)",
-              border: "1px solid var(--color-card-border)",
-              borderRadius: "20px",
-              padding: "4px 10px",
-              fontSize: "0.8rem",
-              fontWeight: "700",
-              color: "var(--color-text-main)",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-              flexShrink: 0,
-            }}
-            title={language === "th" ? "Switch to English" : "เปลี่ยนเป็นภาษาไทย"}
-          >
-            <FiGlobe style={{ color: "var(--color-primary)" }} />
-            <span style={{ color: language === "th" ? "var(--color-primary)" : "var(--color-text-dim)" }}>
-              TH
-            </span>
-            <span style={{ color: "var(--color-text-muted)", opacity: 0.4 }}>|</span>
-            <span style={{ color: language === "en" ? "var(--color-primary)" : "var(--color-text-dim)" }}>
-              EN
-            </span>
-          </button>
 
           {/* Desktop Edit Mode Button (>= 860px) */}
           <button

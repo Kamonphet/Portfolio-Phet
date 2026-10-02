@@ -15,15 +15,15 @@ import {
   subscribeToPortfolio,
   unsubscribeFromPortfolio,
 } from "../lib/portfolioService";
-import { isSupabaseConfigured } from "../lib/supabase";
+import { isApiConfigured as isSupabaseConfigured, isApiConfigured } from "../lib/googleSheetsApi";
 
 const STORAGE_KEY = "cyber_portfolio_data_v5";
 const LANG_STORAGE_KEY = "cyber_portfolio_lang";
 const AUTH_STORAGE_KEY = "cyber_admin_authenticated";
 const THEME_STORAGE_KEY = "cyber_portfolio_theme_v4";
 
-// Debounce delay for Supabase writes (ms)
-const SUPABASE_DEBOUNCE_MS = 1000;
+// Debounce delay for Google Sheets writes (ms)
+const CLOUD_DEBOUNCE_MS = 1200;
 
 const PortfolioContext = createContext(null);
 
@@ -114,10 +114,8 @@ const deepMergeLangData = (defaultLang, savedLang) => {
 // Provider
 // ─────────────────────────────────────────────────────────────
 export const PortfolioProvider = ({ children }) => {
-  // ── Language ──────────────────────────────────────────────
-  const [language, setLanguage] = useState(() => {
-    try { return localStorage.getItem(LANG_STORAGE_KEY) || "th"; } catch { return "th"; }
-  });
+  // ── Language (Default: Thai) ───────────────────────────────
+  const [language, setLanguage] = useState("th");
 
   // ── Theme ─────────────────────────────────────────────────
   const [theme, setTheme] = useState(() => {
@@ -151,7 +149,7 @@ export const PortfolioProvider = ({ children }) => {
   });
 
   // ── Cloud sync state ──────────────────────────────────────
-  const [isDbSyncing, setIsDbSyncing] = useState(false);   // true while saving to Supabase
+  const [isDbSyncing, setIsDbSyncing] = useState(false);   // true while saving to Google Sheets
   const [isDbLoading, setIsDbLoading] = useState(isSupabaseConfigured);  // true on initial cloud fetch
   const [dbSyncedAt, setDbSyncedAt] = useState(null);      // timestamp of last successful sync
 
@@ -204,14 +202,14 @@ export const PortfolioProvider = ({ children }) => {
           setAllData(merged);
           setDbSyncedAt(new Date());
           setTimeout(() => { isUpdatingFromRealtime.current = false; }, 100);
-          console.log("[Supabase] Loaded cloud data ✅");
+          console.log("[Google Sheets] Loaded cloud data ✅");
         } else {
           await initSupabaseFromLocalData(allData);
           setDbSyncedAt(new Date());
-          console.log("[Supabase] Initialised cloud with local data ✅");
+          console.log("[Google Sheets] Initialised cloud with local data ✅");
         }
       } catch (err) {
-        console.error("[Supabase] Cloud load error:", err);
+        console.error("[Google Sheets] Cloud load error:", err);
       } finally {
         if (!cancelled) setIsDbLoading(false);
       }
@@ -234,7 +232,7 @@ export const PortfolioProvider = ({ children }) => {
   }, [allData]);
 
   // ══════════════════════════════════════════════════════════
-  // EFFECT 3 — Sync allData → Supabase (debounced)
+  // EFFECT 3 — Sync allData → Google Sheets (debounced)
   //            Skip when the change came FROM real-time sub
   // ══════════════════════════════════════════════════════════
   useEffect(() => {
@@ -254,9 +252,6 @@ export const PortfolioProvider = ({ children }) => {
       if (JSON.stringify(allData.th) !== JSON.stringify(prevData.th)) {
         writes.push(saveLanguageData("th", allData.th));
       }
-      if (JSON.stringify(allData.en) !== JSON.stringify(prevData.en)) {
-        writes.push(saveLanguageData("en", allData.en));
-      }
       if (JSON.stringify(allData.settings) !== JSON.stringify(prevData.settings)) {
         writes.push(saveLanguageData("settings", allData.settings));
       }
@@ -266,11 +261,11 @@ export const PortfolioProvider = ({ children }) => {
         const allOk = results.every(Boolean);
         if (allOk) {
           setDbSyncedAt(new Date());
-          console.log("[Supabase] Saved to cloud ✅");
+          console.log("[Google Sheets] Saved to cloud ✅");
         }
       }
       setIsDbSyncing(false);
-    }, SUPABASE_DEBOUNCE_MS);
+    }, CLOUD_DEBOUNCE_MS);
 
     return () => {
       if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
@@ -311,7 +306,7 @@ export const PortfolioProvider = ({ children }) => {
       }
 
       setDbSyncedAt(new Date());
-      console.log(`[Supabase] Real-time update received for '${row.language}' ✅`);
+      console.log(`[Google Sheets] Update received for '${row.language}' ✅`);
 
       setTimeout(() => { isUpdatingFromRealtime.current = false; }, 200);
     });
@@ -337,12 +332,12 @@ export const PortfolioProvider = ({ children }) => {
   // ══════════════════════════════════════════════════════════
   // Derived state
   // ══════════════════════════════════════════════════════════
-  const toggleLanguage = () => setLanguage((p) => (p === "th" ? "en" : "th"));
+  const toggleLanguage = () => {};
   const toggleTheme    = () => setTheme((p) => (p === "dark" ? "light" : "dark"));
 
-  const activeLangData = allData[language] || allData.th || defaultPortfolioData.th;
+  const activeLangData = allData.th || defaultPortfolioData.th;
   const data = { ...activeLangData, settings: allData.settings || defaultPortfolioData.settings };
-  const t    = UI_TRANSLATIONS[language] || UI_TRANSLATIONS.th;
+  const t    = UI_TRANSLATIONS.th;
 
   // ══════════════════════════════════════════════════════════
   // Auth helpers
@@ -479,7 +474,8 @@ export const PortfolioProvider = ({ children }) => {
         toggleTheme,
         isDarkMode: theme === "dark",
         t,
-        // Supabase sync indicators
+        // Cloud sync indicators
+        isDbConfigured: isApiConfigured,
         isSupabaseConfigured,
         isDbLoading,
         isDbSyncing,

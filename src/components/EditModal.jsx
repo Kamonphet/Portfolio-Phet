@@ -26,7 +26,6 @@ const EditModal = () => {
   const {
     data,
     language,
-    toggleLanguage,
     isCmsOpen,
     closeCms,
     cmsTab,
@@ -319,50 +318,6 @@ const EditModal = () => {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            {/* Language Switcher in CMS */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                background: "rgba(255, 255, 255, 0.08)",
-                border: "1px solid rgba(0, 242, 254, 0.3)",
-                borderRadius: "20px",
-                padding: "3px 10px",
-                fontSize: "0.8rem",
-                fontWeight: "700",
-              }}
-            >
-              <span style={{ color: "var(--color-text-dim)", fontSize: "0.75rem" }}>
-                {isTh ? "ภาษา:" : "Language:"}
-              </span>
-              <button
-                onClick={toggleLanguage}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: language === "th" ? "var(--color-primary)" : "var(--color-text-dim)",
-                  cursor: "pointer",
-                  fontWeight: language === "th" ? "bold" : "normal",
-                }}
-              >
-                TH
-              </button>
-              <span style={{ color: "rgba(255,255,255,0.2)" }}>|</span>
-              <button
-                onClick={toggleLanguage}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: language === "en" ? "var(--color-primary)" : "var(--color-text-dim)",
-                  cursor: "pointer",
-                  fontWeight: language === "en" ? "bold" : "normal",
-                }}
-              >
-                EN
-              </button>
-            </div>
-
             <button
               onClick={closeCms}
               title={isTh ? "ปิดหน้าต่างจัดการข้อมูล" : "Close CMS"}
