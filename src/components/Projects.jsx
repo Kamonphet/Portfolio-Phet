@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePortfolio } from "../context/PortfolioContext";
 import EditableText from "./EditableText";
@@ -15,6 +15,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiArrowRight,
+  FiArrowLeft,
 } from "react-icons/fi";
 
 const CAROUSEL_LIMIT = 6;
@@ -354,16 +355,59 @@ const Projects = ({ showAll = false }) => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        style={{ textAlign: "center", marginBottom: "3rem" }}
+        style={{
+          textAlign: "center",
+          marginBottom: "3rem",
+          maxWidth: "1200px",
+          margin: "0 auto 3rem auto",
+          position: "relative",
+          width: "100%",
+        }}
       >
+        {/* บรรทัดที่ 1: ป้าย Badge (ตรงกลาง) */}
         <div className="section-badge">
           <FiFolder />
           <span>{t.projects.badge}</span>
         </div>
-        <h2 className="section-title">
-          {t.projects.titlePre} <span className="gradient-text">{t.projects.titleHighlight}</span>
-        </h2>
-        <p style={{ maxWidth: "600px", margin: "0 auto", color: "var(--color-text-dim)" }}>
+
+        {/* บรรทัดที่ 2: แถวเดียวกัน (ซ้าย: ปุ่มกลับหน้าหลัก, กลาง: หัวข้อ ผลงานและ ระบบที่พัฒนา) */}
+        <div className="projects-header-row">
+          {showAll && (
+            <Link
+              to="/"
+              className="projects-back-btn"
+              title={t.projects.backToHome || "กลับหน้าหลัก"}
+            >
+              <FiArrowLeft size={18} />
+              <span>{t.projects.backToHome || "กลับหน้าหลัก"}</span>
+            </Link>
+          )}
+          <h2
+            className="section-title"
+            style={{
+              margin: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              whiteSpace: "nowrap",
+              fontSize: "clamp(1.5rem, 3.8vw, 2.5rem)",
+            }}
+          >
+            {t.projects.titlePre} <span className="gradient-text">{t.projects.titleHighlight}</span>
+          </h2>
+        </div>
+
+        {/* บรรทัดที่ 3: คำอธิบาย (ตรงกลาง) */}
+        <p
+          className="section-subtitle-single"
+          style={{
+            maxWidth: "850px",
+            margin: "0 auto",
+            color: "var(--color-text-dim)",
+            whiteSpace: "nowrap",
+            fontSize: "clamp(0.85rem, 1.8vw, 1.05rem)",
+          }}
+        >
           {t.projects.subtitle}
         </p>
       </motion.div>
@@ -517,7 +561,10 @@ const Projects = ({ showAll = false }) => {
             style={{ textAlign: "center", marginTop: "2.8rem" }}
           >
             <button
-              onClick={() => navigate("/projects")}
+              onClick={() => {
+                window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+                navigate("/projects");
+              }}
               className="btn-primary"
               style={{
                 padding: "14px 38px",

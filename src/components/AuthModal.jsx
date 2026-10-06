@@ -8,13 +8,17 @@ const AuthModal = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [lockoutUntil, setLockoutUntil] = useState(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
     if (isAuthModalOpen) {
       setPassword("");
       setError(false);
+      setErrorMessage("");
       setIsVerifying(false);
       setTimeout(() => {
         inputRef.current?.focus();
@@ -24,19 +28,43 @@ const AuthModal = () => {
 
   if (!isAuthModalOpen) return null;
 
+  const isLocked = lockoutUntil && Date.now() < lockoutUntil;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!password) return;
+    if (!password || isLocked) return;
 
     setIsVerifying(true);
     setError(false);
+    setErrorMessage("");
 
     const success = await authenticate(password);
     setIsVerifying(false);
 
     if (!success) {
+      const nextAttempts = failedAttempts + 1;
+      setFailedAttempts(nextAttempts);
       setError(true);
+
+      if (nextAttempts >= 5) {
+        const lockTime = Date.now() + 30000; // Lock for 30 seconds
+        setLockoutUntil(lockTime);
+        setErrorMessage(
+          language === "th"
+            ? "กรอกรหัสไม่ถูกต้องเกินกำหนด กรุณารอ 30 วินาที"
+            : "Too many failed attempts. Please wait 30 seconds."
+        );
+      } else {
+        setErrorMessage(
+          language === "th"
+            ? "รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง"
+            : "Invalid credentials. Please try again."
+        );
+      }
       inputRef.current?.select();
+    } else {
+      setFailedAttempts(0);
+      setLockoutUntil(null);
     }
   };
 
@@ -164,7 +192,7 @@ const AuthModal = () => {
                 fontFamily: "var(--font-main)",
               }}
             >
-              {isTh ? "ยืนยันตัวตนก่อนแก้ไข" : "Security Access Control"}
+              {isTh ? "ยืนยันตัวตนเพื่อดำเนินการ" : "Identity Verification"}
             </h3>
 
             <p
@@ -176,8 +204,8 @@ const AuthModal = () => {
               }}
             >
               {isTh
-                ? "กรุณาใส่รหัสผ่านเพื่อเข้าสู่โหมดแก้ไขเนื้อหาเว็บ"
-                : "Please enter your passcode to access live content editing"}
+                ? "กรุณาระบุรหัสผ่านเพื่อเข้าสู่ระบบ"
+                : "Please enter your credentials to proceed"}
             </p>
           </div>
 
@@ -201,8 +229,9 @@ const AuthModal = () => {
               <input
                 ref={inputRef}
                 type={showPassword ? "text" : "password"}
-                placeholder={isTh ? "ใส่รหัสผ่านความปลอดภัย" : "Enter security passcode"}
+                placeholder={isTh ? "รหัสผ่านความปลอดภัย" : "Security Passcode"}
                 value={password}
+                disabled={isLocked}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   if (error) setError(false);
@@ -210,7 +239,7 @@ const AuthModal = () => {
                 style={{
                   width: "100%",
                   padding: "12px 42px 12px 40px",
-                  background: "rgba(6, 10, 20, 0.8)",
+                  background: isLocked ? "rgba(30, 20, 20, 0.6)" : "rgba(6, 10, 20, 0.8)",
                   border: error
                     ? "1.5px solid #ff4757"
                     : "1px solid rgba(0, 242, 254, 0.3)",
@@ -263,7 +292,7 @@ const AuthModal = () => {
               >
                 <FiAlertTriangle />
                 <span>
-                  {isTh ? "รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง" : "ACCESS DENIED: Invalid passcode. Try again."}
+                  {errorMessage || (isTh ? "รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง" : "Invalid credentials. Please try again.")}
                 </span>
               </motion.div>
             )}
@@ -271,7 +300,7 @@ const AuthModal = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isVerifying}
+              disabled={isVerifying || isLocked}
               className="btn-primary"
               style={{
                 width: "100%",
@@ -279,10 +308,17 @@ const AuthModal = () => {
                 borderRadius: "10px",
                 fontSize: "0.95rem",
                 marginTop: "0.5rem",
+                opacity: isLocked ? 0.6 : 1,
               }}
             >
               <FiUnlock />
-              <span>{isVerifying ? (isTh ? "กำลังตรวจสอบ..." : "Verifying...") : (isTh ? "ปลดล็อกเข้าสู่ระบบ" : "Unlock & Edit")}</span>
+              <span>
+                {isLocked
+                  ? (isTh ? "ถูกระงับชั่วคราว" : "Temporarily Locked")
+                  : isVerifying
+                  ? (isTh ? "กำลังตรวจสอบ..." : "Verifying...")
+                  : (isTh ? "ยืนยันเข้าสู่ระบบ" : "Sign In")}
+              </span>
             </button>
 
             {/* Security Indicator */}
@@ -300,7 +336,7 @@ const AuthModal = () => {
               }}
             >
               <FiLock size={12} />
-              <span>{isTh ? "ระบบความปลอดภัยเข้ารหัส SHA-256" : "Secured with SHA-256 Authentication"}</span>
+              <span>{isTh ? "การเชื่อมต่อความปลอดภัย" : "Secure Connection"}</span>
             </div>
           </form>
         </motion.div>

@@ -1,0 +1,30 @@
+{
+  "theme": "Cute Modern Tech & EdTech Innovation",
+  "base_model_recommendation": "DreamShaper 8 (SD 1.5) or Realistic Vision 5.1",
+  "prompts": {
+    "mascot_waving_animation": {
+      "positive": "masterpiece, best quality, cute cartoon IT teacher mascot, kru petch it, friendly warm smile, waving hand smoothly, cute glasses, tech polo shirt, soft 3d pixar style, bright clean background, gentle soft studio lighting, vivid cute pastel colors, 8k resolution",
+      "negative": "ugly, deformed, dark, cyberpunk, creepy, bad hands, missing fingers, extra limbs, low quality, blurry, grain, noisy"
+    },
+    "edtech_project_covers": [
+      {
+        "id": "p1_edtech_platform",
+        "title": "Educational Technology Platform",
+        "positive": "isometric 3d illustration, cute miniature digital classroom, friendly floating hologram screens, glowing books, graduation cap, soft sky blue and mint green palette, clay render, blender 3d style, cute rounded shapes, cheerful and inspiring education concept",
+        "negative": "dark, harsh shadows, aggressive, scary, lowpoly wireframe, photorealistic, gloomy"
+      },
+      {
+        "id": "p2_cyber_defense_lab",
+        "title": "Cybersecurity Defense Lab",
+        "positive": "cute isometric cybersecurity defense lab, cute friendly shield with glowing lock, miniature data servers with soft neon glow, happy cute robot guard, clean bright laboratory, edtech safety learning concept, 3d smooth pastel render",
+        "negative": "matrix rain, skull, dark hacker basement, scary, gloomy, glitch, realistic wires"
+      },
+      {
+        "id": "p3_stem_future_hub",
+        "title": "STEM Future Learning Hub",
+        "positive": "cute isometric tech studio, friendly toy rocket launching, miniature laptop, colorful coding blocks, floating atom model, pastel colors, soft warm lighting, joyful innovation for students, 3d clay art style",
+        "negative": "military, grim, dark, messy, complicated wires, realistic"
+      }
+    ]
+  }
+}

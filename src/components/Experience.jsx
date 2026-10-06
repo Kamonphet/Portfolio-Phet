@@ -24,7 +24,10 @@ const Experience = () => {
         <h2 className="section-title">
           {t.experience.titlePre} <span className="gradient-text">{t.experience.titleHighlight}</span>
         </h2>
-        <p style={{ maxWidth: "600px", margin: "0 auto", color: "var(--color-text-dim)" }}>
+        <p
+          className="section-subtitle-single"
+          style={{ maxWidth: "850px", margin: "0 auto", color: "var(--color-text-dim)" }}
+        >
           {t.experience.subtitle}
         </p>
 

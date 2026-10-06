@@ -169,7 +169,7 @@ const About = () => {
             }}
           >
             <img
-              src="/img/7.png"
+              src="/img/7.webp"
               alt="การเรียนรู้ไม่มีที่สิ้นสุด"
               style={{ width: "45px", height: "45px", objectFit: "contain", filter: "drop-shadow(0 2px 6px rgba(0, 242, 254, 0.3))" }}
             />
@@ -254,7 +254,7 @@ const About = () => {
               }}
             >
               <img
-                src="/img/introduce.png"
+                src="/img/introduce.webp"
                 alt="ครูเพชร IT แนะนำตัว"
                 style={{
                   width: "68px",

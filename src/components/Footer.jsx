@@ -3,7 +3,7 @@ import { usePortfolio } from "../context/PortfolioContext";
 import { FiTerminal, FiLoader, FiDatabase } from "react-icons/fi";
 
 const Footer = () => {
-  const { data, t, isSupabaseConfigured, isDbLoading, isDbSyncing, dbSyncedAt } = usePortfolio();
+  const { data, t, isSupabaseConfigured, isDbLoading, isDbSyncing, dbSyncedAt, isAuthenticated } = usePortfolio();
 
   return (
     <footer
@@ -28,7 +28,7 @@ const Footer = () => {
           gap: "1.2rem",
         }}
       >
-        {/* Left: Brand Logo & Supabase Status Badge */}
+        {/* Left: Brand Logo & Admin Status Badge */}
         <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div
@@ -59,8 +59,8 @@ const Footer = () => {
             </span>
           </div>
 
-          {/* Single Clean Google Sheets Connected Badge */}
-          {isSupabaseConfigured && (
+          {/* Sync Badge (Only visible when admin is authenticated to protect infrastructure privacy) */}
+          {isAuthenticated && isSupabaseConfigured && (
             <div
               style={{
                 display: "inline-flex",

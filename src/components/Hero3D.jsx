@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import char15Photo from "../img/15.png";
+import char15Photo from "../img/15.webp";
 
 const Hero3D = () => {
   const containerRef = useRef(null);
@@ -126,36 +126,40 @@ const Hero3D = () => {
       isDragging = false;
     };
 
-    // Scroll interaction
-    let scrollY = window.scrollY;
-    const handleScroll = () => {
-      scrollY = window.scrollY;
+    // 5. Mouse leave & touch cancel - smoothly return to center
+    const handleMouseLeave = () => {
+      if (!isDragging) {
+        targetRotationX = 0;
+        targetRotationY = 0;
+      }
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
 
     const domElement = renderer.domElement;
     domElement.addEventListener("mousemove", handleMouseMove);
     domElement.addEventListener("mousedown", handleMouseDown);
+    domElement.addEventListener("mouseleave", handleMouseLeave);
     window.addEventListener("mouseup", handleMouseUp);
     domElement.addEventListener("touchmove", handleTouchMove, { passive: true });
     domElement.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchend", handleTouchEnd);
 
-    // 5. Animation Loop
+    // 6. Animation Loop (Smooth 60/120fps with gentle natural idle float)
     let animationFrameId;
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
+      const elapsedTime = clock.getElapsedTime();
 
-      // Smooth inertia rotation
+      // Smooth inertia rotation without accumulating drift jitter
       if (!isDragging) {
-        mainGroup.rotation.y += (targetRotationY - mainGroup.rotation.y) * 0.05 + 0.003;
-        mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.05;
+        const idleSway = Math.sin(elapsedTime * 1.2) * 0.04;
+        mainGroup.rotation.y += (targetRotationY + idleSway - mainGroup.rotation.y) * 0.06;
+        mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.06;
       }
 
-      // Scroll-driven tilt & vertical offset
-      mainGroup.rotation.z = scrollY * 0.001;
-      mainGroup.position.y = -Math.min(scrollY * 0.0006, 1.0);
+      // Gentle vertical breathing float (isolated from scroll jitter)
+      mainGroup.position.y = Math.sin(elapsedTime * 1.6) * 0.05;
 
       renderer.render(scene, camera);
     };
@@ -176,10 +180,10 @@ const Hero3D = () => {
     // Cleanup
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
       domElement.removeEventListener("mousemove", handleMouseMove);
       domElement.removeEventListener("mousedown", handleMouseDown);
+      domElement.removeEventListener("mouseleave", handleMouseLeave);
       window.removeEventListener("mouseup", handleMouseUp);
       domElement.removeEventListener("touchmove", handleTouchMove);
       domElement.removeEventListener("touchstart", handleTouchStart);

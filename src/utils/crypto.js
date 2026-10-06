@@ -27,14 +27,27 @@ export async function sha256(message) {
 }
 
 /**
+ * Constant-time string comparison to prevent timing attacks
+ */
+function timingSafeCompare(a, b) {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
+/**
  * Verify if the input password matches the stored hash
  * @param {string} inputPassword
  * @returns {Promise<boolean>}
  */
 export async function verifyPassword(inputPassword) {
-  if (!inputPassword) return false;
+  if (!inputPassword || typeof inputPassword !== "string") return false;
   const hash = await sha256(inputPassword.trim());
-  return hash.toLowerCase() === ADMIN_PASS_HASH.toLowerCase();
+  return timingSafeCompare(hash.toLowerCase(), ADMIN_PASS_HASH.toLowerCase());
 }
 
 // Lightweight pure JS SHA-256 algorithm fallback

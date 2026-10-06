@@ -51,6 +51,31 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [isAdminParam, setIsAdminParam] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("admin") || params.has("edit")) {
+        setIsAdminParam(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ctrl+Shift+E or Cmd+Shift+E for discrete admin access
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "E" || e.key === "e")) {
+        e.preventDefault();
+        toggleEditMode();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [toggleEditMode]);
+
+  const showAdminActions = isAuthenticated || isAdminParam;
+
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
     const element = document.getElementById(id);
@@ -208,79 +233,81 @@ const Navbar = () => {
             </motion.div>
           </motion.button>
 
-          {/* Desktop Edit Mode Button (>= 860px) */}
-          <button
-            onClick={toggleEditMode}
-            className={`desktop-action-btn ${isEditMode ? "edit-active-pill" : ""}`}
-            style={{
-              display: "none",
-              alignItems: "center",
-              gap: "6px",
-              background: isEditMode
-                ? "var(--color-btn-primary-bg)"
-                : "var(--color-glass-subtle)",
-              color: isEditMode ? "var(--color-btn-primary-text)" : "var(--color-text-main)",
-              border: isEditMode
-                ? "1px solid var(--color-primary)"
-                : "1px solid var(--color-card-border)",
-              borderRadius: "20px",
-              padding: "6px 13px",
-              fontSize: "0.82rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-            title="Toggle inline live text editing"
-          >
-            <FiEdit3 />
-            <span>{isEditMode ? t.nav.editActive : t.nav.editMode}</span>
-          </button>
+          {/* Desktop Admin Controls (Shown only when logged in or activated) */}
+          {showAdminActions && (
+            <>
+              <button
+                onClick={toggleEditMode}
+                className={`desktop-action-btn ${isEditMode ? "edit-active-pill" : ""}`}
+                style={{
+                  display: "none",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: isEditMode
+                    ? "var(--color-btn-primary-bg)"
+                    : "var(--color-glass-subtle)",
+                  color: isEditMode ? "var(--color-btn-primary-text)" : "var(--color-text-main)",
+                  border: isEditMode
+                    ? "1px solid var(--color-primary)"
+                    : "1px solid var(--color-card-border)",
+                  borderRadius: "20px",
+                  padding: "6px 13px",
+                  fontSize: "0.82rem",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+                title="Toggle inline live text editing"
+              >
+                <FiEdit3 />
+                <span>{isEditMode ? t.nav.editActive : t.nav.editMode}</span>
+              </button>
 
-          {/* Desktop CMS Manager Button (>= 860px) */}
-          <button
-            onClick={handleCmsClick}
-            className="desktop-action-btn"
-            style={{
-              display: "none",
-              alignItems: "center",
-              gap: "6px",
-              background: "linear-gradient(135deg, rgba(138, 43, 226, 0.25), rgba(0, 242, 254, 0.2))",
-              color: "#fff",
-              border: "1px solid rgba(138, 43, 226, 0.5)",
-              borderRadius: "20px",
-              padding: "6px 13px",
-              fontSize: "0.82rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-            title="Open Full Content Manager & JSON Backup"
-          >
-            <FiSettings />
-            <span>{t.nav.cms}</span>
-          </button>
+              <button
+                onClick={handleCmsClick}
+                className="desktop-action-btn"
+                style={{
+                  display: "none",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: "linear-gradient(135deg, rgba(138, 43, 226, 0.25), rgba(0, 242, 254, 0.2))",
+                  color: "#fff",
+                  border: "1px solid rgba(138, 43, 226, 0.5)",
+                  borderRadius: "20px",
+                  padding: "6px 13px",
+                  fontSize: "0.82rem",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+                title="Open Content Manager"
+              >
+                <FiSettings />
+                <span>{t.nav.cms}</span>
+              </button>
 
-          {/* Desktop Logout/Lock button if authenticated */}
-          {isAuthenticated && (
-            <button
-              onClick={logout}
-              className="desktop-action-btn"
-              style={{
-                display: "none",
-                alignItems: "center",
-                gap: "4px",
-                background: "rgba(255, 71, 87, 0.15)",
-                color: "#ff4757",
-                border: "1px solid rgba(255, 71, 87, 0.3)",
-                borderRadius: "20px",
-                padding: "6px 10px",
-                fontSize: "0.78rem",
-                cursor: "pointer",
-              }}
-              title="Lock editing (ออกจากระบบ)"
-            >
-              <FiLock size={13} />
-            </button>
+              {isAuthenticated && (
+                <button
+                  onClick={logout}
+                  className="desktop-action-btn"
+                  style={{
+                    display: "none",
+                    alignItems: "center",
+                    gap: "4px",
+                    background: "rgba(255, 71, 87, 0.15)",
+                    color: "#ff4757",
+                    border: "1px solid rgba(255, 71, 87, 0.3)",
+                    borderRadius: "20px",
+                    padding: "6px 10px",
+                    fontSize: "0.78rem",
+                    cursor: "pointer",
+                  }}
+                  title="ออกจากระบบ (Sign Out)"
+                >
+                  <FiLock size={13} />
+                </button>
+              )}
+            </>
           )}
 
           {/* Mobile Menu Toggle Button (< 860px) */}
@@ -398,80 +425,82 @@ const Navbar = () => {
               }}
             />
 
-            {/* Mobile Action: Content CMS Button */}
-            <button
-              onClick={handleCmsClick}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                background: "linear-gradient(135deg, var(--color-primary), var(--color-secondary))",
-                color: "#fff",
-                border: "none",
-                borderRadius: "10px",
-                padding: "12px",
-                fontSize: "0.95rem",
-                fontWeight: "700",
-                cursor: "pointer",
-                boxShadow: "0 4px 15px rgba(0, 242, 254, 0.25)",
-              }}
-            >
-              <FiSettings size={18} />
-              <span>{t.nav.cms} (Content CMS)</span>
-            </button>
+            {/* Mobile Admin Controls (Shown only when logged in or activated) */}
+            {showAdminActions && (
+              <>
+                <button
+                  onClick={handleCmsClick}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    background: "linear-gradient(135deg, var(--color-primary), var(--color-secondary))",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "10px",
+                    padding: "12px",
+                    fontSize: "0.95rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 15px rgba(0, 242, 254, 0.25)",
+                  }}
+                >
+                  <FiSettings size={18} />
+                  <span>{t.nav.cms}</span>
+                </button>
 
-            {/* Mobile Action: Live Edit Button */}
-            <button
-              onClick={handleEditClick}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                background: isEditMode
-                  ? "rgba(0, 242, 254, 0.2)"
-                  : "rgba(255, 255, 255, 0.06)",
-                color: isEditMode ? "var(--color-primary)" : "var(--color-text-main)",
-                border: isEditMode
-                  ? "1px solid var(--color-primary)"
-                  : "1px solid rgba(255, 255, 255, 0.15)",
-                borderRadius: "10px",
-                padding: "12px",
-                fontSize: "0.95rem",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}
-            >
-              <FiEdit3 size={18} />
-              <span>{isEditMode ? t.nav.editActive : t.nav.editMode}</span>
-            </button>
+                <button
+                  onClick={handleEditClick}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    background: isEditMode
+                      ? "rgba(0, 242, 254, 0.2)"
+                      : "rgba(255, 255, 255, 0.06)",
+                    color: isEditMode ? "var(--color-primary)" : "var(--color-text-main)",
+                    border: isEditMode
+                      ? "1px solid var(--color-primary)"
+                      : "1px solid rgba(255, 255, 255, 0.15)",
+                    borderRadius: "10px",
+                    padding: "12px",
+                    fontSize: "0.95rem",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                  }}
+                >
+                  <FiEdit3 size={18} />
+                  <span>{isEditMode ? t.nav.editActive : t.nav.editMode}</span>
+                </button>
 
-            {/* Mobile Action: Lock if authenticated */}
-            {isAuthenticated && (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  logout();
-                }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                  background: "transparent",
-                  color: "#ff4757",
-                  border: "1px solid rgba(255, 71, 87, 0.3)",
-                  borderRadius: "8px",
-                  padding: "8px",
-                  fontSize: "0.85rem",
-                  cursor: "pointer",
-                  marginTop: "4px",
-                }}
-              >
-                <FiLock size={14} />
-                <span>{language === "th" ? "ล็อคระบบ (Logout)" : "Lock Admin Session"}</span>
-              </button>
+                {isAuthenticated && (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      background: "transparent",
+                      color: "#ff4757",
+                      border: "1px solid rgba(255, 71, 87, 0.3)",
+                      borderRadius: "8px",
+                      padding: "8px",
+                      fontSize: "0.85rem",
+                      cursor: "pointer",
+                      marginTop: "4px",
+                    }}
+                  >
+                    <FiLock size={14} />
+                    <span>{language === "th" ? "ออกจากระบบ" : "Sign Out"}</span>
+                  </button>
+                )}
+              </>
             )}
           </motion.div>
         )}

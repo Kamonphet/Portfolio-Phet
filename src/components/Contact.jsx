@@ -134,7 +134,10 @@ const Contact = () => {
         <h2 className="section-title">
           {t.contact.titlePre} <span className="gradient-text">{t.contact.titleHighlight}</span>
         </h2>
-        <p style={{ maxWidth: "600px", margin: "0 auto", color: "var(--color-text-dim)" }}>
+        <p
+          className="section-subtitle-single"
+          style={{ maxWidth: "850px", margin: "0 auto", color: "var(--color-text-dim)" }}
+        >
           {t.contact.subtitle}
         </p>
       </motion.div>
@@ -170,7 +173,7 @@ const Contact = () => {
             }}
           >
             <img
-              src="/img/13.png"
+              src="/img/13.webp"
               alt="ขอบคุณครับ"
               style={{
                 width: "60px",
@@ -499,7 +502,7 @@ const Contact = () => {
                 }}
               >
                 <img
-                  src="/img/great.png"
+                  src="/img/great.webp"
                   alt="เยี่ยมเลย!"
                   style={{
                     width: "48px",

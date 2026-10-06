@@ -81,27 +81,30 @@ const Hero = () => {
               border: "1px solid var(--color-card-border)",
               backdropFilter: "blur(12px)",
               marginBottom: "1rem",
-              boxShadow: "0 4px 20px rgba(0, 242, 254, 0.08)",
+              boxShadow: "0 6px 22px rgba(56, 189, 248, 0.08)",
             }}
+            className="mascot-friendly-card"
           >
             <motion.img
-              src="/img/hello.png"
+              src="/img/hello.webp"
               alt="ครูเพชร IT สวัสดีครับ"
-              animate={{ y: [0, -3, 0], rotate: [0, 3, 0, -3, 0] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ y: [0, -4, 0], rotate: [0, 3, 0, -2, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               style={{
-                width: "42px",
-                height: "42px",
+                width: "44px",
+                height: "44px",
                 objectFit: "contain",
-                filter: "drop-shadow(0 2px 8px rgba(0, 242, 254, 0.35))",
+                filter: "drop-shadow(0 3px 8px rgba(56, 189, 248, 0.28))",
+                willChange: "transform",
+                transform: "translateZ(0)",
               }}
             />
             <div style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
-              <span style={{ fontSize: "0.72rem", color: "var(--color-primary)", fontWeight: "700", letterSpacing: "0.5px" }}>
-                ✨ KRU PETCH IT // OFFICIAL MASCOT
+              <span style={{ fontSize: "0.74rem", color: "var(--color-primary)", fontWeight: "700", letterSpacing: "0.5px" }}>
+                ✨ KRU PETCH IT // EDTECH & INNOVATION
               </span>
               <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-text-main)" }}>
-                "สวัสดีครับ ยินดีต้อนรับครับ :)"
+                "สวัสดีครับ ยินดีต้อนรับสู่พื้นที่นวัตกรรมการเรียนรู้ :)"
               </span>
             </div>
           </div>
@@ -123,12 +126,12 @@ const Hero = () => {
               }}
             >
               <span
+                className="cute-pulse-dot"
                 style={{
                   width: "8px",
                   height: "8px",
                   borderRadius: "50%",
                   backgroundColor: "var(--color-accent-2)",
-                  boxShadow: "0 0 8px var(--color-accent-2)",
                   display: "inline-block",
                 }}
               />

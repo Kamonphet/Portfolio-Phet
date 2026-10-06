@@ -137,8 +137,8 @@ export function validateImageUrl(url, isTh = true) {
     return {
       valid: false,
       error: isTh
-        ? 'ระบบไม่อนุญาตให้ใส่ Path ไฟล์ (เช่น /img/... หรือ C:\\...) กรุณาใส่ URL ลิงก์รูปภาพแบบเต็ม (https://...) หรือเลือกใช้วิธีอัพโหลดไฟล์ภาพ'
-        : 'Local or relative file paths (e.g. /img/...) are not allowed. Please enter a full HTTP/HTTPS image URL or use file upload.',
+        ? 'กรุณาระบุ URL ลิงก์รูปภาพแบบเต็ม (https://...) หรือเลือกใช้วิธีอัพโหลดไฟล์ภาพ'
+        : 'Please enter a full HTTP/HTTPS image URL or use file upload.',
     };
   }
 
@@ -147,8 +147,8 @@ export function validateImageUrl(url, isTh = true) {
     return {
       valid: false,
       error: isTh
-        ? 'ลิงก์รูปภาพต้องขึ้นต้นด้วย http:// หรือ https:// เท่านั้น (ห้ามใส่ Path)'
-        : 'Image URL must start with http:// or https:// (no local paths allowed).',
+        ? 'ลิงก์รูปภาพต้องขึ้นต้นด้วย http:// หรือ https://'
+        : 'Image URL must start with http:// or https://.',
     };
   }
 

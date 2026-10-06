@@ -79,7 +79,10 @@ const Skills = () => {
         <h2 className="section-title">
           {t.skills.titlePre} <span className="gradient-text">{t.skills.titleHighlight}</span>
         </h2>
-        <p style={{ maxWidth: "600px", margin: "0 auto", color: "var(--color-text-dim)" }}>
+        <p
+          className="section-subtitle-single"
+          style={{ maxWidth: "850px", margin: "0 auto", color: "var(--color-text-dim)" }}
+        >
           {t.skills.subtitle}
         </p>
       </motion.div>
@@ -105,7 +108,7 @@ const Skills = () => {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <img
-            src="/img/16.png"
+            src="/img/16.webp"
             alt="ครูสาย IT"
             style={{
               width: "48px",
@@ -126,7 +129,7 @@ const Skills = () => {
 
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <img
-            src="/img/cheers.png"
+            src="/img/cheers.webp"
             alt="สู้ๆ นะครับ"
             style={{
               width: "42px",

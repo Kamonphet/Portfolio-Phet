@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import { PortfolioProvider } from "./context/PortfolioContext";
 import Navbar from "./components/Navbar";
@@ -55,9 +55,20 @@ function PortfolioContent() {
   );
 }
 
+function ScrollToTopOnRoute() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <PortfolioProvider>
+      <ScrollToTopOnRoute />
       <Routes>
         <Route path="/" element={<PortfolioContent />} />
         <Route path="/projects" element={<AllProjectsPage />} />

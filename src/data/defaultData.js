@@ -38,7 +38,7 @@ export const defaultPortfolioData = {
           field: "สาขาคอมพิวเตอร์ธุรกิจ",
           institution: "วิทยาลัยเทคนิค (ตัวอย่าง)",
           period: "2558 - 2561",
-          image: "/img/edu-school.jpg",
+          image: "/img/edu-school.webp",
           description: "เรียนรู้พื้นฐานด้านคอมพิวเตอร์ การเขียนโปรแกรม และระบบเครือข่าย"
         },
         {
@@ -47,7 +47,7 @@ export const defaultPortfolioData = {
           field: "สาขาคอมพิวเตอร์ศึกษา",
           institution: "มหาวิทยาลัยราชภัฏ (ตัวอย่าง)",
           period: "2562 - 2565",
-          image: "/img/edu-university.jpg",
+          image: "/img/edu-university.webp",
           description: "ศึกษาด้านการสอนวิทยาการคำนวณ เทคโนโลยีสารสนเทศ และหลักสูตรการศึกษา"
         },
         {
@@ -56,7 +56,7 @@ export const defaultPortfolioData = {
           field: "สาขาเทคโนโลยีและนวัตกรรมการศึกษา",
           institution: "มหาวิทยาลัย (ตัวอย่าง)",
           period: "2566 - ปัจจุบัน",
-          image: "/img/edu-graduate.jpg",
+          image: "/img/edu-graduate.webp",
           description: "วิจัยเกี่ยวกับการบูรณาการ AI และ Cybersecurity ในการจัดการเรียนรู้ยุคดิจิทัล"
         }
       ]
@@ -79,7 +79,7 @@ export const defaultPortfolioData = {
         title: "ครูเพชร IT - แพลตฟอร์มการเรียนรู้และเทคโนโลยีเพื่อการศึกษา",
         category: "EdTech & Web",
         desc: "คลังสื่อการสอนดิจิทัล นวัตกรรมเทคโนโลยีเพื่อการศึกษาแบบ Active Learning พัฒนาศักยภาพด้านวิทยาการคำนวณและเทคโนโลยี 'สอนให้คิด ใช้เทคโนโลยี สร้างอนาคต'",
-        image: "/img/main.png",
+        image: "/img/main.webp",
         tech: ["EdTech", "Active Learning", "วิทยาการคำนวณ", "Interactive 3D"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -90,7 +90,7 @@ export const defaultPortfolioData = {
         title: "Cybersecurity Defense Lab (ป้องกันไว้ก่อนดีกว่า 🛡️)",
         category: "Security",
         desc: "ระบบจำลองสถานการณ์ความมั่นคงปลอดภัยไซเบอร์และ CTF Training Lab เพื่อสร้างความตระหนักรู้ด้านความปลอดภัยดิจิทัล 'ป้องกันไว้ก่อนดีกว่า'",
-        image: "/img/10.png",
+        image: "/img/10.webp",
         tech: ["Cybersecurity", "Network Security", "CTF Training", "Security Defense"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -101,7 +101,7 @@ export const defaultPortfolioData = {
         title: "เทคโนโลยีทำให้การศึกษาไปได้ไกลกว่าเดิม (EdTech Next-Gen 💙)",
         category: "EdTech & Web",
         desc: "การผสานเทคโนโลยี AI และคอมพิวเตอร์กราฟิกเพื่อขยายขอบเขตการเรียนรู้ให้กว้างไกล ไร้ขีดจำกัด สนับสนุนผู้เรียนในทุกมิติ",
-        image: "/img/14.png",
+        image: "/img/14.webp",
         tech: ["EdTech Innovation", "Three.js", "AI Education", "Digital Classroom"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -112,7 +112,7 @@ export const defaultPortfolioData = {
         title: "Full-Stack Development Studio (Good Code Good Life 🎧)",
         category: "Web App",
         desc: "การพัฒนาเว็บแอปพลิเคชันคุณภาพสูง ออกแบบสถาปัตยกรรมระบบที่ปลอดภัยและมีประสิทธิภาพ โฟกัสทุกการเขียนโค้ดด้วยมาตรฐานสูงสุด",
-        image: "/img/work2.png",
+        image: "/img/work2.webp",
         tech: ["React", "Node.js", "Python", "Cloud Architecture"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -123,7 +123,7 @@ export const defaultPortfolioData = {
         title: "เรียนรู้ เชื่อมโยง สู่อนาคต (Future-Ready Education Hub 🚀)",
         category: "EdTech & Web",
         desc: "ศูนย์รวมความรู้ด้านสะเต็ม (STEM) วิทยาการคำนวณ และทักษะไอทีที่เชื่อมโยงผู้เรียนสู่โลกอาชีพยุคดิจิทัล",
-        image: "/img/11.png",
+        image: "/img/11.webp",
         tech: ["Future Skills", "STEM", "Coding Education", "Web Platform"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -134,7 +134,7 @@ export const defaultPortfolioData = {
         title: "ครูสาย IT & ศูนย์รวมความเชี่ยวชาญการศึกษา",
         category: "Security",
         desc: "การบูรณาการหลักสูตร Cybersecurity, IT Support, วิทยาการคำนวณ และสุขศึกษา เพื่อพัฒนาผู้เรียนอย่างรอบด้าน",
-        image: "/img/introduce.png",
+        image: "/img/introduce.webp",
         tech: ["IT Support", "วิทยาการคำนวณ", "Cybersecurity", "สุขศึกษา"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -194,7 +194,7 @@ export const defaultPortfolioData = {
         "Equipped with modern web engineering skills (React, Three.js WebGL, Secure Systems) and pedagogical expertise, I create engaging educational experiences that make complex concepts intuitive and exciting.",
         "Always exploring, continuously learning, and advancing educational technology for future generations."
       ],
-      avatarUrl: "/img/user-profile.jpg",
+      avatarUrl: "/img/user-profile.webp",
       systemSpecs: [
         { label: "Core Focus", value: "IT Educator & EdTech Specialist" },
         { label: "Expertise", value: "Cybersecurity, Computing Science, IT Support" },
@@ -214,7 +214,7 @@ export const defaultPortfolioData = {
           field: "Business Computer",
           institution: "Technical College (Example)",
           period: "2015 - 2018",
-          image: "/img/edu-school.jpg",
+          image: "/img/edu-school.webp",
           description: "Studied computer fundamentals, programming basics, and networking."
         },
         {
@@ -223,7 +223,7 @@ export const defaultPortfolioData = {
           field: "Computer Education",
           institution: "Rajabhat University (Example)",
           period: "2019 - 2022",
-          image: "/img/edu-university.jpg",
+          image: "/img/edu-university.webp",
           description: "Studied computing science education, IT, and curriculum design."
         },
         {
@@ -232,7 +232,7 @@ export const defaultPortfolioData = {
           field: "Educational Technology & Innovation",
           institution: "University (Example)",
           period: "2023 - Present",
-          image: "/img/edu-graduate.jpg",
+          image: "/img/edu-graduate.webp",
           description: "Researching AI and Cybersecurity integration in digital-age learning."
         }
       ]
@@ -255,7 +255,7 @@ export const defaultPortfolioData = {
         title: "Kru Petch IT - Educational Technology & Learning Platform",
         category: "EdTech & Web",
         desc: "Digital learning repository, active learning tools, and computing science curriculum designed for next-generation learners.",
-        image: "/img/main.png",
+        image: "/img/main.webp",
         tech: ["EdTech", "Active Learning", "Computing Science", "Interactive Web"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -266,7 +266,7 @@ export const defaultPortfolioData = {
         title: "Cybersecurity Defense Lab (Prevention First 🛡️)",
         category: "Security",
         desc: "Cybersecurity threat simulation, vulnerability assessment, and hands-on CTF lab environment: 'Prevention is better than cure'.",
-        image: "/img/10.png",
+        image: "/img/10.webp",
         tech: ["Cybersecurity", "Network Security", "CTF Training", "Security Defense"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -277,7 +277,7 @@ export const defaultPortfolioData = {
         title: "Technology Expands Education Horizons (EdTech Next-Gen 💙)",
         category: "EdTech & Web",
         desc: "Leveraging modern AI, interactive 3D web interfaces, and robotics to empower learners without boundaries.",
-        image: "/img/14.png",
+        image: "/img/14.webp",
         tech: ["EdTech Innovation", "Three.js", "AI Education", "Digital Classroom"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -288,7 +288,7 @@ export const defaultPortfolioData = {
         title: "Full-Stack Development Studio (Good Code Good Life 🎧)",
         category: "Web App",
         desc: "Engineering high-performance web applications and secure cloud architectures with clean code standards.",
-        image: "/img/work2.png",
+        image: "/img/work2.webp",
         tech: ["React", "Node.js", "Python", "Cloud Architecture"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -299,7 +299,7 @@ export const defaultPortfolioData = {
         title: "Learn, Connect, Shape the Future (Future-Ready Hub 🚀)",
         category: "EdTech & Web",
         desc: "Connecting STEM principles, computing science, and IT support to equip students for tech-driven careers.",
-        image: "/img/11.png",
+        image: "/img/11.webp",
         tech: ["Future Skills", "STEM", "Coding Education", "Web Platform"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
@@ -310,7 +310,7 @@ export const defaultPortfolioData = {
         title: "Kru Petch IT - Digital Education & Support Specializations",
         category: "Security",
         desc: "Integrated curriculum combining Cybersecurity, IT Support, Computing Science, and Health Education.",
-        image: "/img/introduce.png",
+        image: "/img/introduce.webp",
         tech: ["IT Support", "Computing Science", "Cybersecurity", "Health Education"],
         demoUrl: "https://example.com",
         githubUrl: "https://github.com",
