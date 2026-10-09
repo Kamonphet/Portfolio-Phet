@@ -1,33 +1,79 @@
+/* ====================================================
+   QUIET CYBER LUXURY APP LAYOUT & CORE UTILITIES
+   ==================================================== */
+
 .app-container {
   min-height: 100vh;
   position: relative;
-  background-color: var(--color-bg);
+  background-color: var(--bg-base);
   overflow-x: hidden;
   width: 100%;
 }
 
+/* Sections: Generous Luxury Spacing (120px-160px on desktop) */
 .content-section {
   position: relative;
   z-index: 1;
-  padding: 6rem 1.5rem;
-  max-width: 1200px;
+  padding: 8rem 2rem;
+  max-width: 1280px;
   margin: 0 auto;
   width: 100%;
 }
 
-/* Mobile & Tablet Responsiveness */
+/* Lenis Smooth Scroll Integration */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Floating Scroll to Top Button (Luxury Glass Style) */
+.scroll-to-top-btn {
+  background: rgba(16, 16, 20, 0.75) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.3s var(--ease-luxury) !important;
+}
+
+.scroll-to-top-btn:hover {
+  border-color: var(--accent-border) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 15px var(--accent-glow) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1280px) {
+  .content-section {
+    padding: 7rem 1.75rem;
+  }
+}
+
 @media (max-width: 960px) {
   .content-section {
-    padding: 4.5rem 1.25rem;
+    padding: 6rem 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
   .content-section {
-    padding: 3.5rem 1rem;
+    padding: 5rem 1.25rem;
   }
 
-  /* CMS Modal Mobile */
+  /* CMS Modal Responsive */
   .cms-modal-backdrop {
     padding: 0.5rem !important;
   }
@@ -36,7 +82,9 @@
     width: 96vw !important;
     height: 94vh !important;
     max-height: 94vh !important;
-    border-radius: 12px !important;
+    border-radius: 14px !important;
+    background: rgba(16, 16, 20, 0.95) !important;
+    backdrop-filter: blur(24px) !important;
   }
 
   .cms-modal-content form > div[style*="gridTemplateColumns"],
@@ -46,7 +94,6 @@
     grid-template-columns: 1fr !important;
   }
 
-  /* Floating Scroll to Top button on mobile */
   .scroll-to-top-btn {
     bottom: 18px !important;
     right: 18px !important;
@@ -58,98 +105,13 @@
 
 @media (max-width: 480px) {
   .content-section {
-    padding: 3rem 0.8rem;
+    padding: 4.5rem 1rem;
   }
 
   .scroll-to-top-btn {
     bottom: 14px !important;
     right: 14px !important;
-    width: 42px !important;
-    height: 42px !important;
+    width: 40px !important;
+    height: 40px !important;
   }
 }
-
-/* ====================================================
-   CUTE MODERN TECH & INNOVATION MICRO-ANIMATIONS
-   ==================================================== */
-
-/* Friendly Mascot Showcase Card */
-.mascot-friendly-card {
-  position: relative;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.3s ease;
-  cursor: pointer;
-}
-
-.mascot-friendly-card:hover {
-  transform: translateY(-4px) scale(1.025);
-  box-shadow: 0 12px 32px rgba(56, 189, 248, 0.18) !important;
-  border-color: rgba(56, 189, 248, 0.45) !important;
-}
-
-/* Cute Soft Shimmer Glow */
-.mascot-friendly-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 70%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.15),
-    transparent
-  );
-  transform: skewX(-20deg);
-  transition: left 0.8s ease;
-  pointer-events: none;
-}
-
-.mascot-friendly-card:hover::after {
-  left: 150%;
-}
-
-/* Friendly Live Status Pulse Dot */
-.cute-pulse-dot {
-  animation: gentleBreathe 2.6s infinite ease-in-out;
-}
-
-@keyframes gentleBreathe {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
-  }
-  50% {
-    transform: scale(1.28);
-    box-shadow: 0 0 14px rgba(52, 211, 153, 0.85);
-  }
-}
-
-/* Modern EdTech Buttons (Pill & Playful) */
-.btn-primary {
-  position: relative;
-  overflow: hidden;
-  border-radius: 9999px !important;
-  will-change: transform;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.32) !important;
-}
-
-.btn-secondary {
-  position: relative;
-  border-radius: 9999px !important;
-  will-change: transform;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, border-color 0.25s ease !important;
-}
-
-.btn-secondary:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 22px rgba(124, 58, 237, 0.22) !important;
-  border-color: rgba(124, 58, 237, 0.45) !important;
-}
-
-

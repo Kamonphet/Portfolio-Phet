@@ -33,131 +33,91 @@ const FloatingCyberObjects = () => {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
-    // 2. Soft Ambient & Directional Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    // 2. Soft Minimalist Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0x7dd3fc, 1.0); // Soft Sky Blue
-    dirLight1.position.set(5, 8, 6);
-    scene.add(dirLight1);
+    const dirLight = new THREE.DirectionalLight(0x5eead4, 0.6); // Ice Cyan
+    dirLight.position.set(6, 6, 6);
+    scene.add(dirLight);
 
-    const dirLight2 = new THREE.DirectionalLight(0xf472b6, 0.8); // Soft Pastel Pink
-    dirLight2.position.set(-6, -4, 4);
-    scene.add(dirLight2);
-
-    // 3. Cute Tech Objects Group
+    // 3. Luxury Spatial Glass Objects Group
     const objectsGroup = new THREE.Group();
     scene.add(objectsGroup);
 
-    // Color Palette: Cute Modern EdTech (Sky Blue, Soft Lavender, Mint, Warm Sunshine)
-    const skyBlue = 0x38bdf8;
-    const softLavender = 0xa78bfa;
-    const mintGreen = 0x34d399;
-    const warmSunshine = 0xfbbf24;
-
-    // Object 1: Cute Smooth Donut Ring (Top Right)
-    const donutGeo = new THREE.TorusGeometry(0.9, 0.28, 24, 48);
-    const donutMat = new THREE.MeshStandardMaterial({
-      color: skyBlue,
-      roughness: 0.25,
-      metalness: 0.1,
-      transparent: true,
-      opacity: 0.65,
-    });
-    const donutMesh = new THREE.Mesh(donutGeo, donutMat);
-    donutMesh.position.set(5.8, 2.5, -2);
-    donutMesh.rotation.set(0.6, 0.4, 0);
-    objectsGroup.add(donutMesh);
-
-    // Object 2: Soft Glowing Innovation Sphere / Bubble (Mid Left)
-    const bubbleGeo = new THREE.SphereGeometry(1.0, 32, 32);
-    const bubbleMat = new THREE.MeshStandardMaterial({
-      color: softLavender,
+    // Object 1: Subtle Frosted Glass Icosahedron (Top Right Periphery)
+    const icosaGeo = new THREE.IcosahedronGeometry(1.2, 0);
+    const glassMat = new THREE.MeshPhysicalMaterial({
+      color: 0x111114,
+      emissive: 0x0a1618,
+      emissiveIntensity: 0.2,
       roughness: 0.15,
-      metalness: 0.05,
-      transparent: true,
-      opacity: 0.55,
-    });
-    const bubbleMesh = new THREE.Mesh(bubbleGeo, bubbleMat);
-    bubbleMesh.position.set(-5.5, -1.2, -1.5);
-    objectsGroup.add(bubbleMesh);
-
-    // Object 3: Friendly Little Satellite Bubble (Near Left Bubble)
-    const miniBubbleGeo = new THREE.SphereGeometry(0.42, 24, 24);
-    const miniBubbleMat = new THREE.MeshStandardMaterial({
-      color: mintGreen,
-      roughness: 0.2,
       metalness: 0.1,
+      transmission: 0.85,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.35,
     });
-    const miniBubbleMesh = new THREE.Mesh(miniBubbleGeo, miniBubbleMat);
-    miniBubbleMesh.position.set(-4.0, -2.4, -0.5);
-    objectsGroup.add(miniBubbleMesh);
+    const icosaMesh = new THREE.Mesh(icosaGeo, glassMat);
+    icosaMesh.position.set(6.5, 3.2, -3);
+    objectsGroup.add(icosaMesh);
 
-    // Object 4: Warm Sunshine Sparkle Star (Bottom Right)
-    const starGeo = new THREE.OctahedronGeometry(0.7, 0);
-    const starMat = new THREE.MeshStandardMaterial({
-      color: warmSunshine,
-      roughness: 0.3,
-      metalness: 0.2,
+    // Hairline Wireframe Frame for Object 1
+    const icosaEdges = new THREE.EdgesGeometry(icosaGeo);
+    const edgeMat = new THREE.LineBasicMaterial({
+      color: 0xffffff,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.08,
     });
-    const starMesh = new THREE.Mesh(starGeo, starMat);
-    starMesh.position.set(4.6, -3.2, -1);
-    objectsGroup.add(starMesh);
+    const icosaWire = new THREE.LineSegments(icosaEdges, edgeMat);
+    icosaMesh.add(icosaWire);
 
-    // Object 5: Cute Floating Floating Idea Dots (10 gentle pastel particles)
-    const dotCount = 10;
-    const dotMeshes = [];
-    const dotGeo = new THREE.SphereGeometry(0.18, 16, 16);
-    const dotColors = [skyBlue, softLavender, mintGreen, warmSunshine];
+    // Object 2: Subtle Minimalist Octahedron (Bottom Left Periphery)
+    const octaGeo = new THREE.OctahedronGeometry(1.0, 0);
+    const octaMesh = new THREE.Mesh(octaGeo, glassMat);
+    octaMesh.position.set(-6.8, -2.8, -2.5);
+    objectsGroup.add(octaMesh);
 
-    for (let i = 0; i < dotCount; i++) {
-      const dotMat = new THREE.MeshStandardMaterial({
-        color: dotColors[i % dotColors.length],
-        roughness: 0.3,
-        transparent: true,
-        opacity: 0.5,
-      });
-      const dot = new THREE.Mesh(dotGeo, dotMat);
-      const angle = (i / dotCount) * Math.PI * 2;
-      const radius = 6.2 + (Math.random() - 0.5) * 3;
-      dot.position.set(
-        Math.cos(angle) * radius,
-        (Math.random() - 0.5) * 8,
-        -1 - Math.random() * 3
-      );
-      dot.userData = {
-        floatSpeed: 0.001 + Math.random() * 0.002,
-        offset: Math.random() * Math.PI * 2,
-        rotSpeed: 0.01 + Math.random() * 0.01,
-      };
-      dotMeshes.push(dot);
-      objectsGroup.add(dot);
-    }
+    const octaEdges = new THREE.EdgesGeometry(octaGeo);
+    const octaWire = new THREE.LineSegments(octaEdges, edgeMat);
+    octaMesh.add(octaWire);
 
-    // 4. Smooth Parallax & Mouse tracking
-    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
-    let scrollY = window.scrollY;
-    let targetScrollY = scrollY;
+    // 4. Parallax Scroll Physics
+    let lastScrollY = window.scrollY;
+    let scrollDelta = 0;
 
-    const onMouseMove = (e) => {
-      mouse.targetX = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouse.targetY = -(e.clientY / window.innerHeight - 0.5) * 2;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      scrollDelta = (currentScrollY - lastScrollY) * 0.015;
+      lastScrollY = currentScrollY;
     };
 
-    const onMouseLeave = () => {
-      mouse.targetX = 0;
-      mouse.targetY = 0;
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    // 5. Animation Loop (Slow, Quiet, Cinematic)
+    let animationId;
+    const clock = new THREE.Clock();
+
+    const render = () => {
+      animationId = requestAnimationFrame(render);
+      const elapsedTime = clock.getElapsedTime();
+
+      scrollDelta *= 0.94;
+
+      // Slow drift
+      icosaMesh.rotation.x = elapsedTime * 0.04 + scrollDelta * 0.2;
+      icosaMesh.rotation.y = elapsedTime * 0.06;
+      icosaMesh.position.y = 3.2 + Math.sin(elapsedTime * 0.6) * 0.12 - scrollDelta * 0.5;
+
+      octaMesh.rotation.x = -elapsedTime * 0.05;
+      octaMesh.rotation.y = elapsedTime * 0.04 - scrollDelta * 0.2;
+      octaMesh.position.y = -2.8 + Math.cos(elapsedTime * 0.5) * 0.1 - scrollDelta * 0.5;
+
+      renderer.render(scene, camera);
     };
 
-    const onScroll = () => {
-      targetScrollY = window.scrollY;
-    };
+    render();
 
-    const onResize = () => {
+    const handleResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
       camera.aspect = width / height;
@@ -165,90 +125,19 @@ const FloatingCyberObjects = () => {
       renderer.setSize(width, height);
     };
 
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("mouseleave", onMouseLeave, { passive: true });
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("resize", handleResize);
 
-    // 5. Animation Loop (Smooth, frame-rate independent with tab visibility pause)
-    let animId;
-    let clock = new THREE.Clock();
-
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-
-      // Pause rendering when tab is hidden to save GPU/battery
-      if (document.hidden) return;
-
-      const t = clock.getElapsedTime();
-
-      // Smooth mouse & scroll lerp
-      mouse.x += (mouse.targetX - mouse.x) * 0.04;
-      mouse.y += (mouse.targetY - mouse.y) * 0.04;
-      scrollY += (targetScrollY - scrollY) * 0.04;
-
-      // Gentle floating animations
-      donutMesh.rotation.x = t * 0.15;
-      donutMesh.rotation.y = t * 0.2;
-      donutMesh.position.y = 2.5 + Math.sin(t * 0.9) * 0.28;
-
-      bubbleMesh.position.y = -1.2 + Math.cos(t * 0.8) * 0.22;
-      bubbleMesh.rotation.y = t * 0.1;
-
-      miniBubbleMesh.position.y = -2.4 + Math.sin(t * 1.1 + 1) * 0.2;
-      miniBubbleMesh.position.x = -4.0 + Math.cos(t * 0.7) * 0.15;
-
-      starMesh.rotation.y = t * 0.35;
-      starMesh.rotation.z = Math.sin(t * 0.5) * 0.2;
-      starMesh.position.y = -3.2 + Math.sin(t * 1.0 + 2) * 0.25;
-
-      // Floating idea particles
-      dotMeshes.forEach((dot) => {
-        dot.position.y += Math.sin(t * 1.2 + dot.userData.offset) * 0.003;
-        dot.rotation.y += dot.userData.rotSpeed;
-      });
-
-      // Overall Parallax
-      const scrollNorm = (scrollY / Math.max(document.body.scrollHeight - height, 1)) * 3;
-      objectsGroup.position.x = mouse.x * 0.35;
-      objectsGroup.position.y = mouse.y * 0.25 + scrollNorm * 0.4;
-
-      // Theme opacity adaptation
-      const isDark = isDarkRef.current;
-      const opacityFactor = isDark ? 0.8 : 0.55;
-      donutMat.opacity = 0.65 * opacityFactor;
-      bubbleMat.opacity = 0.55 * opacityFactor;
-      miniBubbleMat.opacity = 0.6 * opacityFactor;
-      starMat.opacity = 0.7 * opacityFactor;
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
-    // 6. Cleanup
     return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseleave", onMouseLeave);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-
-      if (container && renderer.domElement) {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
-
-      // Memory cleanup
-      donutGeo.dispose();
-      donutMat.dispose();
-      bubbleGeo.dispose();
-      bubbleMat.dispose();
-      miniBubbleGeo.dispose();
-      miniBubbleMat.dispose();
-      starGeo.dispose();
-      starMat.dispose();
-      dotGeo.dispose();
-      dotMeshes.forEach((d) => d.material.dispose());
+      icosaGeo.dispose();
+      octaGeo.dispose();
+      glassMat.dispose();
+      edgeMat.dispose();
       renderer.dispose();
     };
   }, []);
@@ -262,11 +151,9 @@ const FloatingCyberObjects = () => {
         left: 0,
         width: "100%",
         height: "100%",
-        pointerEvents: "none",
         zIndex: 0,
-        overflow: "hidden",
+        pointerEvents: "none",
       }}
-      aria-hidden="true"
     />
   );
 };

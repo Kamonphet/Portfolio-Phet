@@ -37,7 +37,7 @@ const Hero3D = () => {
       mainGroup.rotation.set(0, 0, 0);
     };
 
-    // 3. Load 15.png Texture & Build Pure Clean Character Cutout
+    // 3. Load 15.webp Texture & Build Pure Clean Character Presentation
     const textureLoader = new THREE.TextureLoader();
     let modelGroup = new THREE.Group();
     mainGroup.add(modelGroup);
@@ -55,11 +55,10 @@ const Hero3D = () => {
         photoTexture.repeat.x = -1;
         photoTexture.offset.x = 1;
 
-        // Big dimensions
         const cardWidth = 3.6;
         const cardHeight = 4.0;
 
-        // Pure clean character plane without any extra lines, rings, or effects
+        // Clean character plane without noisy effects
         const charGeo = new THREE.PlaneGeometry(cardWidth, cardHeight);
         const charMat = new THREE.MeshBasicMaterial({
           map: photoTexture,
@@ -68,17 +67,30 @@ const Hero3D = () => {
           side: THREE.DoubleSide,
         });
         const charMesh = new THREE.Mesh(charGeo, charMat);
-        // Center the character visually within the 3D rotating space
         charMesh.position.set(-0.42, 0, 0);
         modelGroup.add(charMesh);
+
+        // Grounding subtle ambient soft shadow
+        const shadowGeo = new THREE.PlaneGeometry(2.4, 0.8);
+        const shadowMat = new THREE.MeshBasicMaterial({
+          color: 0x000000,
+          transparent: true,
+          opacity: 0.12,
+          side: THREE.DoubleSide,
+        });
+        const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+        shadowMesh.rotation.x = Math.PI / 2;
+        shadowMesh.position.set(-0.42, -1.95, -0.1);
+        modelGroup.add(shadowMesh);
       },
       undefined,
       (err) => {
-        console.error("Failed to load 15.png in Three.js", err);
+        console.error("Failed to load character texture in Three.js", err);
       }
     );
 
-    // 4. Mouse & Touch Interaction Physics
+    // 4. Mouse & Touch Interaction Physics (Quiet Luxury: Parallax Capped at ≤6°)
+    const MAX_TILT_RAD = (6 * Math.PI) / 180; // exactly 6 degrees (~0.1047 rad)
     let targetRotationX = 0;
     let targetRotationY = 0;
     let isDragging = false;
@@ -92,11 +104,12 @@ const Hero3D = () => {
       if (isDragging) {
         const deltaX = clientX - prevPosition.x;
         const deltaY = clientY - prevPosition.y;
-        mainGroup.rotation.y += deltaX * 0.01;
-        mainGroup.rotation.x += deltaY * 0.01;
+        mainGroup.rotation.y += deltaX * 0.008;
+        mainGroup.rotation.x += deltaY * 0.008;
       } else {
-        targetRotationY = x * 0.65;
-        targetRotationX = -y * 0.65;
+        // Precise restraint: luxury tilt ≤ 6°
+        targetRotationY = Math.max(-MAX_TILT_RAD, Math.min(MAX_TILT_RAD, x * MAX_TILT_RAD));
+        targetRotationX = Math.max(-MAX_TILT_RAD * 0.7, Math.min(MAX_TILT_RAD * 0.7, -y * MAX_TILT_RAD * 0.7));
       }
       prevPosition = { x: clientX, y: clientY };
     };
@@ -110,7 +123,6 @@ const Hero3D = () => {
       isDragging = false;
     };
 
-    // Touch Support for Mobile
     const handleTouchMove = (e) => {
       if (e.touches.length > 0) {
         onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
@@ -126,7 +138,6 @@ const Hero3D = () => {
       isDragging = false;
     };
 
-    // 5. Mouse leave & touch cancel - smoothly return to center
     const handleMouseLeave = () => {
       if (!isDragging) {
         targetRotationX = 0;
@@ -143,7 +154,7 @@ const Hero3D = () => {
     domElement.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchend", handleTouchEnd);
 
-    // 6. Animation Loop (Smooth 60/120fps with gentle natural idle float)
+    // 5. Animation Loop (Quiet Elegance: Gentle ambient float)
     let animationFrameId;
     const clock = new THREE.Clock();
 
@@ -151,22 +162,20 @@ const Hero3D = () => {
       animationFrameId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Smooth inertia rotation without accumulating drift jitter
       if (!isDragging) {
-        const idleSway = Math.sin(elapsedTime * 1.2) * 0.04;
-        mainGroup.rotation.y += (targetRotationY + idleSway - mainGroup.rotation.y) * 0.06;
-        mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.06;
+        const idleSway = Math.sin(elapsedTime * 1.0) * 0.015;
+        mainGroup.rotation.y += (targetRotationY + idleSway - mainGroup.rotation.y) * 0.05;
+        mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.05;
       }
 
-      // Gentle vertical breathing float (isolated from scroll jitter)
-      mainGroup.position.y = Math.sin(elapsedTime * 1.6) * 0.05;
+      // Very subtle, stable vertical breathing (0.02 amplitude)
+      mainGroup.position.y = Math.sin(elapsedTime * 1.4) * 0.025;
 
       renderer.render(scene, camera);
     };
 
     animate();
 
-    // 6. Resize Handler
     const handleResize = () => {
       if (!container) return;
       width = container.clientWidth;
@@ -177,7 +186,6 @@ const Hero3D = () => {
     };
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
@@ -216,7 +224,7 @@ const Hero3D = () => {
           minHeight: "520px",
           cursor: "grab",
         }}
-        title="คลิกและลากเพื่อหมุนภาพ 3D รอบทิศทาง (ดับเบิ้ลคลิกเพื่อรีเซ็ตมุมมอง)"
+        title="ลากเพื่อหมุนเบา ๆ (จำกัดมุมเอียง ≤6° เพื่อความสง่างามระดับพรีเมียม)"
       />
     </div>
   );

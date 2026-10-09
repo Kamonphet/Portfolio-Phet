@@ -18,22 +18,22 @@ const BackgroundCanvas = () => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Particle nodes
-    const particleCount = Math.min(Math.floor((width * height) / 18000), 70);
+    // Subtle, sparse particle count for quiet luxury
+    const particleCount = Math.min(Math.floor((width * height) / 24000), 45);
     const particles = [];
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 1.8 + 0.6,
-        alpha: Math.random() * 0.5 + 0.2,
+        vx: (Math.random() - 0.5) * 0.22,
+        vy: (Math.random() - 0.5) * 0.22,
+        radius: Math.random() * 1.4 + 0.6,
+        alpha: Math.random() * 0.35 + 0.15,
       });
     }
 
-    let mouse = { x: null, y: null, maxDist: 140 };
+    let mouse = { x: null, y: null, maxDist: 120 };
 
     const handleMouseMove = (e) => {
       mouse.x = e.clientX;
@@ -50,7 +50,7 @@ const BackgroundCanvas = () => {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      scrollDelta = (currentScrollY - lastScrollY) * 0.15;
+      scrollDelta = (currentScrollY - lastScrollY) * 0.1;
       lastScrollY = currentScrollY;
     };
 
@@ -64,29 +64,28 @@ const BackgroundCanvas = () => {
       animationId = requestAnimationFrame(render);
       ctx.clearRect(0, 0, width, height);
 
-      // Damp scroll delta
-      scrollDelta *= 0.92;
+      scrollDelta *= 0.94;
 
       const isDark = isDarkRef.current;
-      const primaryColor = isDark ? "0, 242, 254" : "2, 132, 199";
-      const secondaryColor = isDark ? "138, 43, 226" : "124, 58, 237";
-      const accentColor = isDark ? "0, 255, 135" : "5, 150, 105";
+      // Dark: Electric Cyber Sky Blue (56, 189, 248) | Light: Sky Blue (2, 132, 199)
+      const accentRgb = isDark ? "56, 189, 248" : "2, 132, 199";
+      const neutralRgb = isDark ? "56, 189, 248" : "2, 132, 199";
 
-      // Draw subtle background radial glow at corners
+      // Subtle atmospheric radial corner glow
       const gradient = ctx.createRadialGradient(
-        width * 0.1,
-        height * 0.1,
-        50,
-        width * 0.1,
-        height * 0.1,
-        width * 0.6
+        width * 0.85,
+        height * 0.15,
+        20,
+        width * 0.85,
+        height * 0.15,
+        width * 0.55
       );
-      gradient.addColorStop(0, `rgba(${primaryColor}, ${isDark ? 0.04 : 0.05})`);
+      gradient.addColorStop(0, `rgba(${accentRgb}, ${isDark ? 0.05 : 0.06})`);
       gradient.addColorStop(1, "transparent");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
-      // Update and draw particles
+      // Render subtle drifting stardust
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
@@ -97,31 +96,30 @@ const BackgroundCanvas = () => {
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
 
-        // Draw particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${primaryColor}, ${p.alpha * (isDark ? 0.7 : 0.55)})`;
+        ctx.fillStyle = `rgba(${neutralRgb}, ${p.alpha * 0.4})`;
         ctx.fill();
 
-        // Connect with nearby particles
+        // Very faint connective lines
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
           const dx = p.x - p2.x;
           const dy = p.y - p2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 120) {
+          if (dist < 100) {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            const lineAlpha = (1 - dist / 120) * 0.15;
-            ctx.strokeStyle = `rgba(${secondaryColor}, ${lineAlpha * (isDark ? 1 : 0.75)})`;
-            ctx.lineWidth = 0.6;
+            const lineAlpha = (1 - dist / 100) * 0.04;
+            ctx.strokeStyle = `rgba(${neutralRgb}, ${lineAlpha})`;
+            ctx.lineWidth = 0.5;
             ctx.stroke();
           }
         }
 
-        // Connect to mouse if close
+        // Faint mouse proximity trace
         if (mouse.x !== null && mouse.y !== null) {
           const mdx = p.x - mouse.x;
           const mdy = p.y - mouse.y;
@@ -130,9 +128,9 @@ const BackgroundCanvas = () => {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(mouse.x, mouse.y);
-            const mAlpha = (1 - mdist / mouse.maxDist) * 0.25;
-            ctx.strokeStyle = `rgba(${accentColor}, ${mAlpha * (isDark ? 1 : 0.8)})`;
-            ctx.lineWidth = 0.8;
+            const mAlpha = (1 - mdist / mouse.maxDist) * 0.12;
+            ctx.strokeStyle = `rgba(${accentRgb}, ${mAlpha})`;
+            ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         }
@@ -145,7 +143,6 @@ const BackgroundCanvas = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
     };
-
     window.addEventListener("resize", handleResize);
 
     return () => {

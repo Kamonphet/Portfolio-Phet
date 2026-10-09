@@ -62,12 +62,14 @@ const ProjectDetailPage = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-card"
             style={{
               maxWidth: "520px",
               textAlign: "center",
               padding: "3rem 2rem",
-              borderRadius: "20px",
+              borderRadius: "24px",
+              background: "var(--color-card-bg)",
+              border: "1px solid var(--border-subtle)",
+              boxShadow: "var(--color-card-shadow)",
             }}
           >
             <div
@@ -75,8 +77,8 @@ const ProjectDetailPage = () => {
                 width: "64px",
                 height: "64px",
                 borderRadius: "16px",
-                background: "rgba(255, 71, 87, 0.15)",
-                color: "#ff4757",
+                background: "rgba(239, 68, 68, 0.12)",
+                color: "#ef4444",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -86,15 +88,19 @@ const ProjectDetailPage = () => {
             >
               <FiInfo />
             </div>
-            <h2 style={{ fontSize: "1.6rem", marginBottom: "0.8rem", color: "var(--color-text-main)" }}>
-              {isTh ? "ไม่พบข้อมูลโปรเจกต์นี้" : "Project Not Found"}
+            <h2 style={{ fontSize: "1.6rem", marginBottom: "0.8rem", color: "var(--text-primary)", fontFamily: "var(--font-display)" }}>
+              {isTh ? "ไม่พบข้อมูลผลงานนี้" : "Project Not Found"}
             </h2>
-            <p style={{ color: "var(--color-text-dim)", marginBottom: "2rem", lineHeight: "1.6" }}>
+            <p style={{ color: "var(--text-secondary)", marginBottom: "2rem", lineHeight: "1.6" }}>
               {isTh
-                ? "โปรเจกต์ที่คุณกำลังค้นหาอาจถูกย้าย ลบออก หรือใส่รหัสโปรเจกต์ไม่ถูกต้อง"
+                ? "ผลงานที่คุณกำลังค้นหาอาจถูกย้าย ลบออก หรือใส่รหัสไม่ถูกต้อง"
                 : "The project you are looking for might have been moved, removed, or the link is invalid."}
             </p>
-            <Link to="/projects" className="btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "12px 28px", borderRadius: "30px" }}>
+            <Link
+              to="/projects"
+              className="btn-luxury-primary"
+              style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "12px 28px", borderRadius: "100px" }}
+            >
               <FiArrowLeft />
               <span>{isTh ? "กลับสู่คลังผลงานทั้งหมด" : "Back to All Projects"}</span>
             </Link>
@@ -131,44 +137,31 @@ const ProjectDetailPage = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
             <Link
               to="/projects"
+              className="btn-luxury-secondary"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                color: "var(--color-text-main)",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-                fontWeight: "600",
-                padding: "8px 16px",
-                borderRadius: "10px",
-                background: "var(--color-card-bg)",
-                border: "1px solid var(--color-card-border)",
-                backdropFilter: "blur(8px)",
-                transition: "all 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "var(--color-primary)";
-                e.currentTarget.style.borderColor = "var(--color-primary)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "var(--color-text-main)";
-                e.currentTarget.style.borderColor = "var(--color-card-border)";
+                padding: "8px 18px",
+                borderRadius: "100px",
+                fontSize: "0.86rem",
               }}
             >
               <FiArrowLeft size={16} />
               <span>{isTh ? "ดูผลงานทั้งหมด" : "All Projects"}</span>
             </Link>
 
-            <span style={{ color: "var(--color-text-muted)", fontSize: "0.85rem" }}>/</span>
+            <span style={{ color: "var(--text-tertiary)", fontSize: "0.85rem" }}>/</span>
 
             <span
               style={{
-                color: "var(--color-text-dim)",
+                color: "var(--text-secondary)",
                 fontSize: "0.88rem",
-                maxWidth: "300px",
+                maxWidth: "320px",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                fontFamily: "var(--font-mono)",
               }}
             >
               {project.title}
@@ -177,19 +170,13 @@ const ProjectDetailPage = () => {
 
           <button
             onClick={handleShare}
+            className="btn-luxury-secondary"
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              background: copied ? "rgba(0, 255, 135, 0.15)" : "var(--color-card-bg)",
-              border: copied ? "1px solid var(--color-accent-2)" : "1px solid var(--color-card-border)",
-              color: copied ? "var(--color-accent-2)" : "var(--color-text-dim)",
-              padding: "8px 16px",
-              borderRadius: "10px",
-              fontSize: "0.85rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
+              padding: "8px 18px",
+              borderRadius: "100px",
+              fontSize: "0.86rem",
+              color: copied ? "#10B981" : "var(--text-primary)",
+              borderColor: copied ? "#10B981" : "var(--border-subtle)",
             }}
           >
             {copied ? <FiCheck size={16} /> : <FiShare2 size={16} />}
@@ -204,23 +191,23 @@ const ProjectDetailPage = () => {
           transition={{ duration: 0.5 }}
           style={{ marginBottom: "2.5rem" }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "0.8rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "0.9rem" }}>
             <span
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
-                background: "var(--color-badge-bg)",
-                border: "1px solid var(--color-badge-border)",
-                color: "var(--color-primary)",
-                padding: "6px 14px",
-                borderRadius: "20px",
-                fontSize: "0.82rem",
+                background: "var(--accent-muted)",
+                border: "1px solid var(--border-subtle)",
+                color: "var(--accent)",
+                padding: "5px 14px",
+                borderRadius: "100px",
+                fontSize: "0.78rem",
                 fontWeight: "600",
                 fontFamily: "var(--font-mono)",
               }}
             >
-              <FiFolder size={14} />
+              <FiFolder size={13} />
               <span>{project.category || "Development"}</span>
             </span>
 
@@ -230,28 +217,31 @@ const ProjectDetailPage = () => {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  background: "rgba(255, 209, 102, 0.15)",
-                  border: "1px solid var(--color-accent-1)",
-                  color: "var(--color-accent-1)",
-                  padding: "6px 14px",
-                  borderRadius: "20px",
-                  fontSize: "0.82rem",
+                  background: "rgba(245, 158, 11, 0.15)",
+                  border: "1px solid rgba(245, 158, 11, 0.4)",
+                  color: "#F59E0B",
+                  padding: "5px 14px",
+                  borderRadius: "100px",
+                  fontSize: "0.78rem",
                   fontWeight: "700",
+                  fontFamily: "var(--font-mono)",
                 }}
               >
-                <FiStar size={14} />
-                <span>{isTh ? "ผลงานเด่นแนะนำ" : "Featured Project"}</span>
+                <FiStar size={13} />
+                <span>{isTh ? "FEATURED" : "FEATURED"}</span>
               </span>
             )}
           </div>
 
           <h1
             style={{
-              fontSize: "clamp(1.8rem, 4vw, 2.7rem)",
+              fontSize: "clamp(2rem, 4.5vw, 3rem)",
               fontWeight: "800",
-              color: "var(--color-text-main)",
-              lineHeight: "1.3",
+              color: "var(--text-primary)",
+              lineHeight: "1.25",
               marginBottom: "1rem",
+              fontFamily: "var(--font-display)",
+              letterSpacing: "-0.02em",
             }}
           >
             {project.title}
@@ -260,9 +250,9 @@ const ProjectDetailPage = () => {
           <p
             style={{
               fontSize: "clamp(1rem, 1.8vw, 1.15rem)",
-              color: "var(--color-text-dim)",
-              lineHeight: "1.7",
-              maxWidth: "900px",
+              color: "var(--text-secondary)",
+              lineHeight: "1.75",
+              maxWidth: "920px",
               margin: 0,
             }}
           >
@@ -280,7 +270,7 @@ const ProjectDetailPage = () => {
             alignItems: "center",
             gap: "1rem",
             flexWrap: "wrap",
-            marginBottom: "2.5rem",
+            marginBottom: "2.75rem",
           }}
         >
           {project.demoUrl && (
@@ -288,19 +278,16 @@ const ProjectDetailPage = () => {
               href={sanitizeUrl(project.demoUrl)}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary"
+              className="btn-luxury-primary"
               style={{
                 padding: "12px 28px",
                 fontSize: "0.95rem",
-                borderRadius: "12px",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                boxShadow: "0 0 25px var(--color-primary-glow)",
+                borderRadius: "100px",
+                boxShadow: "0 8px 30px var(--accent-glow)",
               }}
             >
               <span>{isTh ? "เปิดดูตัวอย่างผลงานจริง" : "Launch Live Demo"}</span>
-              <FiExternalLink size={18} />
+              <FiExternalLink size={17} />
             </a>
           )}
 
@@ -309,17 +296,14 @@ const ProjectDetailPage = () => {
               href={sanitizeUrl(project.githubUrl)}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary"
+              className="btn-luxury-secondary"
               style={{
                 padding: "12px 26px",
                 fontSize: "0.95rem",
-                borderRadius: "12px",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
+                borderRadius: "100px",
               }}
             >
-              <FiGithub size={18} />
+              <FiGithub size={17} />
               <span>{isTh ? "ดูซอร์สโค้ดโปรเจกต์" : "Source Code Repository"}</span>
             </a>
           )}
@@ -330,14 +314,13 @@ const ProjectDetailPage = () => {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="glass-card"
           style={{
             overflow: "hidden",
-            borderRadius: "20px",
-            border: "1px solid var(--color-card-border)",
-            background: "rgba(0, 0, 0, 0.4)",
-            marginBottom: "3rem",
-            boxShadow: "var(--color-card-shadow-hover)",
+            borderRadius: "24px",
+            border: "1px solid var(--border-subtle)",
+            background: "var(--color-card-bg)",
+            marginBottom: "3.5rem",
+            boxShadow: "var(--color-card-shadow)",
           }}
         >
           <div
@@ -374,7 +357,7 @@ const ProjectDetailPage = () => {
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
             gap: "2rem",
-            marginBottom: "4rem",
+            marginBottom: "4.5rem",
           }}
         >
           {/* Tech Stack Breakdown */}
@@ -383,28 +366,39 @@ const ProjectDetailPage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="glass-card"
             style={{
-              padding: "2rem",
-              borderRadius: "18px",
+              padding: "2.2rem",
+              borderRadius: "20px",
+              background: "var(--color-card-bg)",
+              border: "1px solid var(--border-subtle)",
+              boxShadow: "var(--color-card-shadow)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "1.2rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.4rem" }}>
               <div
                 style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "10px",
-                  background: "var(--color-badge-bg)",
-                  color: "var(--color-primary)",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "12px",
+                  background: "var(--accent-muted)",
+                  color: "var(--accent)",
+                  border: "1px solid var(--border-subtle)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <FiLayers size={18} />
+                <FiLayers size={19} />
               </div>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--color-text-main)" }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: "1.25rem",
+                  color: "var(--text-primary)",
+                  fontFamily: "var(--font-display)",
+                  fontWeight: "700",
+                }}
+              >
                 {isTh ? "เทคโนโลยีและเครื่องมือที่ใช้" : "Technologies & Tools"}
               </h3>
             </div>
@@ -415,12 +409,12 @@ const ProjectDetailPage = () => {
                   <span
                     key={idx}
                     style={{
-                      background: "var(--color-badge-bg)",
-                      border: "1px solid var(--color-badge-border)",
-                      color: "var(--color-primary)",
-                      padding: "8px 16px",
-                      borderRadius: "10px",
-                      fontSize: "0.9rem",
+                      background: "var(--accent-muted)",
+                      border: "1px solid var(--border-subtle)",
+                      color: "var(--text-primary)",
+                      padding: "7px 16px",
+                      borderRadius: "8px",
+                      fontSize: "0.85rem",
                       fontWeight: "600",
                       fontFamily: "var(--font-mono)",
                       display: "inline-flex",
@@ -428,7 +422,7 @@ const ProjectDetailPage = () => {
                       gap: "6px",
                     }}
                   >
-                    <span>#</span>
+                    <span style={{ color: "var(--accent)" }}>#</span>
                     <span>{tech}</span>
                   </span>
                 ))}
@@ -441,28 +435,39 @@ const ProjectDetailPage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="glass-card"
             style={{
-              padding: "2rem",
-              borderRadius: "18px",
+              padding: "2.2rem",
+              borderRadius: "20px",
+              background: "var(--color-card-bg)",
+              border: "1px solid var(--border-subtle)",
+              boxShadow: "var(--color-card-shadow)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "1.2rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.4rem" }}>
               <div
                 style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "10px",
-                  background: "rgba(0, 255, 135, 0.12)",
-                  color: "var(--color-accent-2)",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "12px",
+                  background: "rgba(16, 185, 129, 0.12)",
+                  color: "#10B981",
+                  border: "1px solid rgba(16, 185, 129, 0.25)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <FiInfo size={18} />
+                <FiInfo size={19} />
               </div>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--color-text-main)" }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: "1.25rem",
+                  color: "var(--text-primary)",
+                  fontFamily: "var(--font-display)",
+                  fontWeight: "700",
+                }}
+              >
                 {isTh ? "จุดเด่นและเป้าหมายของผลงาน" : "Key Highlights & Objectives"}
               </h3>
             </div>
@@ -474,19 +479,19 @@ const ProjectDetailPage = () => {
                 margin: 0,
                 display: "flex",
                 flexDirection: "column",
-                gap: "12px",
+                gap: "14px",
               }}
             >
-              <li style={{ display: "flex", alignItems: "flex-start", gap: "10px", color: "var(--color-text-dim)", fontSize: "0.95rem", lineHeight: "1.6" }}>
-                <span style={{ color: "var(--color-accent-2)", marginTop: "4px" }}>✔</span>
+              <li style={{ display: "flex", alignItems: "flex-start", gap: "10px", color: "var(--text-secondary)", fontSize: "0.94rem", lineHeight: "1.6" }}>
+                <span style={{ color: "#10B981", marginTop: "2px", fontWeight: "bold" }}>✔</span>
                 <span>{isTh ? "ออกแบบเพื่อการเรียนรู้แบบ Active Learning ตอบโจทย์การศึกษายุคดิจิทัล" : "Engineered for Active Learning and interactive digital education."}</span>
               </li>
-              <li style={{ display: "flex", alignItems: "flex-start", gap: "10px", color: "var(--color-text-dim)", fontSize: "0.95rem", lineHeight: "1.6" }}>
-                <span style={{ color: "var(--color-accent-2)", marginTop: "4px" }}>✔</span>
+              <li style={{ display: "flex", alignItems: "flex-start", gap: "10px", color: "var(--text-secondary)", fontSize: "0.94rem", lineHeight: "1.6" }}>
+                <span style={{ color: "#10B981", marginTop: "2px", fontWeight: "bold" }}>✔</span>
                 <span>{isTh ? "คำนึงถึงสถาปัตยกรรมระบบความปลอดภัยและความเสถียรตามมาตรฐานสากล" : "Adheres to cybersecurity best practices and high-performance standards."}</span>
               </li>
-              <li style={{ display: "flex", alignItems: "flex-start", gap: "10px", color: "var(--color-text-dim)", fontSize: "0.95rem", lineHeight: "1.6" }}>
-                <span style={{ color: "var(--color-accent-2)", marginTop: "4px" }}>✔</span>
+              <li style={{ display: "flex", alignItems: "flex-start", gap: "10px", color: "var(--text-secondary)", fontSize: "0.94rem", lineHeight: "1.6" }}>
+                <span style={{ color: "#10B981", marginTop: "2px", fontWeight: "bold" }}>✔</span>
                 <span>{isTh ? "รองรับการแสดงผลทุกขนาดหน้าจอ (Responsive Web Design) ทั้งคอมพิวเตอร์และมือถือ" : "Fully responsive design optimized for mobile, tablet, and desktop viewports."}</span>
               </li>
             </ul>
@@ -507,10 +512,19 @@ const ProjectDetailPage = () => {
               }}
             >
               <div>
-                <h3 style={{ fontSize: "1.5rem", fontWeight: "700", margin: 0, color: "var(--color-text-main)" }}>
+                <h3
+                  style={{
+                    fontSize: "1.55rem",
+                    fontWeight: "700",
+                    margin: 0,
+                    color: "var(--text-primary)",
+                    fontFamily: "var(--font-display)",
+                    letterSpacing: "-0.015em",
+                  }}
+                >
                   {isTh ? "ผลงานอื่น ๆ ที่น่าสนใจ" : "Explore More Projects"}
                 </h3>
-                <p style={{ color: "var(--color-text-dim)", margin: "4px 0 0 0", fontSize: "0.9rem" }}>
+                <p style={{ color: "var(--text-secondary)", margin: "4px 0 0 0", fontSize: "0.9rem" }}>
                   {isTh ? "สำรวจโปรเจกต์เทคโนโลยี สื่อการสอน และระบบความปลอดภัยอื่น ๆ" : "Discover more EdTech, Web apps, and security innovations"}
                 </p>
               </div>
@@ -521,10 +535,11 @@ const ProjectDetailPage = () => {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  color: "var(--color-primary)",
+                  color: "var(--accent)",
                   textDecoration: "none",
                   fontWeight: "600",
                   fontSize: "0.92rem",
+                  fontFamily: "var(--font-mono)",
                 }}
               >
                 <span>{isTh ? "ดูทั้งหมด" : "View All"}</span>
@@ -542,35 +557,37 @@ const ProjectDetailPage = () => {
               {otherProjects.map((other) => (
                 <motion.div
                   key={other.id}
-                  whileHover={{ y: -6 }}
-                  className="glass-card"
+                  whileHover={{ y: -5 }}
                   style={{
-                    borderRadius: "16px",
+                    borderRadius: "20px",
                     overflow: "hidden",
                     cursor: "pointer",
                     display: "flex",
                     flexDirection: "column",
+                    background: "var(--color-card-bg)",
+                    border: "1px solid var(--border-subtle)",
+                    boxShadow: "var(--color-card-shadow)",
                   }}
                   onClick={() => navigate(`/projects/${other.id}`)}
                 >
-                  <div style={{ height: "180px", overflow: "hidden", background: "rgba(0,0,0,0.3)" }}>
+                  <div style={{ height: "190px", overflow: "hidden", background: "var(--bg-elevated)" }}>
                     <img
                       src={other.image}
                       alt={other.title}
                       style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
                   </div>
-                  <div style={{ padding: "1.2rem", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div style={{ padding: "1.3rem", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                     <div>
-                      <span style={{ fontSize: "0.75rem", color: "var(--color-primary)", fontFamily: "var(--font-mono)" }}>
+                      <span style={{ fontSize: "0.74rem", color: "var(--accent)", fontFamily: "var(--font-mono)", fontWeight: "600" }}>
                         {other.category}
                       </span>
-                      <h4 style={{ margin: "6px 0 8px", fontSize: "1.05rem", color: "var(--color-text-main)", lineHeight: "1.4" }}>
+                      <h4 style={{ margin: "6px 0 8px", fontSize: "1.08rem", color: "var(--text-primary)", lineHeight: "1.4", fontFamily: "var(--font-display)", fontWeight: "700" }}>
                         {other.title}
                       </h4>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--color-primary)", fontSize: "0.85rem", fontWeight: "600", marginTop: "1rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--accent)", fontSize: "0.85rem", fontWeight: "600", marginTop: "1rem", fontFamily: "var(--font-mono)" }}>
                       <span>{isTh ? "ดูรายละเอียดเต็ม" : "View Details"}</span>
                       <FiArrowRight size={14} />
                     </div>

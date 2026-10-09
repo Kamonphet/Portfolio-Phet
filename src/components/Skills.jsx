@@ -48,7 +48,7 @@ const Skills = () => {
   const { data, updateSkills, removeSkill, isEditMode, openCms, t, language } = usePortfolio();
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = t.skills.categories || ["All", "Frontend", "Backend", "Security", "3D & Creative", "DevOps"];
+  const categories = t.skills?.categories || ["All", "Frontend", "Backend", "Security", "3D & Creative", "DevOps"];
 
   const filteredSkills = (data?.skills || []).filter((skill) => {
     if (selectedCategory === "All" || selectedCategory === "ทั้งหมด") return true;
@@ -66,24 +66,20 @@ const Skills = () => {
     <section id="skills" className="content-section">
       {/* Section Header */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         style={{ textAlign: "center", marginBottom: "3rem" }}
       >
-        <div className="section-badge">
-          <FiCode />
-          <span>{t.skills.badge}</span>
-        </div>
+        <span className="eyebrow-label">// 03 — TECHNICAL CAPABILITIES & TOOLING</span>
         <h2 className="section-title">
-          {t.skills.titlePre} <span className="gradient-text">{t.skills.titleHighlight}</span>
+          {t.skills?.titlePre || "คลังทักษะและ"}{" "}
+          <span className="gradient-text">{t.skills?.titleHighlight || "ความเชี่ยวชาญ"}</span>
         </h2>
-        <p
-          className="section-subtitle-single"
-          style={{ maxWidth: "850px", margin: "0 auto", color: "var(--color-text-dim)" }}
-        >
-          {t.skills.subtitle}
+        <p className="section-subtitle">
+          {t.skills?.subtitle ||
+            "ความเชี่ยวชาญด้าน Modern Web Architecture, Full-Stack Engineering, และ Cybersecurity"}
         </p>
       </motion.div>
 
@@ -92,21 +88,23 @@ const Skills = () => {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
         style={{
-          maxWidth: "760px",
+          maxWidth: "780px",
           margin: "0 auto 2.5rem auto",
-          background: "var(--color-glass-subtle)",
-          border: "1px solid var(--color-card-border)",
-          borderRadius: "16px",
-          padding: "0.9rem 1.4rem",
+          background: "var(--color-card-bg)",
+          border: "1px solid var(--border-subtle)",
+          borderRadius: "20px",
+          padding: "1rem 1.6rem",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: "1.2rem",
           flexWrap: "wrap",
+          boxShadow: "var(--color-card-shadow)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
           <img
             src="/img/16.webp"
             alt="ครูสาย IT"
@@ -114,20 +112,20 @@ const Skills = () => {
               width: "48px",
               height: "48px",
               objectFit: "contain",
-              filter: "drop-shadow(0 2px 8px rgba(0, 242, 254, 0.3))",
+              filter: "drop-shadow(0 2px 8px var(--accent-glow))",
             }}
           />
           <div>
-            <div style={{ fontWeight: "700", color: "var(--color-text-main)", fontSize: "0.95rem" }}>
+            <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.98rem", fontFamily: "var(--font-display)" }}>
               ครูสาย IT เทคโนโลยีเพื่อการเรียนรู้
             </div>
-            <div style={{ fontSize: "0.82rem", color: "var(--color-text-dim)" }}>
+            <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
               มุ่งมั่นพัฒนาทักษะวิทยาการคำนวณและ Cybersecurity อย่างต่อเนื่อง
             </div>
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <img
             src="/img/cheers.webp"
             alt="สู้ๆ นะครับ"
@@ -137,7 +135,14 @@ const Skills = () => {
               objectFit: "contain",
             }}
           />
-          <div style={{ fontSize: "0.82rem", color: "var(--color-accent-2)", fontWeight: "600" }}>
+          <div
+            style={{
+              fontSize: "0.82rem",
+              color: "var(--accent)",
+              fontWeight: "600",
+              fontFamily: "var(--font-mono)",
+            }}
+          >
             "สู้ๆ นะครับ :)"
           </div>
         </div>
@@ -148,66 +153,99 @@ const Skills = () => {
         style={{
           display: "flex",
           justifyContent: "center",
-          gap: "10px",
+          alignItems: "center",
+          gap: "6px",
           flexWrap: "wrap",
-          marginBottom: "2.5rem",
+          marginBottom: "2.75rem",
         }}
       >
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            style={{
-              background:
-                selectedCategory === cat
-                  ? "linear-gradient(135deg, var(--color-primary), var(--color-secondary))"
-                  : "var(--color-glass-subtle)",
-              color: selectedCategory === cat ? "#fff" : "var(--color-text-dim)",
-              border: selectedCategory === cat ? "none" : "1px solid var(--color-card-border)",
-              borderRadius: "30px",
-              padding: "8px 20px",
-              fontSize: "0.88rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-          >
-            {cat}
-          </button>
-        ))}
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "4px",
+            background: "var(--accent-muted)",
+            padding: "4px",
+            borderRadius: "100px",
+            border: "1px solid var(--border-subtle)",
+            maxWidth: "96vw",
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {categories.map((cat) => {
+            const isActive = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                style={{
+                  position: "relative",
+                  background: "transparent",
+                  border: "none",
+                  color: isActive ? "var(--nav-link-active)" : "var(--nav-link-color)",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "0.86rem",
+                  fontWeight: isActive ? "700" : "500",
+                  padding: "7px 18px",
+                  borderRadius: "100px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  whiteSpace: "nowrap",
+                  transition: "color 0.2s ease",
+                  zIndex: 1,
+                }}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="skillActiveFilter"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "var(--nav-pill-bg)",
+                      border: "1px solid var(--accent-border)",
+                      borderRadius: "100px",
+                      boxShadow: "0 4px 15px var(--accent-muted)",
+                      zIndex: -1,
+                    }}
+                  />
+                )}
+                <span>{cat}</span>
+              </button>
+            );
+          })}
+        </div>
 
         {isEditMode && (
           <button
             onClick={() => openCms("skills")}
+            className="btn-luxury-secondary"
             style={{
-              background: "rgba(0, 255, 135, 0.15)",
-              color: "var(--color-accent-2)",
-              border: "1px dashed var(--color-accent-2)",
-              borderRadius: "30px",
-              padding: "8px 18px",
-              fontSize: "0.85rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
+              padding: "7px 16px",
+              fontSize: "0.82rem",
+              borderRadius: "100px",
+              marginLeft: "8px",
             }}
           >
-            <FiPlus /> {t.skills.manage}
+            <FiPlus />
+            <span>{t.skills?.manage || "จัดการทักษะ"}</span>
           </button>
         )}
       </div>
 
-      {/* Skills Grid with Scroll Cascade */}
+      {/* Skills Grid */}
       <motion.div
         layout
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "1.2rem",
+          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+          gap: "1.25rem",
         }}
       >
-        <AnimatePresence>
+        <AnimatePresence mode="popLayout">
           {filteredSkills.map((skill, index) => {
             const iconElement = ICON_MAP[skill.icon] || <FiZap />;
 
@@ -215,42 +253,54 @@ const Skills = () => {
               <motion.div
                 key={skill.id}
                 layout
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4, delay: index * 0.06 }}
-                whileHover={{ y: -6, scale: 1.02 }}
-                className="glass-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4, delay: index * 0.04 }}
+                whileHover={{ y: -4 }}
                 style={{
-                  padding: "1.5rem",
+                  padding: "1.35rem 1.4rem",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "12px",
+                  gap: "14px",
                   position: "relative",
+                  borderRadius: "18px",
+                  background: "var(--color-card-bg)",
+                  border: "1px solid var(--border-subtle)",
+                  boxShadow: "var(--color-card-shadow)",
+                  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
                 }}
               >
-                {/* Header: Icon, Title, Category Badge */}
+                {/* Header: Icon, Title, Level */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <div
                       style={{
-                        width: "44px",
-                        height: "44px",
-                        borderRadius: "10px",
-                        background: "var(--color-badge-bg)",
-                        border: "1px solid var(--color-badge-border)",
+                        width: "42px",
+                        height: "42px",
+                        borderRadius: "12px",
+                        background: "var(--accent-muted)",
+                        border: "1px solid var(--border-subtle)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "1.4rem",
-                        color: "var(--color-primary)",
+                        fontSize: "1.35rem",
+                        color: "var(--accent)",
                       }}
                     >
                       {iconElement}
                     </div>
                     <div>
-                      <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "700" }}>
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "1rem",
+                          fontWeight: "700",
+                          color: "var(--text-primary)",
+                          fontFamily: "var(--font-display)",
+                          letterSpacing: "-0.01em",
+                        }}
+                      >
                         <EditableText
                           value={skill.name}
                           onSave={(val) => {
@@ -261,7 +311,13 @@ const Skills = () => {
                           }}
                         />
                       </h3>
-                      <span style={{ fontSize: "0.78rem", color: "var(--color-text-muted)" }}>
+                      <span
+                        style={{
+                          fontSize: "0.74rem",
+                          color: "var(--text-tertiary)",
+                          fontFamily: "var(--font-mono)",
+                        }}
+                      >
                         {skill.category}
                       </span>
                     </div>
@@ -271,21 +327,25 @@ const Skills = () => {
                     style={{
                       fontFamily: "var(--font-mono)",
                       fontWeight: "700",
-                      fontSize: "0.95rem",
-                      color: "var(--color-accent-2)",
+                      fontSize: "0.88rem",
+                      color: "var(--accent)",
+                      background: "var(--accent-muted)",
+                      padding: "2px 8px",
+                      borderRadius: "6px",
+                      border: "1px solid var(--border-subtle)",
                     }}
                   >
                     {skill.level}%
                   </span>
                 </div>
 
-                {/* Progress Bar with Gradient Glow */}
+                {/* Hairline Luxury Progress Bar */}
                 <div
                   style={{
                     width: "100%",
-                    height: "6px",
-                    background: "var(--color-input-border)",
-                    borderRadius: "10px",
+                    height: "4px",
+                    background: "var(--bg-elevated)",
+                    borderRadius: "100px",
                     overflow: "hidden",
                     position: "relative",
                   }}
@@ -294,12 +354,12 @@ const Skills = () => {
                     initial={{ width: 0 }}
                     whileInView={{ width: `${skill.level}%` }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, ease: "easeOut" }}
+                    transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                     style={{
                       height: "100%",
-                      borderRadius: "10px",
-                      background: "linear-gradient(90deg, var(--color-primary), var(--color-secondary))",
-                      boxShadow: "0 0 10px rgba(0, 242, 254, 0.5)",
+                      borderRadius: "100px",
+                      background: "linear-gradient(90deg, var(--accent), #38BDF8)",
+                      boxShadow: "0 0 10px var(--accent-glow)",
                     }}
                   />
                 </div>
@@ -311,9 +371,9 @@ const Skills = () => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      marginTop: "6px",
-                      paddingTop: "6px",
-                      borderTop: "1px dashed rgba(255, 255, 255, 0.1)",
+                      marginTop: "4px",
+                      paddingTop: "8px",
+                      borderTop: "1px dashed var(--border-subtle)",
                     }}
                   >
                     <input
@@ -327,16 +387,17 @@ const Skills = () => {
                         );
                         updateSkills(updated);
                       }}
-                      style={{ flex: 1, marginRight: "10px" }}
+                      style={{ flex: 1, marginRight: "10px", accentColor: "var(--accent)" }}
                     />
                     <button
                       onClick={() => removeSkill(skill.id)}
                       style={{
                         background: "transparent",
                         border: "none",
-                        color: "#ff4757",
+                        color: "#ef4444",
                         cursor: "pointer",
                         fontSize: "0.9rem",
+                        padding: "4px",
                       }}
                       title={language === "th" ? "ลบทักษะนี้" : "Delete Skill"}
                     >

@@ -1,220 +1,214 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePortfolio } from "../context/PortfolioContext";
 import EditableText from "./EditableText";
 import { sanitizeUrl } from "../utils/security";
 import {
-  FiFolder,
   FiExternalLink,
   FiGithub,
-  FiPlus,
-  FiTrash2,
-  FiEye,
   FiStar,
-  FiChevronLeft,
-  FiChevronRight,
+  FiX,
   FiArrowRight,
   FiArrowLeft,
+  FiChevronLeft,
+  FiChevronRight,
+  FiPlus,
+  FiCode,
+  FiLayers,
+  FiBookOpen,
+  FiImage,
 } from "react-icons/fi";
 
-const CAROUSEL_LIMIT = 6;
-const AUTO_PLAY_INTERVAL = 4000;
+// Luxury Project Card with Cursor Spotlight & 3D Tilt (<= 6 deg)
+const LuxuryProjectCard = ({
+  project,
+  index,
+  isEditMode,
+  updateProjects,
+  onOpenDetail,
+  allProjects,
+  navigate,
+}) => {
+  const cardRef = useRef(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0, isHovered: false });
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
-const Projects = ({ showAll = false }) => {
-  const navigate = useNavigate();
-  const { data, updateProjects, removeProject, isEditMode, openCms, t, language } = usePortfolio();
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const intervalRef = useRef(null);
-  const carouselRef = useRef(null);
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-  const categories = t.projects.categories || ["All", "Web App", "3D & Creative", "Security"];
+    setMousePos({ x, y, isHovered: true });
 
-  const allProjects = data?.projects || [];
-
-  // For main page: only show first CAROUSEL_LIMIT projects
-  const displayProjects = showAll ? allProjects : allProjects.slice(0, CAROUSEL_LIMIT);
-
-  const filteredProjects = showAll
-    ? displayProjects.filter((project) => {
-        if (activeCategory === "All" || activeCategory === "ทั้งหมด") return true;
-        const catLower = (project.category || "").toLowerCase();
-        const selLower = activeCategory.toLowerCase();
-        if (selLower.includes("web")) return catLower.includes("web");
-        if (selLower.includes("3d") || selLower.includes("creative")) return catLower.includes("3d") || catLower.includes("creative");
-        if (selLower.includes("sec") || selLower.includes("security")) return catLower.includes("sec");
-        return catLower.includes(selLower);
-      })
-    : displayProjects;
-
-  const totalSlides = filteredProjects.length;
-
-  // How many cards visible at once
-  const getVisibleCount = useCallback(() => {
-    if (typeof window === "undefined") return 3;
-    if (window.innerWidth < 640) return 1;
-    if (window.innerWidth < 960) return 2;
-    return 3;
-  }, []);
-
-  const [visibleCount, setVisibleCount] = useState(getVisibleCount());
-
-  useEffect(() => {
-    const handleResize = () => setVisibleCount(getVisibleCount());
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [getVisibleCount]);
-
-  const maxSlideIndex = Math.max(0, totalSlides - visibleCount);
-
-  // Auto-play
-  useEffect(() => {
-    if (showAll || isPaused || totalSlides <= visibleCount) return;
-
-    intervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev >= maxSlideIndex ? 0 : prev + 1));
-    }, AUTO_PLAY_INTERVAL);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [showAll, isPaused, totalSlides, visibleCount, maxSlideIndex]);
-
-  const goToSlide = (idx) => {
-    setCurrentSlide(Math.max(0, Math.min(idx, maxSlideIndex)));
+    // Restrain 3D tilt to <= 6 degrees
+    const maxTilt = 6;
+    const normX = (x / rect.width) * 2 - 1;
+    const normY = (y / rect.height) * 2 - 1;
+    setTilt({
+      x: -normY * maxTilt,
+      y: normX * maxTilt,
+    });
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev <= 0 ? maxSlideIndex : prev - 1));
+  const handleMouseLeave = () => {
+    setMousePos((prev) => ({ ...prev, isHovered: false }));
+    setTilt({ x: 0, y: 0 });
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev >= maxSlideIndex ? 0 : prev + 1));
+  const handleGoToDetail = (e) => {
+    if (e) e.stopPropagation();
+    if (!isEditMode && navigate && project?.id) {
+      navigate(`/projects/${project.id}`);
+    }
   };
 
-  // Render single project card
-  const renderProjectCard = (project, index) => (
-    <motion.div
-      key={project.id}
-      layout
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -10, transition: { duration: 0.2 } }}
-      className="glass-card"
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleGoToDetail}
       style={{
+        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: mousePos.isHovered ? "transform 0.12s ease-out" : "transform 0.5s ease-out",
+        cursor: isEditMode ? "default" : "pointer",
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: "20px",
+        background: "var(--color-card-bg)",
+        border: "1px solid var(--border-subtle)",
         display: "flex",
         flexDirection: "column",
-        overflow: "hidden",
-        position: "relative",
-        minWidth: 0,
+        height: "100%",
+        boxShadow: "var(--color-card-shadow)",
       }}
+      className="project-luxury-card"
     >
-      {/* Project Image Preview */}
+      {/* Dynamic Cursor Spotlight Overlay */}
+      {mousePos.isHovered && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            zIndex: 1,
+            background: `radial-gradient(380px circle at ${mousePos.x}px ${mousePos.y}px, var(--accent-glow), transparent 70%)`,
+          }}
+        />
+      )}
+
+      {/* Image Container */}
       <div
         style={{
           position: "relative",
-          height: "200px",
+          width: "100%",
+          height: "220px",
           overflow: "hidden",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          if (!isEditMode) {
-            navigate(`/projects/${project.id}`);
-          }
+          background: "var(--bg-elevated)",
         }}
       >
         <img
           src={project.image}
           alt={project.title}
+          loading="lazy"
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            transition: "transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
+            transform: mousePos.isHovered ? "scale(1.05)" : "scale(1)",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(180deg, transparent 50%, var(--color-bg) 100%)",
+            background: "linear-gradient(180deg, transparent 40%, var(--bg-surface) 100%)",
+            opacity: 0.85,
           }}
         />
 
-        {/* Category Badge */}
-        <span
+        {/* Category Pill Tag */}
+        <div
           style={{
             position: "absolute",
-            top: "12px",
-            left: "12px",
-            background: "var(--color-badge-bg)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid var(--color-badge-border)",
-            color: "var(--color-primary)",
+            top: "14px",
+            left: "14px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "5px",
             padding: "4px 10px",
-            borderRadius: "20px",
-            fontSize: "0.75rem",
+            borderRadius: "100px",
+            background: "var(--nav-pill-bg)",
+            backdropFilter: "blur(12px)",
+            border: "1px solid var(--border-glass)",
+            fontSize: "0.72rem",
+            fontFamily: "var(--font-mono)",
+            color: "var(--accent)",
             fontWeight: "600",
+            zIndex: 2,
           }}
         >
           {project.category}
-        </span>
+        </div>
 
+        {/* Featured Star Badge */}
         {project.featured && (
-          <span
+          <div
             style={{
               position: "absolute",
-              top: "12px",
-              right: "12px",
-              background: "rgba(255, 209, 102, 0.2)",
-              border: "1px solid var(--color-accent-1)",
-              color: "var(--color-accent-1)",
-              padding: "4px 8px",
-              borderRadius: "20px",
-              fontSize: "0.72rem",
-              fontWeight: "700",
-              display: "flex",
+              top: "14px",
+              right: "14px",
+              display: "inline-flex",
               alignItems: "center",
               gap: "4px",
+              padding: "4px 10px",
+              borderRadius: "100px",
+              background: "rgba(245, 158, 11, 0.15)",
+              border: "1px solid rgba(245, 158, 11, 0.4)",
+              color: "#F59E0B",
+              fontSize: "0.72rem",
+              fontFamily: "var(--font-mono)",
+              fontWeight: "700",
+              zIndex: 2,
             }}
           >
-            <FiStar /> {t.projects.featured}
-          </span>
+            <FiStar size={11} />
+            <span>FEATURED</span>
+          </div>
         )}
       </div>
 
-      {/* Project Card Body */}
+      {/* Card Content Body */}
       <div
         style={{
-          padding: "1.5rem",
-          flex: 1,
+          padding: "1.4rem",
           display: "flex",
           flexDirection: "column",
+          flex: 1,
           justifyContent: "space-between",
           gap: "1rem",
+          zIndex: 2,
         }}
       >
         <div>
           <h3
             style={{
-              margin: "0 0 0.5rem 0",
-              fontSize: "1.15rem",
+              fontSize: "1.18rem",
               fontWeight: "700",
-              color: "var(--color-text-main)",
-              lineHeight: "1.4",
+              color: "var(--text-primary)",
+              lineHeight: 1.35,
+              marginBottom: "8px",
+              fontFamily: "var(--font-display)",
+              letterSpacing: "-0.015em",
             }}
           >
             <EditableText
               value={project.title}
               onSave={(val) => {
-                const updated = data.projects.map((p) =>
+                const updated = allProjects.map((p) =>
                   p.id === project.id ? { ...p, title: val } : p
                 );
                 updateProjects(updated);
@@ -224,10 +218,10 @@ const Projects = ({ showAll = false }) => {
 
           <p
             style={{
-              color: "var(--color-text-dim)",
-              fontSize: "0.88rem",
-              lineHeight: "1.6",
-              margin: "0 0 1rem 0",
+              color: "var(--text-secondary)",
+              fontSize: "0.86rem",
+              lineHeight: 1.6,
+              margin: 0,
               display: "-webkit-box",
               WebkitLineClamp: 3,
               WebkitBoxOrient: "vertical",
@@ -237,7 +231,7 @@ const Projects = ({ showAll = false }) => {
             <EditableText
               value={project.desc}
               onSave={(val) => {
-                const updated = data.projects.map((p) =>
+                const updated = allProjects.map((p) =>
                   p.id === project.id ? { ...p, desc: val } : p
                 );
                 updateProjects(updated);
@@ -245,522 +239,762 @@ const Projects = ({ showAll = false }) => {
               multiline
             />
           </p>
-
-          {/* Tech Badges */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-            {project.tech.map((t, idx) => (
-              <span
-                key={idx}
-                style={{
-                  background: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  color: "var(--color-primary)",
-                  padding: "3px 8px",
-                  borderRadius: "6px",
-                  fontSize: "0.75rem",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
-                {t}
-              </span>
-            ))}
-          </div>
         </div>
 
-        {/* Links / Action Footer */}
+        {/* Tech Stack Chips & Action Cue */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            paddingTop: "1rem",
-            borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+            flexWrap: "wrap",
+            gap: "8px",
+            paddingTop: "12px",
+            borderTop: "1px solid var(--border-subtle)",
           }}
         >
-          <div style={{ display: "flex", gap: "10px" }}>
-            {project.demoUrl && (
-              <a
-                href={sanitizeUrl(project.demoUrl)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-                style={{ padding: "6px 14px", fontSize: "0.82rem", borderRadius: "8px" }}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+            {(project.tech || []).slice(0, 3).map((tech, idx) => (
+              <span
+                key={idx}
+                style={{
+                  fontSize: "0.7rem",
+                  fontFamily: "var(--font-mono)",
+                  padding: "3px 8px",
+                  borderRadius: "6px",
+                  background: "var(--accent-muted)",
+                  border: "1px solid var(--border-subtle)",
+                  color: "var(--text-secondary)",
+                }}
               >
-                <span>{t.projects.demo}</span>
-                <FiExternalLink size={14} />
-              </a>
-            )}
-            {project.githubUrl && (
-              <a
-                href={sanitizeUrl(project.githubUrl)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary"
-                style={{ padding: "6px 14px", fontSize: "0.82rem", borderRadius: "8px" }}
-              >
-                <FiGithub size={14} />
-                <span>{t.projects.code}</span>
-              </a>
-            )}
+                {tech}
+              </span>
+            ))}
           </div>
 
-          <button
-            onClick={() => navigate(`/projects/${project.id}`)}
+          <div
+            onClick={handleGoToDetail}
             style={{
-              background: "transparent",
-              border: "none",
-              color: "var(--color-text-dim)",
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              color: "var(--accent)",
+              fontSize: "0.82rem",
+              fontWeight: "700",
+              fontFamily: "var(--font-mono)",
               cursor: "pointer",
-              fontSize: "1.1rem",
-              transition: "color 0.2s ease, transform 0.2s ease",
+              transition: "transform 0.2s ease, opacity 0.2s ease",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "var(--color-primary)";
-              e.currentTarget.style.transform = "scale(1.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "var(--color-text-dim)";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-            title={t?.projects?.viewDetails || "ดูรายละเอียดเต็ม"}
           >
-            <FiEye />
-          </button>
-
-          {isEditMode && (
-            <button
-              onClick={() => removeProject(project.id)}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "#ff4757",
-                cursor: "pointer",
-                fontSize: "1.1rem",
-              }}
-              title={language === "th" ? "ลบผลงานนี้" : "Delete Project"}
-            >
-              <FiTrash2 />
-            </button>
-          )}
+            <span>VIEW</span>
+            <FiArrowRight size={13} />
+          </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
+};
+
+// Main Projects Showcase Component
+const Projects = ({ showAll = false }) => {
+  const navigate = useNavigate();
+  const { data, updateProjects, isEditMode, openCms, t } = usePortfolio();
+
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  // Carousel State
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const filterTabs = [
+    { id: "All", label: "All Works", icon: <FiLayers /> },
+    { id: "EdTech", label: "สื่อการสอน", icon: <FiBookOpen /> },
+    { id: "Stickers", label: "สติกเกอร์ & กราฟิก", icon: <FiImage /> },
+    { id: "Projects", label: "โปรเจกต์ & โค้ด", icon: <FiCode /> },
+  ];
+
+  const allProjects = data?.projects || [];
+
+  // Responsive Items Per Page
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerPage(1);
+      } else if (window.innerWidth < 1024) {
+        setItemsPerPage(2);
+      } else {
+        setItemsPerPage(3);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Filter items matching selected category
+  const filteredProjects = allProjects.filter((p) => {
+    if (activeCategory === "All") return true;
+    const cat = (p.category || "").toLowerCase();
+    const title = (p.title || "").toLowerCase();
+    const desc = (p.desc || "").toLowerCase();
+
+    if (activeCategory === "EdTech") {
+      return (
+        cat.includes("สื่อ") ||
+        cat.includes("edtech") ||
+        cat.includes("เรียน") ||
+        cat.includes("สอน") ||
+        title.includes("สื่อ") ||
+        desc.includes("สื่อ")
+      );
+    }
+    if (activeCategory === "Stickers") {
+      return (
+        cat.includes("สติก") ||
+        cat.includes("sticker") ||
+        cat.includes("art") ||
+        cat.includes("creative") ||
+        cat.includes("design") ||
+        title.includes("สติก")
+      );
+    }
+    if (activeCategory === "Projects") {
+      return (
+        cat.includes("web") ||
+        cat.includes("app") ||
+        cat.includes("sec") ||
+        cat.includes("code") ||
+        cat.includes("project")
+      );
+    }
+    return true;
+  });
+
+  // Calculate carousel limits
+  const maxIndex = Math.max(0, filteredProjects.length - itemsPerPage);
+
+  // Reset index when category changes
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [activeCategory]);
+
+  // Ensure currentIndex stays within bounds when itemsPerPage changes
+  useEffect(() => {
+    if (currentIndex > maxIndex) {
+      setCurrentIndex(maxIndex);
+    }
+  }, [maxIndex, currentIndex]);
+
+  // Autoplay functionality (pauses on hover)
+  useEffect(() => {
+    if (showAll || isPaused || filteredProjects.length <= itemsPerPage) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [showAll, isPaused, filteredProjects.length, itemsPerPage, maxIndex]);
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  };
+
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setSelectedProject(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
-    <section id="projects" className="content-section">
+    <section id="projects" className="content-section" style={{ overflow: "hidden" }}>
       {/* Section Header */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-        style={{
-          textAlign: "center",
-          marginBottom: "3rem",
-          maxWidth: "1200px",
-          margin: "0 auto 3rem auto",
-          position: "relative",
-          width: "100%",
-        }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        style={{ textAlign: "center", marginBottom: "2.5rem" }}
       >
-        {/* บรรทัดที่ 1: ป้าย Badge (ตรงกลาง) */}
-        <div className="section-badge">
-          <FiFolder />
-          <span>{t.projects.badge}</span>
-        </div>
-
-        {/* บรรทัดที่ 2: แถวเดียวกัน (ซ้าย: ปุ่มกลับหน้าหลัก, กลาง: หัวข้อ ผลงานและ ระบบที่พัฒนา) */}
-        <div className="projects-header-row">
-          {showAll && (
-            <Link
-              to="/"
-              className="projects-back-btn"
-              title={t.projects.backToHome || "กลับหน้าหลัก"}
-            >
-              <FiArrowLeft size={18} />
-              <span>{t.projects.backToHome || "กลับหน้าหลัก"}</span>
-            </Link>
-          )}
-          <h2
-            className="section-title"
-            style={{
-              margin: 0,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              whiteSpace: "nowrap",
-              fontSize: "clamp(1.5rem, 3.8vw, 2.5rem)",
-            }}
-          >
-            {t.projects.titlePre} <span className="gradient-text">{t.projects.titleHighlight}</span>
-          </h2>
-        </div>
-
-        {/* บรรทัดที่ 3: คำอธิบาย (ตรงกลาง) */}
-        <p
-          className="section-subtitle-single"
-          style={{
-            maxWidth: "850px",
-            margin: "0 auto",
-            color: "var(--color-text-dim)",
-            whiteSpace: "nowrap",
-            fontSize: "clamp(0.85rem, 1.8vw, 1.05rem)",
-          }}
-        >
-          {t.projects.subtitle}
-        </p>
-      </motion.div>
-
-      {/* Category Tabs (only on "View All" page) */}
-      {showAll && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-            marginBottom: "2.5rem",
-          }}
-        >
-          {categories.map((cat) => (
+        {showAll && (
+          <div style={{ marginBottom: "1.5rem" }}>
             <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => navigate("/")}
+              className="btn-luxury-secondary"
               style={{
-                background:
-                  activeCategory === cat
-                    ? "linear-gradient(135deg, var(--color-primary), var(--color-secondary))"
-                    : "var(--color-glass-subtle)",
-                color: activeCategory === cat ? "#fff" : "var(--color-text-dim)",
-                border: activeCategory === cat ? "none" : "1px solid var(--color-card-border)",
-                borderRadius: "30px",
-                padding: "8px 20px",
-                fontSize: "0.88rem",
-                fontWeight: "600",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-              }}
-            >
-              {cat}
-            </button>
-          ))}
-
-          {isEditMode && (
-            <button
-              onClick={() => openCms("projects")}
-              style={{
-                background: "rgba(0, 255, 135, 0.15)",
-                color: "var(--color-accent-2)",
-                border: "1px dashed var(--color-accent-2)",
-                borderRadius: "30px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
                 padding: "8px 18px",
                 fontSize: "0.85rem",
-                fontWeight: "600",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
               }}
             >
-              <FiPlus /> {t.projects.manage}
+              <FiArrowLeft />
+              <span>กลับสู่หน้าแรก (Home)</span>
             </button>
-          )}
-        </div>
-      )}
+          </div>
+        )}
 
-      {/* ===== CAROUSEL VIEW (Main Page) ===== */}
-      {!showAll && (
+        <span className="eyebrow-label">// 02 — INNOVATIVE WORK & ARTIFACTS</span>
+        <h2 className="section-title">
+          {t.projects?.titlePre || "คลังนวัตกรรมและ"}{" "}
+          <span className="gradient-text">{t.projects?.titleHighlight || "ผลงานสร้างสรรค์"}</span>
+        </h2>
+        <p className="section-subtitle">
+          {t.projects?.subtitle ||
+            "รวมผลงานพัฒนาสื่อนวัตกรรมการศึกษา สติกเกอร์สร้างสรรค์ และโปรเจกต์เทคโนโลยีความมั่นคงปลอดภัย"}
+        </p>
+
+        {/* Animated Filter Tabs */}
         <div
-          className="projects-carousel-wrapper"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "4px",
+            background: "var(--accent-muted)",
+            padding: "4px",
+            borderRadius: "100px",
+            border: "1px solid var(--border-subtle)",
+            maxWidth: "96vw",
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {filterTabs.map((tab) => {
+            const isActive = activeCategory === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveCategory(tab.id)}
+                style={{
+                  position: "relative",
+                  background: "transparent",
+                  border: "none",
+                  color: isActive ? "var(--nav-link-active)" : "var(--nav-link-color)",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "0.86rem",
+                  fontWeight: isActive ? "700" : "500",
+                  padding: "7px 18px",
+                  borderRadius: "100px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  whiteSpace: "nowrap",
+                  transition: "color 0.2s ease",
+                  zIndex: 1,
+                }}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="projectActiveFilter"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "var(--nav-pill-bg)",
+                      border: "1px solid var(--accent-border)",
+                      borderRadius: "100px",
+                      boxShadow: "0 4px 15px var(--accent-muted)",
+                      zIndex: -1,
+                    }}
+                  />
+                )}
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Main Display: Carousel on Home, Grid on AllProjectsPage */}
+      {showAll ? (
+        /* Full Grid for /projects page */
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+            gap: "1.5rem",
+          }}
+        >
+          {filteredProjects.map((project, idx) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: idx * 0.05 }}
+            >
+              <LuxuryProjectCard
+                project={project}
+                index={idx}
+                isEditMode={isEditMode}
+                updateProjects={updateProjects}
+                onOpenDetail={(proj) => setSelectedProject(proj)}
+                allProjects={allProjects}
+                navigate={navigate}
+              />
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        /* Interactive Carousel Mode */
+        <div
+          className="carousel-container"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          ref={carouselRef}
+          style={{ position: "relative", width: "100%" }}
         >
-          {/* Carousel Navigation Arrows */}
-          {totalSlides > visibleCount && (
-            <>
-              <button
-                className="carousel-arrow carousel-arrow-left"
-                onClick={prevSlide}
-                aria-label="Previous"
-              >
-                <FiChevronLeft size={22} />
-              </button>
-              <button
-                className="carousel-arrow carousel-arrow-right"
-                onClick={nextSlide}
-                aria-label="Next"
-              >
-                <FiChevronRight size={22} />
-              </button>
-            </>
-          )}
-
-          {/* Carousel Track */}
-          <div className="projects-carousel-track-container">
+          {/* Carousel Viewport */}
+          <div
+            style={{
+              overflow: "hidden",
+              position: "relative",
+              width: "100%",
+              padding: "10px 0 20px 0",
+            }}
+          >
             <motion.div
-              className="projects-carousel-track"
+              className="carousel-track"
               animate={{
-                x: `-${currentSlide * (100 / visibleCount)}%`,
+                x: `-${currentIndex * (100 / itemsPerPage)}%`,
               }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                duration: 0.65,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               style={{
                 display: "flex",
-                gap: "1.5rem",
+                margin: "0 -0.75rem",
+                willChange: "transform",
               }}
             >
-              {filteredProjects.map((project, index) => (
+              {filteredProjects.map((project, idx) => (
                 <div
-                  key={project.id}
-                  className="carousel-slide"
+                  key={project.id || idx}
                   style={{
-                    flex: `0 0 calc(${100 / visibleCount}% - ${((visibleCount - 1) * 1.5) / visibleCount}rem)`,
-                    minWidth: 0,
+                    flex: `0 0 ${100 / itemsPerPage}%`,
+                    maxWidth: `${100 / itemsPerPage}%`,
+                    padding: "0 0.75rem",
+                    boxSizing: "border-box",
                   }}
                 >
-                  {renderProjectCard(project, index)}
+                  <LuxuryProjectCard
+                    project={project}
+                    index={idx}
+                    isEditMode={isEditMode}
+                    updateProjects={updateProjects}
+                    onOpenDetail={(proj) => setSelectedProject(proj)}
+                    allProjects={allProjects}
+                    navigate={navigate}
+                  />
                 </div>
               ))}
             </motion.div>
           </div>
 
-          {/* Carousel Dots Indicator */}
-          {totalSlides > visibleCount && (
-            <div className="carousel-dots">
-              {Array.from({ length: maxSlideIndex + 1 }).map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => goToSlide(idx)}
-                  className={`carousel-dot ${currentSlide === idx ? "carousel-dot-active" : ""}`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Auto-play progress bar */}
-          {!isPaused && totalSlides > visibleCount && (
-            <div className="carousel-progress-bar">
-              <motion.div
-                className="carousel-progress-fill"
-                key={currentSlide}
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: AUTO_PLAY_INTERVAL / 1000, ease: "linear" }}
-              />
-            </div>
-          )}
-
-          {/* "View All" Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            style={{ textAlign: "center", marginTop: "2.8rem" }}
-          >
-            <button
-              onClick={() => {
-                window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-                navigate("/projects");
-              }}
-              className="btn-primary"
+          {/* Carousel Navigation Bar (Prev / Next & Dots) */}
+          {filteredProjects.length > itemsPerPage && (
+            <div
               style={{
-                padding: "14px 38px",
-                fontSize: "1rem",
-                fontWeight: "600",
-                borderRadius: "30px",
-                gap: "10px",
-                display: "inline-flex",
+                display: "flex",
                 alignItems: "center",
-                cursor: "pointer",
-                boxShadow: "0 0 25px var(--color-primary-glow)",
-                border: "none",
-                transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                justifyContent: "center",
+                gap: "1.25rem",
+                marginTop: "1.25rem",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-3px)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
             >
-              <span>{t.projects.viewAll || "ดูผลงานทั้งหมด & เพิ่มเติม"}</span>
-              <FiArrowRight size={18} />
-            </button>
-          </motion.div>
-
-          {/* Manage button for edit mode */}
-          {isEditMode && (
-            <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+              {/* Prev Button */}
               <button
-                onClick={() => openCms("projects")}
+                onClick={handlePrev}
+                aria-label="Previous project"
+                className="carousel-nav-btn"
                 style={{
-                  background: "rgba(0, 255, 135, 0.15)",
-                  color: "var(--color-accent-2)",
-                  border: "1px dashed var(--color-accent-2)",
-                  borderRadius: "30px",
-                  padding: "10px 22px",
-                  fontSize: "0.88rem",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  display: "inline-flex",
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  background: "var(--nav-pill-bg)",
+                  border: "1px solid var(--border-glass)",
+                  color: "var(--text-primary)",
+                  display: "flex",
                   alignItems: "center",
-                  gap: "6px",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  backdropFilter: "blur(12px)",
+                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+                  transition: "all 0.2s ease",
                 }}
               >
-                <FiPlus /> {t.projects.manage}
+                <FiChevronLeft size={20} />
+              </button>
+
+              {/* Dots / Page Indicator */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "6px 14px",
+                  borderRadius: "100px",
+                  background: "var(--nav-pill-bg)",
+                  border: "1px solid var(--border-subtle)",
+                  backdropFilter: "blur(12px)",
+                }}
+              >
+                {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentIndex(idx)}
+                    aria-label={`Go to slide ${idx + 1}`}
+                    style={{
+                      width: currentIndex === idx ? "22px" : "8px",
+                      height: "8px",
+                      borderRadius: "100px",
+                      background:
+                        currentIndex === idx ? "var(--accent)" : "var(--text-tertiary)",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+                      opacity: currentIndex === idx ? 1 : 0.45,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNext}
+                aria-label="Next project"
+                className="carousel-nav-btn"
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  background: "var(--nav-pill-bg)",
+                  border: "1px solid var(--border-glass)",
+                  color: "var(--text-primary)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  backdropFilter: "blur(12px)",
+                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <FiChevronRight size={20} />
               </button>
             </div>
           )}
+
+          {/* View More Projects CTA Button */}
+          <div style={{ textAlign: "center", marginTop: "2.75rem" }}>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate("/projects")}
+              className="btn-luxury-primary"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "14px 34px",
+                fontSize: "0.96rem",
+                fontWeight: "600",
+                letterSpacing: "0.02em",
+                borderRadius: "100px",
+                boxShadow: "0 8px 30px var(--accent-glow)",
+                cursor: "pointer",
+              }}
+            >
+              <span>ดูผลงานเพิ่มเติม</span>
+              <FiArrowRight size={18} />
+            </motion.button>
+          </div>
         </div>
       )}
 
-      {/* ===== GRID VIEW (All Projects Page) ===== */}
-      {showAll && (
-        <motion.div
-          layout
+      {/* Empty Filter State */}
+      {filteredProjects.length === 0 && (
+        <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "2rem",
+            textAlign: "center",
+            padding: "4rem 2rem",
+            color: "var(--text-secondary)",
           }}
         >
-          <AnimatePresence>
-            {filteredProjects.map((project, index) => renderProjectCard(project, index))}
-          </AnimatePresence>
-        </motion.div>
+          <p>ไม่พบรายการในหมวดหมู่นี้</p>
+        </div>
       )}
 
-      {/* Carousel CSS */}
+      {/* Add Project Button (in Edit Mode) */}
+      {isEditMode && (
+        <div style={{ textAlign: "center", marginTop: "2.5rem" }}>
+          <button
+            onClick={() => openCms("projects")}
+            className="btn-luxury-primary"
+            style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}
+          >
+            <FiPlus />
+            <span>จัดการ / เพิ่มผลงานใหม่</span>
+          </button>
+        </div>
+      )}
+
+      {/* Detail Modal (Shared-Element / Luxury Glass Panel) */}
+      <AnimatePresence>
+        {selectedProject && (
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 2000,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "1.25rem",
+            }}
+          >
+            {/* Backdrop Blur */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedProject(null)}
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "rgba(0, 0, 0, 0.75)",
+                backdropFilter: "blur(18px)",
+                WebkitBackdropFilter: "blur(18px)",
+              }}
+            />
+
+            {/* Modal Dialog Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 20 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                position: "relative",
+                width: "100%",
+                maxWidth: "760px",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                background: "var(--bg-surface)",
+                border: "1px solid var(--border-glass)",
+                borderRadius: "24px",
+                boxShadow: "0 30px 80px rgba(0, 0, 0, 0.7)",
+                zIndex: 10,
+              }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedProject(null)}
+                style={{
+                  position: "absolute",
+                  top: "16px",
+                  right: "16px",
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  background: "var(--glass-bg)",
+                  border: "1px solid var(--border-glass)",
+                  color: "var(--text-primary)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  zIndex: 20,
+                  transition: "all 0.2s ease",
+                }}
+                aria-label="Close modal"
+              >
+                <FiX size={18} />
+              </button>
+
+              {/* Modal Cover Image */}
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "320px",
+                  overflow: "hidden",
+                }}
+              >
+                <img
+                  src={selectedProject.image}
+                  alt={selectedProject.title}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(180deg, transparent 40%, var(--bg-surface) 100%)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "20px",
+                    left: "24px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <span
+                    style={{
+                      padding: "4px 12px",
+                      borderRadius: "100px",
+                      background: "var(--nav-pill-bg)",
+                      border: "1px solid var(--accent-border)",
+                      color: "var(--accent)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "0.78rem",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {selectedProject.category}
+                  </span>
+                </div>
+              </div>
+
+              {/* Modal Body */}
+              <div
+                style={{
+                  padding: "2rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1.5rem",
+                }}
+              >
+                <div>
+                  <h3
+                    style={{
+                      fontSize: "1.75rem",
+                      fontWeight: "700",
+                      color: "var(--text-primary)",
+                      fontFamily: "var(--font-display)",
+                      letterSpacing: "-0.02em",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    {selectedProject.title}
+                  </h3>
+                  <p
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "1rem",
+                      lineHeight: "1.8",
+                      margin: 0,
+                    }}
+                  >
+                    {selectedProject.desc}
+                  </p>
+                </div>
+
+                {/* Tech Stack List */}
+                <div>
+                  <div
+                    style={{
+                      fontSize: "0.76rem",
+                      fontFamily: "var(--font-mono)",
+                      color: "var(--text-tertiary)",
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    // TECH STACK & TOOLS
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    {(selectedProject.tech || []).map((t, idx) => (
+                      <span
+                        key={idx}
+                        style={{
+                          fontSize: "0.8rem",
+                          fontFamily: "var(--font-mono)",
+                          padding: "5px 12px",
+                          borderRadius: "8px",
+                          background: "var(--accent-muted)",
+                          border: "1px solid var(--border-subtle)",
+                          color: "var(--text-primary)",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    flexWrap: "wrap",
+                    paddingTop: "1rem",
+                    borderTop: "1px solid var(--border-subtle)",
+                  }}
+                >
+                  {selectedProject.demoUrl && (
+                    <a
+                      href={sanitizeUrl(selectedProject.demoUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-luxury-primary"
+                    >
+                      <span>เปิดดูผลงานจริง</span>
+                      <FiExternalLink />
+                    </a>
+                  )}
+
+                  {selectedProject.githubUrl && (
+                    <a
+                      href={sanitizeUrl(selectedProject.githubUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-luxury-secondary"
+                    >
+                      <FiGithub />
+                      <span>ดูซอร์สโค้ด (GitHub)</span>
+                    </a>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      setSelectedProject(null);
+                      navigate(`/projects/${selectedProject.id}`);
+                    }}
+                    className="btn-luxury-secondary"
+                  >
+                    <span>หน้ารายละเอียดเต็ม</span>
+                    <FiArrowRight />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <style>{`
-        .projects-carousel-wrapper {
-          position: relative;
-          padding: 0 0;
-        }
-
-        .projects-carousel-track-container {
-          overflow: hidden;
-          border-radius: 16px;
-        }
-
-        .projects-carousel-track {
-          display: flex;
-        }
-
-        .carousel-slide {
-          flex-shrink: 0;
-        }
-
-        .carousel-slide .glass-card {
-          height: 100%;
-        }
-
-        /* Arrows */
-        .carousel-arrow {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 10;
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          background: var(--color-card-bg);
-          backdrop-filter: blur(12px);
-          border: 1px solid var(--color-card-border);
-          color: var(--color-text-main);
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: var(--color-card-shadow);
-          transition: all 0.2s ease;
-        }
-
-        .carousel-arrow:hover {
-          border-color: var(--color-primary);
-          box-shadow: 0 0 20px var(--color-primary-glow);
-          color: var(--color-primary);
-          transform: translateY(-50%) scale(1.1);
-        }
-
-        .carousel-arrow-left {
-          left: -22px;
-        }
-
-        .carousel-arrow-right {
-          right: -22px;
-        }
-
-        /* Dots */
-        .carousel-dots {
-          display: flex;
-          justify-content: center;
-          gap: 8px;
-          margin-top: 1.5rem;
-        }
-
-        .carousel-dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          border: 2px solid var(--color-card-border);
-          background: transparent;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          padding: 0;
-        }
-
-        .carousel-dot:hover {
-          border-color: var(--color-primary);
-        }
-
-        .carousel-dot-active {
-          background: var(--color-primary);
-          border-color: var(--color-primary);
-          transform: scale(1.2);
-          box-shadow: 0 0 8px var(--color-primary-glow);
-        }
-
-        /* Progress bar */
-        .carousel-progress-bar {
-          margin-top: 1rem;
-          height: 3px;
-          background: var(--color-glass-subtle);
-          border-radius: 3px;
-          overflow: hidden;
-          max-width: 300px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .carousel-progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-          border-radius: 3px;
-        }
-
-        @media (max-width: 960px) {
-          .carousel-arrow-left {
-            left: 8px;
-          }
-          .carousel-arrow-right {
-            right: 8px;
-          }
-          .carousel-arrow {
-            width: 38px;
-            height: 38px;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .carousel-arrow {
-            width: 34px;
-            height: 34px;
-          }
-          .carousel-arrow-left {
-            left: 4px;
-          }
-          .carousel-arrow-right {
-            right: 4px;
-          }
+        .carousel-nav-btn:hover {
+          border-color: var(--accent) !important;
+          color: var(--accent) !important;
+          transform: scale(1.08);
         }
       `}</style>
     </section>

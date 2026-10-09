@@ -20,25 +20,10 @@ import {
 import { saveContactMessage } from "../lib/portfolioService";
 import { sanitizeUrl } from "../utils/security";
 
-// ============================================================
 // EmailJS Configuration
-// ============================================================
-// To set this up for real email delivery to kamonpach.siri@gmail.com:
-//
-// 1. Go to https://www.emailjs.com/ and create a free account
-// 2. Add an Email Service (Gmail) → you'll get a SERVICE_ID
-// 3. Create an Email Template with these variables:
-//    - {{from_name}}  → sender's name
-//    - {{from_email}} → sender's email
-//    - {{subject}}    → subject line
-//    - {{message}}    → message body
-//    Set the "To Email" in the template to: kamonpach.siri@gmail.com
-// 4. Copy your Public Key from Account → General
-// 5. Replace the values below:
-// ============================================================
-const EMAILJS_SERVICE_ID = "service_portfolio";    // Replace with your actual service ID
-const EMAILJS_TEMPLATE_ID = "template_contact";    // Replace with your actual template ID
-const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY_HERE";  // Replace with your actual public key
+const EMAILJS_SERVICE_ID = "service_portfolio";
+const EMAILJS_TEMPLATE_ID = "template_contact";
+const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY_HERE";
 
 const Contact = () => {
   const { data, updateContact, t } = usePortfolio();
@@ -55,7 +40,7 @@ const Contact = () => {
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(data.contact.email);
+    navigator.clipboard.writeText(data?.contact?.email || "");
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
   };
@@ -98,7 +83,7 @@ const Contact = () => {
           particleCount: 90,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ["#00f2fe", "#8a2be2", "#00ff87", "#ffd166"],
+          colors: ["#38BDF8", "#0284C7", "#00FF87", "#F59E0B"],
         });
       } catch (err) {
         // fallback
@@ -108,7 +93,6 @@ const Contact = () => {
       setTimeout(() => setIsSuccess(false), 6000);
     } catch (error) {
       console.error("Contact Submission Error:", error);
-      // If EmailJS failed but database saved or user just wants confirmation
       setIsSuccess(true);
       setFormState({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setIsSuccess(false), 6000);
@@ -121,28 +105,24 @@ const Contact = () => {
     <section id="contact" className="content-section">
       {/* Section Header */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         style={{ textAlign: "center", marginBottom: "3.5rem" }}
       >
-        <div className="section-badge">
-          <FiMail />
-          <span>{t.contact.badge}</span>
-        </div>
+        <span className="eyebrow-label">// 05 — GET IN TOUCH & COLLABORATION</span>
         <h2 className="section-title">
-          {t.contact.titlePre} <span className="gradient-text">{t.contact.titleHighlight}</span>
+          {t.contact?.titlePre || "ช่องทางการติดต่อและ"}{" "}
+          <span className="gradient-text">{t.contact?.titleHighlight || "ร่วมงาน"}</span>
         </h2>
-        <p
-          className="section-subtitle-single"
-          style={{ maxWidth: "850px", margin: "0 auto", color: "var(--color-text-dim)" }}
-        >
-          {t.contact.subtitle}
+        <p className="section-subtitle">
+          {t.contact?.subtitle ||
+            "พร้อมร่วมงาน แลกเปลี่ยนความรู้ด้าน Cybersecurity และการพัฒนานวัตกรรมเทคโนโลยีเพื่อการศึกษา"}
         </p>
       </motion.div>
 
-      {/* Main Grid: Info Cards + Form with Scroll Motion */}
+      {/* Main Grid: Info Cards + Form */}
       <div
         style={{
           display: "grid",
@@ -154,69 +134,103 @@ const Contact = () => {
       >
         {/* Left Column: Direct Info & Social Cards */}
         <motion.div
-          initial={{ opacity: 0, x: -40 }}
+          initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
-          {/* Welcome Mascot Card featuring 13.png */}
+          {/* Warm Welcome Mascot Card */}
           <div
-            className="glass-card"
             style={{
               padding: "1.4rem 1.6rem",
               display: "flex",
               alignItems: "center",
-              gap: "1rem",
-              background: "linear-gradient(135deg, rgba(0, 242, 254, 0.08), rgba(138, 43, 226, 0.08))",
-              border: "1px solid rgba(0, 242, 254, 0.25)",
+              gap: "1.2rem",
+              borderRadius: "20px",
+              background: "var(--color-card-bg)",
+              border: "1px solid var(--accent-border)",
+              boxShadow: "var(--color-card-shadow)",
             }}
           >
             <img
               src="/img/13.webp"
               alt="ขอบคุณครับ"
               style={{
-                width: "60px",
-                height: "60px",
+                width: "56px",
+                height: "56px",
                 objectFit: "contain",
-                filter: "drop-shadow(0 4px 10px rgba(0, 242, 254, 0.3))",
+                filter: "drop-shadow(0 4px 10px var(--accent-glow))",
               }}
             />
             <div>
-              <div style={{ fontSize: "0.78rem", color: "var(--color-primary)", fontWeight: "700", letterSpacing: "0.5px" }}>
-                ✨ WARM WELCOME // ข้อความจากครูเพชร
+              <div
+                style={{
+                  fontSize: "0.76rem",
+                  color: "var(--accent)",
+                  fontWeight: "700",
+                  fontFamily: "var(--font-mono)",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                // WARM WELCOME
               </div>
-              <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--color-text-main)", marginTop: "2px" }}>
+              <div
+                style={{
+                  fontSize: "0.92rem",
+                  fontWeight: "600",
+                  color: "var(--text-primary)",
+                  marginTop: "3px",
+                  lineHeight: 1.5,
+                }}
+              >
                 "ขอบคุณที่เข้ามาเยี่ยมชมครับ :) หากมีข้อเสนอแนะหรือต้องการร่วมงาน ทักทายมาได้เลยครับ"
               </div>
             </div>
           </div>
 
           {/* Quick Email Card */}
-          <div className="glass-card" style={{ padding: "1.8rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1rem" }}>
+          <div
+            style={{
+              padding: "1.75rem",
+              borderRadius: "20px",
+              background: "var(--color-card-bg)",
+              border: "1px solid var(--border-subtle)",
+              boxShadow: "var(--color-card-shadow)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "1.2rem" }}>
               <div
                 style={{
                   width: "44px",
                   height: "44px",
-                  borderRadius: "10px",
-                  background: "rgba(0, 242, 254, 0.1)",
-                  color: "var(--color-primary)",
+                  borderRadius: "12px",
+                  background: "var(--accent-muted)",
+                  color: "var(--accent)",
+                  border: "1px solid var(--border-subtle)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "1.2rem",
+                  fontSize: "1.25rem",
                 }}
               >
                 <FiMail />
               </div>
               <div>
-                <span style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", textTransform: "uppercase" }}>
-                  {t.contact.directTitle}
+                <span
+                  style={{
+                    fontSize: "0.74rem",
+                    color: "var(--text-tertiary)",
+                    textTransform: "uppercase",
+                    fontFamily: "var(--font-mono)",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  {t.contact?.directTitle || "DIRECT EMAIL"}
                 </span>
-                <div style={{ fontWeight: "700", color: "var(--color-text-main)", fontSize: "1.05rem" }}>
+                <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "1.05rem" }}>
                   <EditableText
-                    value={data.contact.email}
+                    value={data?.contact?.email || ""}
                     onSave={(val) => updateContact({ email: val })}
                   />
                 </div>
@@ -225,53 +239,64 @@ const Contact = () => {
 
             <button
               onClick={handleCopyEmail}
+              className="btn-luxury-secondary"
               style={{
                 width: "100%",
-                background: "var(--color-glass-subtle)",
-                border: "1px solid var(--color-card-border)",
-                color: copiedEmail ? "var(--color-accent-2)" : "var(--color-text-main)",
-                borderRadius: "8px",
-                padding: "8px",
-                fontSize: "0.85rem",
-                fontWeight: "600",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
+                padding: "10px",
+                fontSize: "0.86rem",
                 justifyContent: "center",
-                gap: "6px",
-                transition: "all 0.2s ease",
+                borderRadius: "12px",
+                color: copiedEmail ? "#10B981" : "var(--text-primary)",
+                borderColor: copiedEmail ? "#10B981" : "var(--border-subtle)",
               }}
             >
               {copiedEmail ? <FiCheck /> : <FiCopy />}
-              <span>{copiedEmail ? t.contact.copiedEmail : t.contact.copyEmail}</span>
+              <span>{copiedEmail ? (t.contact?.copiedEmail || "คัดลอกอีเมลแล้ว!") : (t.contact?.copyEmail || "คัดลอกอีเมล")}</span>
             </button>
           </div>
 
           {/* Location & Availability Card */}
-          <div className="glass-card" style={{ padding: "1.8rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1rem" }}>
+          <div
+            style={{
+              padding: "1.75rem",
+              borderRadius: "20px",
+              background: "var(--color-card-bg)",
+              border: "1px solid var(--border-subtle)",
+              boxShadow: "var(--color-card-shadow)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "1rem" }}>
               <div
                 style={{
                   width: "44px",
                   height: "44px",
-                  borderRadius: "10px",
-                  background: "rgba(0, 255, 135, 0.1)",
-                  color: "var(--color-accent-2)",
+                  borderRadius: "12px",
+                  background: "rgba(16, 185, 129, 0.12)",
+                  color: "#10B981",
+                  border: "1px solid rgba(16, 185, 129, 0.25)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "1.2rem",
+                  fontSize: "1.25rem",
                 }}
               >
                 <FiMapPin />
               </div>
               <div>
-                <span style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", textTransform: "uppercase" }}>
-                  {t.contact.locationTitle}
+                <span
+                  style={{
+                    fontSize: "0.74rem",
+                    color: "var(--text-tertiary)",
+                    textTransform: "uppercase",
+                    fontFamily: "var(--font-mono)",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  {t.contact?.locationTitle || "LOCATION & STATUS"}
                 </span>
-                <div style={{ fontWeight: "700", color: "var(--color-text-main)", fontSize: "1.05rem" }}>
+                <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "1.05rem" }}>
                   <EditableText
-                    value={data.contact.location}
+                    value={data?.contact?.location || ""}
                     onSave={(val) => updateContact({ location: val })}
                   />
                 </div>
@@ -280,222 +305,359 @@ const Contact = () => {
 
             <div
               style={{
-                background: "var(--color-badge-bg)",
-                border: "1px solid var(--color-badge-border)",
-                borderRadius: "8px",
-                padding: "10px 14px",
-                color: "var(--color-accent-2)",
+                background: "rgba(16, 185, 129, 0.08)",
+                border: "1px solid rgba(16, 185, 129, 0.25)",
+                borderRadius: "10px",
+                padding: "8px 14px",
+                color: "#10B981",
                 fontSize: "0.85rem",
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
+                fontWeight: "600",
               }}
             >
               <FiCheckCircle />
               <EditableText
-                value={data.contact.availability}
+                value={data?.contact?.availability || "Available for Opportunities"}
                 onSave={(val) => updateContact({ availability: val })}
               />
             </div>
           </div>
 
           {/* Social Network Channels */}
-          <div className="glass-card" style={{ padding: "1.8rem" }}>
-            <div style={{ fontSize: "0.85rem", color: "var(--color-text-dim)", marginBottom: "1rem", textTransform: "uppercase", letterSpacing: "1px" }}>
-              {t.contact.networksTitle}
+          <div
+            style={{
+              padding: "1.75rem",
+              borderRadius: "20px",
+              background: "var(--color-card-bg)",
+              border: "1px solid var(--border-subtle)",
+              boxShadow: "var(--color-card-shadow)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "0.74rem",
+                color: "var(--text-tertiary)",
+                marginBottom: "1rem",
+                textTransform: "uppercase",
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "0.08em",
+              }}
+            >
+              {t.contact?.networksTitle || "// NETWORK CHANNELS"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-              {data.contact.github && (
+              {data?.contact?.github && (
                 <a
                   href={sanitizeUrl(data.contact.github)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="btn-luxury-secondary"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    background: "rgba(255, 255, 255, 0.04)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    padding: "10px 14px",
-                    borderRadius: "8px",
-                    color: "var(--color-text-main)",
-                    textDecoration: "none",
-                    fontSize: "0.9rem",
-                    transition: "all 0.2s ease",
+                    padding: "9px 14px",
+                    borderRadius: "10px",
+                    fontSize: "0.85rem",
+                    justifyContent: "flex-start",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--color-primary)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)")}
                 >
-                  <FiGithub size={16} /> GitHub
+                  <FiGithub size={16} /> <span>GitHub</span>
                 </a>
               )}
 
-              {data.contact.linkedin && (
+              {data?.contact?.linkedin && (
                 <a
                   href={sanitizeUrl(data.contact.linkedin)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="btn-luxury-secondary"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    background: "var(--color-glass-subtle)",
-                    border: "1px solid var(--color-card-border)",
-                    padding: "10px 14px",
-                    borderRadius: "8px",
-                    color: "var(--color-text-main)",
-                    textDecoration: "none",
-                    fontSize: "0.9rem",
-                    transition: "all 0.2s ease",
+                    padding: "9px 14px",
+                    borderRadius: "10px",
+                    fontSize: "0.85rem",
+                    justifyContent: "flex-start",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--color-primary)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--color-card-border)")}
                 >
-                  <FiLinkedin size={16} /> LinkedIn
+                  <FiLinkedin size={16} /> <span>LinkedIn</span>
                 </a>
               )}
 
-              {data.contact.twitter && (
+              {data?.contact?.twitter && (
                 <a
                   href={sanitizeUrl(data.contact.twitter)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="btn-luxury-secondary"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    background: "var(--color-glass-subtle)",
-                    border: "1px solid var(--color-card-border)",
-                    padding: "10px 14px",
-                    borderRadius: "8px",
-                    color: "var(--color-text-main)",
-                    textDecoration: "none",
-                    fontSize: "0.9rem",
-                    transition: "all 0.2s ease",
+                    padding: "9px 14px",
+                    borderRadius: "10px",
+                    fontSize: "0.85rem",
+                    justifyContent: "flex-start",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--color-primary)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--color-card-border)")}
                 >
-                  <FiTwitter size={16} /> Twitter / X
+                  <FiTwitter size={16} /> <span>Twitter / X</span>
                 </a>
               )}
 
-              {data.contact.discord && (
+              {data?.contact?.discord && (
                 <div
+                  className="btn-luxury-secondary"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    background: "var(--color-glass-subtle)",
-                    border: "1px solid var(--color-card-border)",
-                    padding: "10px 14px",
-                    borderRadius: "8px",
-                    color: "var(--color-text-main)",
-                    fontSize: "0.9rem",
+                    padding: "9px 14px",
+                    borderRadius: "10px",
+                    fontSize: "0.85rem",
+                    justifyContent: "flex-start",
+                    cursor: "default",
                   }}
                 >
-                  <FiMessageSquare size={16} /> {data.contact.discord}
+                  <FiMessageSquare size={16} /> <span>{data.contact.discord}</span>
                 </div>
               )}
             </div>
           </div>
         </motion.div>
 
-        {/* Right Column: Transmission Form */}
+        {/* Right Column: Encrypted-Feel Transmission Form */}
         <motion.div
-          initial={{ opacity: 0, x: 40 }}
+          initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="glass-card"
-          style={{ padding: "2.5rem" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            padding: "2.5rem",
+            borderRadius: "24px",
+            background: "var(--color-card-bg)",
+            border: "1px solid var(--border-subtle)",
+            boxShadow: "var(--color-card-shadow)",
+          }}
         >
-          <h3 style={{ margin: "0 0 1.5rem 0", fontSize: "1.4rem", fontWeight: "700" }}>
-            {t.contact.formTitle}
-          </h3>
+          <div style={{ marginBottom: "1.75rem" }}>
+            <span
+              style={{
+                fontSize: "0.74rem",
+                color: "var(--accent)",
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+              }}
+            >
+              // SECURE TRANSMISSION
+            </span>
+            <h3
+              style={{
+                margin: "4px 0 0 0",
+                fontSize: "1.5rem",
+                fontWeight: "700",
+                color: "var(--text-primary)",
+                fontFamily: "var(--font-display)",
+                letterSpacing: "-0.015em",
+              }}
+            >
+              {t.contact?.formTitle || "ส่งข้อความถึงครูเพชร"}
+            </h3>
+          </div>
 
-          <form ref={formRef} onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+          <form ref={formRef} onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }} className="form-row">
               <div>
-                <label className="cms-label">{t.contact.nameLabel}</label>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.82rem",
+                    fontWeight: "600",
+                    color: "var(--text-primary)",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {t.contact?.nameLabel || "ชื่อผู้ติดต่อ"}
+                </label>
                 <input
                   required
                   type="text"
                   name="from_name"
-                  placeholder={t.contact.namePlaceholder}
-                  className="cms-input"
+                  placeholder={t.contact?.namePlaceholder || "สมชาย ใจดี"}
                   value={formState.name}
                   onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: "12px",
+                    background: "var(--bg-elevated)",
+                    border: "1px solid var(--border-subtle)",
+                    color: "var(--text-primary)",
+                    fontSize: "0.92rem",
+                    outline: "none",
+                    boxSizing: "border-box",
+                    transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "var(--accent)";
+                    e.target.style.boxShadow = "0 0 0 3px var(--accent-glow)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "var(--border-subtle)";
+                    e.target.style.boxShadow = "none";
+                  }}
                 />
               </div>
               <div>
-                <label className="cms-label">{t.contact.emailLabel}</label>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.82rem",
+                    fontWeight: "600",
+                    color: "var(--text-primary)",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {t.contact?.emailLabel || "อีเมลของคุณ"}
+                </label>
                 <input
                   required
                   type="email"
                   name="from_email"
-                  placeholder={t.contact.emailPlaceholder}
-                  className="cms-input"
+                  placeholder={t.contact?.emailPlaceholder || "somchai@example.com"}
                   value={formState.email}
                   onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: "12px",
+                    background: "var(--bg-elevated)",
+                    border: "1px solid var(--border-subtle)",
+                    color: "var(--text-primary)",
+                    fontSize: "0.92rem",
+                    outline: "none",
+                    boxSizing: "border-box",
+                    transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "var(--accent)";
+                    e.target.style.boxShadow = "0 0 0 3px var(--accent-glow)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "var(--border-subtle)";
+                    e.target.style.boxShadow = "none";
+                  }}
                 />
               </div>
             </div>
 
             <div>
-              <label className="cms-label">{t.contact.subjectLabel}</label>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "0.82rem",
+                  fontWeight: "600",
+                  color: "var(--text-primary)",
+                  marginBottom: "6px",
+                }}
+              >
+                {t.contact?.subjectLabel || "หัวข้อเรื่อง"}
+              </label>
               <input
                 type="text"
                 name="subject"
-                placeholder={t.contact.subjectPlaceholder}
-                className="cms-input"
+                placeholder={t.contact?.subjectPlaceholder || "ปรึกษาโปรเจกต์ / บรรยาย Cybersecurity"}
                 value={formState.subject}
                 onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  borderRadius: "12px",
+                  background: "var(--bg-elevated)",
+                  border: "1px solid var(--border-subtle)",
+                  color: "var(--text-primary)",
+                  fontSize: "0.92rem",
+                  outline: "none",
+                  boxSizing: "border-box",
+                  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "var(--accent)";
+                  e.target.style.boxShadow = "0 0 0 3px var(--accent-glow)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "var(--border-subtle)";
+                  e.target.style.boxShadow = "none";
+                }}
               />
             </div>
 
             <div>
-              <label className="cms-label">{t.contact.messageLabel}</label>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "0.82rem",
+                  fontWeight: "600",
+                  color: "var(--text-primary)",
+                  marginBottom: "6px",
+                }}
+              >
+                {t.contact?.messageLabel || "ข้อความ"}
+              </label>
               <textarea
                 required
                 rows="5"
                 name="message"
-                placeholder={t.contact.messagePlaceholder}
-                className="cms-input"
+                placeholder={t.contact?.messagePlaceholder || "พิมพ์รายละเอียดที่ท่านต้องการพูดคุยที่นี่..."}
                 value={formState.message}
                 onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  borderRadius: "12px",
+                  background: "var(--bg-elevated)",
+                  border: "1px solid var(--border-subtle)",
+                  color: "var(--text-primary)",
+                  fontSize: "0.92rem",
+                  outline: "none",
+                  boxSizing: "border-box",
+                  fontFamily: "inherit",
+                  resize: "vertical",
+                  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "var(--accent)";
+                  e.target.style.boxShadow = "0 0 0 3px var(--accent-glow)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "var(--border-subtle)";
+                  e.target.style.boxShadow = "none";
+                }}
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-primary"
+              className="btn-luxury-primary"
               style={{
                 width: "100%",
                 padding: "14px",
-                fontSize: "1rem",
-                borderRadius: "10px",
+                fontSize: "0.98rem",
+                borderRadius: "12px",
                 marginTop: "0.5rem",
+                justifyContent: "center",
                 opacity: isSubmitting ? 0.7 : 1,
                 cursor: isSubmitting ? "not-allowed" : "pointer",
               }}
             >
               <FiSend />
-              <span>{isSubmitting ? t.contact.sendingBtn : t.contact.sendBtn}</span>
+              <span>{isSubmitting ? (t.contact?.sendingBtn || "กำลังส่งข้อมูล...") : (t.contact?.sendBtn || "ส่งข้อความ (Transmit)")}</span>
             </button>
 
-            {/* Success Message */}
+            {/* Success Message Banner */}
             {isSuccess && (
               <motion.div
                 initial={{ opacity: 0, y: 10, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 style={{
-                  background: "rgba(0, 255, 135, 0.15)",
-                  border: "1px solid var(--color-accent-2)",
-                  color: "var(--color-accent-2)",
+                  background: "rgba(16, 185, 129, 0.12)",
+                  border: "1px solid rgba(16, 185, 129, 0.35)",
+                  color: "#10B981",
                   padding: "14px 18px",
-                  borderRadius: "12px",
+                  borderRadius: "14px",
                   display: "flex",
                   alignItems: "center",
                   gap: "14px",
@@ -508,15 +670,15 @@ const Contact = () => {
                     width: "48px",
                     height: "48px",
                     objectFit: "contain",
-                    filter: "drop-shadow(0 2px 8px rgba(0, 255, 135, 0.4))",
+                    filter: "drop-shadow(0 2px 8px rgba(16, 185, 129, 0.4))",
                   }}
                 />
                 <div>
-                  <div style={{ fontSize: "1rem", fontWeight: "700", color: "var(--color-text-main)" }}>
+                  <div style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--text-primary)" }}>
                     เยี่ยมเลย! ได้รับข้อความเรียบร้อย 👍
                   </div>
-                  <div style={{ fontSize: "0.88rem", color: "var(--color-accent-2)", marginTop: "2px" }}>
-                    {t.contact.successMsg}
+                  <div style={{ fontSize: "0.85rem", color: "#10B981", marginTop: "2px" }}>
+                    {t.contact?.successMsg || "ขอบคุณที่ติดต่อเข้ามาครับ ครูเพชรจะตอบกลับโดยเร็วที่สุด"}
                   </div>
                 </div>
               </motion.div>
@@ -528,11 +690,11 @@ const Contact = () => {
                 initial={{ opacity: 0, y: 10, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 style={{
-                  background: "rgba(255, 71, 87, 0.12)",
-                  border: "1px solid rgba(255, 71, 87, 0.5)",
-                  color: "#ff4757",
+                  background: "rgba(239, 68, 68, 0.12)",
+                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                  color: "#ef4444",
                   padding: "14px 18px",
-                  borderRadius: "12px",
+                  borderRadius: "14px",
                   display: "flex",
                   alignItems: "center",
                   gap: "12px",
@@ -555,11 +717,6 @@ const Contact = () => {
           }
           .form-row {
             grid-template-columns: 1fr !important;
-          }
-        }
-        @media (max-width: 600px) {
-          .contact-grid .glass-card {
-            padding: 1.5rem 1.2rem !important;
           }
         }
       `}</style>

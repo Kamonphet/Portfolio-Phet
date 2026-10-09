@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import Lenis from "lenis";
 import "./App.css";
 import { PortfolioProvider } from "./context/PortfolioContext";
 import Navbar from "./components/Navbar";
@@ -21,16 +22,16 @@ import ProjectDetailPage from "./components/ProjectDetailPage";
 function PortfolioContent() {
   return (
     <div className="app-container">
-      {/* Dynamic 3D Particle Constellation Background */}
+      {/* Quiet Luxury Ambient Space Canvas */}
       <BackgroundCanvas />
 
-      {/* Floating 3D Cyber Objects with Scroll Parallax Physics */}
+      {/* Spatial Frosted Glass Polyhedrons */}
       <FloatingCyberObjects />
 
-      {/* Main Navigation Bar */}
+      {/* Floating Glass Pill Navigation Bar */}
       <Navbar />
 
-      {/* Sections */}
+      {/* Main Sections */}
       <main>
         <Hero />
         <About />
@@ -66,6 +67,31 @@ function ScrollToTopOnRoute() {
 }
 
 function App() {
+  // Initialize Lenis Smooth Scrolling with Reduced Motion Check
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    const lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 1.5,
+    });
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
+
   return (
     <PortfolioProvider>
       <ScrollToTopOnRoute />

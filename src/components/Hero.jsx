@@ -9,6 +9,7 @@ import {
   FiGithub,
   FiLinkedin,
   FiTwitter,
+  FiChevronDown,
 } from "react-icons/fi";
 import { sanitizeUrl } from "../utils/security";
 
@@ -16,16 +17,15 @@ const Hero = () => {
   const { data, updateHero, t } = usePortfolio();
   const heroRef = useRef(null);
 
-  // Scroll parallax for hero elements
+  // Smooth scroll parallax for subtle depth
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
 
-  const textY = useTransform(scrollYProgress, [0, 1], [0, 140]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.2]);
-  const hero3DY = useTransform(scrollYProgress, [0, 1], [0, 90]);
-  const hero3DScale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, 110]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.15]);
+  const hero3DY = useTransform(scrollYProgress, [0, 1], [0, 70]);
 
   const scrollToProjects = () => {
     document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
@@ -35,6 +35,10 @@ const Hero = () => {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const scrollToAbout = () => {
+    document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section
       id="home"
@@ -42,9 +46,10 @@ const Hero = () => {
       style={{
         minHeight: "100vh",
         display: "flex",
-        alignItems: "center",
+        flexDirection: "column",
         justifyContent: "center",
-        padding: "7rem 1.5rem 4rem 1.5rem",
+        alignItems: "center",
+        padding: "8.5rem 1.5rem 4rem 1.5rem",
         position: "relative",
         overflow: "hidden",
       }}
@@ -55,140 +60,96 @@ const Hero = () => {
           width: "100%",
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: "1.1fr 0.9fr",
-          gap: "3rem",
+          gridTemplateColumns: "1.15fr 0.85fr",
+          gap: "3.5rem",
           alignItems: "center",
         }}
         className="hero-grid"
       >
-        {/* Left Column: Hero Content with Scroll Parallax */}
+        {/* Left Column: Hero Content with Staggered Split Reveal */}
         <motion.div
           style={{ y: textY, opacity: textOpacity }}
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="hero-content-col"
         >
-          {/* Mascot Greeting Banner */}
+          {/* Eyebrow Label Tag */}
+          <div style={{ marginBottom: "1.2rem" }}>
+            <span className="eyebrow-label">
+              // 00 — INNOVATOR & CYBERSECURITY SPECIALIST
+            </span>
+          </div>
+
+          {/* Status Badge: Available for Collaboration */}
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "12px",
-              padding: "6px 16px 6px 8px",
-              borderRadius: "40px",
-              background: "var(--color-glass-subtle)",
-              border: "1px solid var(--color-card-border)",
-              backdropFilter: "blur(12px)",
-              marginBottom: "1rem",
-              boxShadow: "0 6px 22px rgba(56, 189, 248, 0.08)",
+              gap: "8px",
+              padding: "5px 14px",
+              borderRadius: "100px",
+              background: "var(--accent-muted)",
+              border: "1px solid var(--accent-border)",
+              marginBottom: "1.5rem",
+              backdropFilter: "blur(10px)",
             }}
-            className="mascot-friendly-card"
           >
-            <motion.img
-              src="/img/hello.webp"
-              alt="ครูเพชร IT สวัสดีครับ"
-              animate={{ y: [0, -4, 0], rotate: [0, 3, 0, -2, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            <span
               style={{
-                width: "44px",
-                height: "44px",
-                objectFit: "contain",
-                filter: "drop-shadow(0 3px 8px rgba(56, 189, 248, 0.28))",
-                willChange: "transform",
-                transform: "translateZ(0)",
+                width: "7px",
+                height: "7px",
+                borderRadius: "50%",
+                background: "var(--accent)",
+                boxShadow: "0 0 10px var(--accent-glow)",
+                display: "inline-block",
+                animation: "pulseGlow 2.5s infinite ease-in-out",
               }}
             />
-            <div style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
-              <span style={{ fontSize: "0.74rem", color: "var(--color-primary)", fontWeight: "700", letterSpacing: "0.5px" }}>
-                ✨ KRU PETCH IT // EDTECH & INNOVATION
-              </span>
-              <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-text-main)" }}>
-                "สวัสดีครับ ยินดีต้อนรับสู่พื้นที่นวัตกรรมการเรียนรู้ :)"
-              </span>
-            </div>
-          </div>
-
-          {/* Status Badge */}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "1rem" }}>
-            <div
+            <span
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "6px 14px",
-                borderRadius: "30px",
-                background: "rgba(0, 255, 135, 0.08)",
-                border: "1px solid rgba(0, 255, 135, 0.25)",
                 fontSize: "0.82rem",
-                fontWeight: "600",
-                color: "var(--color-accent-2)",
+                fontFamily: "var(--font-mono)",
+                color: "var(--text-primary)",
+                fontWeight: "500",
+                letterSpacing: "0.01em",
               }}
             >
-              <span
-                className="cute-pulse-dot"
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--color-accent-2)",
-                  display: "inline-block",
-                }}
-              />
               <EditableText
-                value={data.hero.status}
+                value={data.hero.status || "Available for collaboration & EdTech Innovation"}
                 onSave={(val) => updateHero({ status: val })}
               />
-            </div>
-
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 12px",
-                borderRadius: "30px",
-                background: "var(--color-badge-bg)",
-                border: "1px solid var(--color-badge-border)",
-                fontSize: "0.8rem",
-                fontFamily: "var(--font-mono)",
-                color: "var(--color-primary)",
-              }}
-            >
-              <EditableText
-                value={data.hero.greeting}
-                onSave={(val) => updateHero({ greeting: val })}
-              />
-            </div>
+            </span>
           </div>
 
-          {/* Main Headline */}
+          {/* Main Headline (Fluid Luxury Typography) */}
           <h1
             style={{
-              fontSize: "clamp(2.5rem, 5vw, 4.2rem)",
-              fontWeight: "900",
-              lineHeight: 1.1,
-              letterSpacing: "-1px",
-              margin: 0,
+              fontSize: "clamp(2.8rem, 6vw, 5.4rem)",
+              fontWeight: "700",
+              lineHeight: 1.05,
+              letterSpacing: "-0.03em",
+              color: "var(--text-primary)",
+              margin: "0 0 1rem 0",
+              fontFamily: "var(--font-display)",
             }}
           >
-            I'M{" "}
-            <span className="gradient-text">
-              <EditableText
-                value={data.hero.name}
-                onSave={(val) => updateHero({ name: val })}
-              />
-            </span>
+            <EditableText
+              value={data.hero.name || "ครูเพชร IT"}
+              onSave={(val) => updateHero({ name: val })}
+            />
           </h1>
 
-          {/* Subtitle / Role */}
+          {/* Subtitle / Role Statement */}
           <h2
             style={{
-              fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)",
-              fontWeight: "600",
-              color: "var(--color-text-dim)",
-              margin: "0.8rem 0 0 0",
-              lineHeight: 1.3,
+              fontSize: "clamp(1.15rem, 2.2vw, 1.65rem)",
+              fontWeight: "500",
+              color: "var(--text-secondary)",
+              lineHeight: 1.4,
+              letterSpacing: "-0.015em",
+              margin: "0 0 1.25rem 0",
+              fontFamily: "var(--font-display)",
             }}
           >
             <EditableText
@@ -200,11 +161,11 @@ const Hero = () => {
           {/* Bio Tagline */}
           <p
             style={{
-              fontSize: "1.05rem",
-              color: "var(--color-text-dim)",
-              lineHeight: 1.7,
-              maxWidth: "560px",
-              margin: "1rem 0 1.5rem 0",
+              fontSize: "1rem",
+              color: "var(--text-secondary)",
+              lineHeight: 1.75,
+              maxWidth: "540px",
+              margin: "0 0 2rem 0",
             }}
           >
             <EditableText
@@ -214,23 +175,31 @@ const Hero = () => {
             />
           </p>
 
-          {/* CTA Buttons */}
-          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            <button onClick={scrollToProjects} className="btn-primary">
+          {/* Luxury CTA Action Buttons */}
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+            <button onClick={scrollToProjects} className="btn-luxury-primary">
               <span>{data.hero.ctaPrimary || t.hero.explore}</span>
-              <FiArrowRight />
+              <FiArrowRight style={{ transition: "transform 0.25s ease" }} />
             </button>
 
-            <button onClick={scrollToContact} className="btn-secondary">
-              <FiMail />
+            <button onClick={scrollToContact} className="btn-luxury-secondary">
+              <FiMail style={{ opacity: 0.8 }} />
               <span>{data.hero.ctaSecondary || t.hero.contactMe}</span>
             </button>
           </div>
 
-          {/* Social Quick Links */}
-          <div style={{ display: "flex", alignItems: "center", gap: "1.2rem", marginTop: "1.5rem" }}>
-            <span style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", fontFamily: "var(--font-mono)" }}>
-              {t.hero.connect}
+          {/* Social Links (Minimalist Hairline Icons) */}
+          <div style={{ display: "flex", alignItems: "center", gap: "1.2rem", marginTop: "2.2rem" }}>
+            <span
+              style={{
+                fontSize: "0.76rem",
+                color: "var(--text-tertiary)",
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+              }}
+            >
+              {t.hero.connect} //
             </span>
             {data.contact.github && (
               <a
@@ -238,12 +207,13 @@ const Hero = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  color: "var(--color-text-dim)",
-                  fontSize: "1.2rem",
-                  transition: "all 0.2s ease",
+                  color: "var(--text-secondary)",
+                  fontSize: "1.1rem",
+                  transition: "color 0.2s ease, transform 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-dim)")}
+                className="social-icon-link"
                 title="GitHub"
               >
                 <FiGithub />
@@ -255,12 +225,13 @@ const Hero = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  color: "var(--color-text-dim)",
-                  fontSize: "1.2rem",
-                  transition: "all 0.2s ease",
+                  color: "var(--text-secondary)",
+                  fontSize: "1.1rem",
+                  transition: "color 0.2s ease, transform 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-dim)")}
+                className="social-icon-link"
                 title="LinkedIn"
               >
                 <FiLinkedin />
@@ -272,13 +243,14 @@ const Hero = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  color: "var(--color-text-dim)",
-                  fontSize: "1.2rem",
-                  transition: "all 0.2s ease",
+                  color: "var(--text-secondary)",
+                  fontSize: "1.1rem",
+                  transition: "color 0.2s ease, transform 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-dim)")}
-                title="Twitter"
+                className="social-icon-link"
+                title="Twitter / X"
               >
                 <FiTwitter />
               </a>
@@ -286,40 +258,79 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* Right Column: 3D Three.js Interactive Core with Scroll Parallax */}
+        {/* Right Column: 3D Holographic Core Presentation */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          style={{ y: hero3DY }}
+          initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-          style={{
-            y: hero3DY,
-            scale: hero3DScale,
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            minHeight: "520px",
-          }}
+          transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          className="hero-3d-col"
         >
           <Hero3D />
         </motion.div>
       </div>
 
+      {/* Kinetic Scroll Cue Indicator */}
+      <motion.div
+        onClick={scrollToAbout}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8, duration: 0.8 }}
+        style={{
+          position: "absolute",
+          bottom: "1.5rem",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "6px",
+          cursor: "pointer",
+          color: "var(--text-tertiary)",
+          userSelect: "none",
+        }}
+        title="Scroll to explore"
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.68rem",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+          }}
+        >
+          SCROLL
+        </span>
+        <motion.div
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <FiChevronDown size={14} />
+        </motion.div>
+      </motion.div>
+
       <style>{`
+        @keyframes pulseGlow {
+          0%, 100% { opacity: 0.7; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+        .social-icon-link:hover {
+          color: var(--accent) !important;
+          transform: translateY(-2px);
+        }
+        .btn-luxury-primary:hover svg {
+          transform: translateX(4px);
+        }
         @media (max-width: 960px) {
-          #home {
-            padding: 5.5rem 1rem 3rem 1rem !important;
-          }
           .hero-grid {
             grid-template-columns: 1fr !important;
-            gap: 2rem !important;
+            gap: 2.5rem !important;
             text-align: center;
           }
           .hero-content-col {
             display: flex;
             flex-direction: column;
-            align-items: center !important;
+            align-items: center;
           }
-          .hero-content-col div {
+          .eyebrow-label {
             justify-content: center;
           }
         }

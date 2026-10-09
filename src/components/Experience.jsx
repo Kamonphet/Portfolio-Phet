@@ -11,45 +11,38 @@ const Experience = () => {
     <section id="experience" className="content-section">
       {/* Section Header */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         style={{ textAlign: "center", marginBottom: "3.5rem" }}
       >
-        <div className="section-badge">
-          <FiBriefcase />
-          <span>{t.experience.badge}</span>
-        </div>
+        <span className="eyebrow-label">// 04 — JOURNEY & MILESTONES</span>
         <h2 className="section-title">
-          {t.experience.titlePre} <span className="gradient-text">{t.experience.titleHighlight}</span>
+          {t.experience?.titlePre || "เส้นทางและ"}{" "}
+          <span className="gradient-text">{t.experience?.titleHighlight || "ประสบการณ์การทำงาน"}</span>
         </h2>
-        <p
-          className="section-subtitle-single"
-          style={{ maxWidth: "850px", margin: "0 auto", color: "var(--color-text-dim)" }}
-        >
-          {t.experience.subtitle}
+        <p className="section-subtitle">
+          {t.experience?.subtitle ||
+            "ประวัติการทำงาน การสอน และบทบาทสำคัญในการขับเคลื่อนเทคโนโลยีการศึกษา"}
         </p>
 
         {isEditMode && (
-          <div style={{ marginTop: "1rem" }}>
+          <div style={{ marginTop: "1.5rem" }}>
             <button
               onClick={() => openCms("experience")}
+              className="btn-luxury-secondary"
               style={{
-                background: "rgba(0, 255, 135, 0.15)",
-                color: "var(--color-accent-2)",
-                border: "1px dashed var(--color-accent-2)",
-                borderRadius: "30px",
-                padding: "8px 18px",
-                fontSize: "0.85rem",
-                fontWeight: "600",
-                cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "6px",
+                gap: "8px",
+                padding: "8px 20px",
+                fontSize: "0.86rem",
+                borderRadius: "100px",
               }}
             >
-              <FiPlus /> {t.experience.manage}
+              <FiPlus />
+              <span>{t.experience?.manage || "จัดการประสบการณ์"}</span>
             </button>
           </div>
         )}
@@ -58,57 +51,74 @@ const Experience = () => {
       {/* Timeline Container */}
       <div
         style={{
-          maxWidth: "840px",
+          maxWidth: "860px",
           margin: "0 auto",
           position: "relative",
-          paddingLeft: "30px",
+          paddingLeft: "34px",
         }}
       >
-        {/* Glowing Vertical Connector Line */}
+        {/* Hairline Luxury Vertical Line */}
         <div
           style={{
             position: "absolute",
-            top: 0,
-            bottom: 0,
-            left: "7px",
-            width: "2px",
-            background: "linear-gradient(180deg, var(--color-primary) 0%, var(--color-secondary) 100%)",
-            boxShadow: "0 0 8px rgba(0, 242, 254, 0.5)",
+            top: "14px",
+            bottom: "20px",
+            left: "8px",
+            width: "1px",
+            background: "linear-gradient(180deg, var(--accent) 0%, var(--border-subtle) 100%)",
+            opacity: 0.8,
           }}
         />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
           {(data?.experience || []).map((exp, index) => (
             <motion.div
               key={exp.id}
-              initial={{ opacity: 0, x: 40 }}
+              initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
               style={{ position: "relative" }}
             >
-              {/* Timeline Node Dot with Pulse */}
+              {/* Timeline Node Dot */}
               <div
                 style={{
                   position: "absolute",
-                  left: "-30px",
-                  top: "22px",
-                  width: "16px",
-                  height: "16px",
+                  left: "-34px",
+                  top: "24px",
+                  width: "18px",
+                  height: "18px",
                   borderRadius: "50%",
-                  background: "var(--color-timeline-node)",
-                  border: "3px solid var(--color-primary)",
-                  boxShadow: "0 0 10px var(--color-primary-glow)",
+                  background: "var(--bg-surface)",
+                  border: "2px solid var(--accent)",
+                  boxShadow: "0 0 12px var(--accent-glow)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 2,
                 }}
-              />
+              >
+                <div
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    borderRadius: "50%",
+                    background: "var(--accent)",
+                  }}
+                />
+              </div>
 
               {/* Experience Card */}
               <motion.div
-                whileHover={{ y: -5, x: 4 }}
-                className="glass-card"
+                whileHover={{ y: -3 }}
+                transition={{ duration: 0.2 }}
                 style={{
-                  padding: "1.8rem 2rem",
+                  padding: "1.75rem 2rem",
                   position: "relative",
+                  borderRadius: "20px",
+                  background: "var(--color-card-bg)",
+                  border: "1px solid var(--border-subtle)",
+                  boxShadow: "var(--color-card-shadow)",
                 }}
               >
                 <div
@@ -117,12 +127,21 @@ const Experience = () => {
                     justifyContent: "space-between",
                     alignItems: "flex-start",
                     flexWrap: "wrap",
-                    gap: "8px",
-                    marginBottom: "0.8rem",
+                    gap: "10px",
+                    marginBottom: "1rem",
                   }}
                 >
                   <div>
-                    <h3 style={{ margin: "0 0 4px 0", fontSize: "1.25rem", fontWeight: "700" }}>
+                    <h3
+                      style={{
+                        margin: "0 0 6px 0",
+                        fontSize: "1.25rem",
+                        fontWeight: "700",
+                        color: "var(--text-primary)",
+                        fontFamily: "var(--font-display)",
+                        letterSpacing: "-0.015em",
+                      }}
+                    >
                       <EditableText
                         value={exp.role}
                         onSave={(val) => {
@@ -133,7 +152,14 @@ const Experience = () => {
                         }}
                       />
                     </h3>
-                    <div style={{ color: "var(--color-primary)", fontSize: "0.95rem", fontWeight: "600" }}>
+                    <div
+                      style={{
+                        color: "var(--accent)",
+                        fontSize: "0.95rem",
+                        fontWeight: "600",
+                        fontFamily: "var(--font-mono)",
+                      }}
+                    >
                       @{" "}
                       <EditableText
                         value={exp.company}
@@ -152,16 +178,17 @@ const Experience = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: "6px",
-                      background: "var(--color-glass-subtle)",
-                      border: "1px solid var(--color-card-border)",
+                      background: "var(--accent-muted)",
+                      border: "1px solid var(--border-subtle)",
                       padding: "4px 12px",
-                      borderRadius: "20px",
-                      fontSize: "0.8rem",
+                      borderRadius: "100px",
+                      fontSize: "0.78rem",
                       fontFamily: "var(--font-mono)",
-                      color: "var(--color-accent-1)",
+                      color: "var(--text-secondary)",
+                      fontWeight: "500",
                     }}
                   >
-                    <FiCalendar />
+                    <FiCalendar size={13} />
                     <EditableText
                       value={exp.period}
                       onSave={(val) => {
@@ -174,7 +201,14 @@ const Experience = () => {
                   </div>
                 </div>
 
-                <p style={{ color: "var(--color-text-dim)", lineHeight: "1.65", margin: 0, fontSize: "0.95rem" }}>
+                <p
+                  style={{
+                    color: "var(--text-secondary)",
+                    lineHeight: "1.7",
+                    margin: 0,
+                    fontSize: "0.94rem",
+                  }}
+                >
                   <EditableText
                     value={exp.description}
                     onSave={(val) => {
@@ -193,9 +227,9 @@ const Experience = () => {
                     display: "flex",
                     alignItems: "center",
                     gap: "10px",
-                    marginTop: "1.2rem",
-                    paddingTop: "0.8rem",
-                    borderTop: "1px solid var(--color-card-border)",
+                    marginTop: "1.4rem",
+                    paddingTop: "1rem",
+                    borderTop: "1px solid var(--border-subtle)",
                   }}
                 >
                   <img
@@ -211,10 +245,17 @@ const Experience = () => {
                       width: "36px",
                       height: "36px",
                       objectFit: "contain",
-                      filter: "drop-shadow(0 2px 6px rgba(0, 242, 254, 0.3))",
+                      filter: "drop-shadow(0 2px 6px var(--accent-glow))",
                     }}
                   />
-                  <span style={{ fontSize: "0.82rem", color: "var(--color-primary)", fontWeight: "600" }}>
+                  <span
+                    style={{
+                      fontSize: "0.82rem",
+                      color: "var(--accent)",
+                      fontWeight: "500",
+                      fontStyle: "italic",
+                    }}
+                  >
                     {index === 0
                       ? "“ทำงานไปด้วย เรียนรู้ไปด้วยครับ :)”"
                       : index === 1
@@ -230,13 +271,16 @@ const Experience = () => {
                       style={{
                         background: "transparent",
                         border: "none",
-                        color: "#ff4757",
+                        color: "#ef4444",
                         cursor: "pointer",
-                        fontSize: "0.9rem",
+                        fontSize: "0.88rem",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
                       }}
-                      title={t.experience.remove || "ลบรายการนี้"}
+                      title={t.experience?.remove || "ลบรายการนี้"}
                     >
-                      <FiTrash2 /> {t.experience.remove}
+                      <FiTrash2 /> <span>{t.experience?.remove || "ลบรายการ"}</span>
                     </button>
                   </div>
                 )}
@@ -245,14 +289,6 @@ const Experience = () => {
           ))}
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 600px) {
-          .glass-card {
-            padding: 1.3rem 1.1rem !important;
-          }
-        }
-      `}</style>
     </section>
   );
 };
