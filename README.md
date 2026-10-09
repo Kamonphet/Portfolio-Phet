@@ -1,25 +1,25 @@
 <div align="center">
 
-  <img src="public/img/main.webp" alt="Kru Petch IT Banner" width="420" style="border-radius: 20px; box-shadow: 0 12px 36px rgba(2, 132, 199, 0.25);" />
+  <img src="public/img/main.webp" alt="Kru Petch IT Banner" width="460" style="border-radius: 24px; box-shadow: 0 16px 40px rgba(2, 132, 199, 0.25);" />
 
-  # 🌟 KRU PETCH IT // CUTE TECH & 3D PORTFOLIO
+  # 💎 KRU PETCH IT // QUIET CYBER LUXURY PORTFOLIO
   ### 💡 "สอนให้คิด ใช้เทคโนโลยี สร้างอนาคตและนวัตกรรม"
-  **Inspiring minds through technology | Computing Science, EdTech Innovation, Cybersecurity & Full-Stack Development**
+  **Inspiring minds through technology | Computing Science, EdTech Innovation, Cybersecurity & Full-Stack Engineering**
 
   <p align="center">
     <a href="https://react.dev/"><img src="https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React 18" /></a>
-    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /></a>
+    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite_7-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 7" /></a>
     <a href="https://threejs.org/"><img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js" /></a>
     <a href="https://www.framer.com/motion/"><img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion" /></a>
-    <a href="https://comfy.org/"><img src="https://img.shields.io/badge/ComfyUI-Generative_AI-FF6B6B?style=for-the-badge" alt="ComfyUI" /></a>
-    <a href="https://github.com/Kamonphet/Portfolio-Phet"><img src="https://img.shields.io/badge/Status-Active-059669?style=for-the-badge" alt="Status" /></a>
+    <a href="https://lenis.darkroom.engineering/"><img src="https://img.shields.io/badge/Lenis-Smooth_Scroll-38BDF8?style=for-the-badge" alt="Lenis" /></a>
+    <a href="https://github.com/Kamonphet/Portfolio-Phet"><img src="https://img.shields.io/badge/Design_Tier-Quiet_Cyber_Luxury-0284C7?style=for-the-badge" alt="Design Tier" /></a>
   </p>
 
   <p align="center">
     <a href="#-จุดเด่นและฟีเจอร์-features">✨ ฟีเจอร์เด่น</a> •
     <a href="#-tech-stack">🛠️ เทคโนโลยีที่ใช้</a> •
+    <a href="#-การเข้าสู่ระบบ-admin--cms-access">🔑 ระบบ Admin & CMS</a> •
     <a href="#-การเพิ่มประสิทธิภาพและความปลอดภัย-performance--security">⚡ ประสิทธิภาพ & ความปลอดภัย</a> •
-    <a href="#-comfyui-generative-ai-pipeline">🤖 ComfyUI AI</a> •
     <a href="#-การติดตั้งและเริ่มต้นใช้งาน-getting-started">🚀 เริ่มต้นใช้งาน</a> •
     <a href="#-โครงสร้างโปรเจกต์-project-structure">📂 โครงสร้างไฟล์</a>
   </p>
@@ -29,11 +29,15 @@
 
 ## 📖 เกี่ยวกับโปรเจกต์ (About Project)
 
-**CyberArt / Modern Tech & Innovation Portfolio** คือเว็บไซต์สะสมผลงาน (Portfolio Showcase) ระดับพรีเมียมของ **ครูเพชร IT** ที่ออกแบบในสไตล์ **Cute Modern Tech & EdTech Innovation** โทนพาสเทลและนีออนนุ่มนวล ผสมผสานเทคโนโลยีอันทันสมัย:
-1. **การจัดการเรียนรู้และนวัตกรรมการศึกษา (EdTech & Active Learning):** คลังผลงานการสอน, วิทยาการคำนวณ, สื่อดิจิทัล และแผนการเรียนรู้ยุคใหม่
-2. **วิศวกรรมเว็บและกราฟิก 3 มิติ (Full-Stack & 3D Interactive):** สร้างมิติการมีส่วนร่วมด้วย Three.js WebGL, Framer Motion, และการจัดวาง Layout ที่ประณีต
-3. **ความมั่นคงปลอดภัยทางไซเบอร์ (Cybersecurity & Secure Coding):** พัฒนาระบบตามหลัก Best Practice ด้านความปลอดภัย ไม่เปิดเผยข้อมูลลับ และป้องกันการโจมตีทางเว็บ
-4. **การประยุกต์ใช้ Generative AI (ComfyUI Automation):** เชื่อมต่อ AI Automation Pipeline รองรับการประมวลผลบนเครื่อง Low VRAM (RTX 2050 4GB)
+**Kru Petch IT Portfolio** คือเว็บไซต์สะสมผลงานระดับพรีเมียมของ **ครูเพชร IT** ที่ได้รับการออกแบบใหม่ทั้งหมดภายใต้คอนเซปต์ **"Quiet Cyber Luxury"** (มาตรฐานเดียวกับ Awwwards / Linear / Vercel):
+- **ธีมสีเอกลักษณ์ (Signature Themes)**:
+  - ☀️ **Light Mode (ฟ้า-ขาว)**: Electric Sky Blue (`#0284C7`) บนพื้นขาวบริสุทธิ์ (`#FFFFFF`) สะอาดตา คอนทราสต์สูง อ่านง่าย ไม่แสบตา
+  - 🌙 **Dark Mode (ฟ้า-ดำ)**: Cyber Sky Blue (`#38BDF8`) ตัดกับพื้นหลัง Pitch Black (`#030712`) ให้มิติความลึก หรูหรา สไตล์ Cyber Specialist
+- **4 เสาหลักความเชี่ยวชาญ (Core Pillars)**:
+  1. **EdTech & Active Learning Innovation:** สื่อนวัตกรรมการศึกษา, แผนการจัดการเรียนรู้ และแพลตฟอร์มการสอนวิทยาการคำนวณยุคใหม่
+  2. **Cybersecurity & Threat Defense:** ความมั่นคงปลอดภัยสารสนเทศ, การป้องกันภัยคุกคามทางไซเบอร์ และการแข่งขัน CTF
+  3. **Full-Stack & Cloud Architecture:** สถาปัตยกรรมเว็บสมัยใหม่, Google Sheets Database Sync API, และ Secure Backend
+  4. **Pedagogical Technology Leadership:** วิทยากรและผู้นำการอบรมเชิงปฏิบัติการด้านเทคโนโลยีการศึกษา
 
 ---
 
@@ -41,13 +45,31 @@
 
 | หมวดหมู่ | รายละเอียดฟีเจอร์ |
 | :--- | :--- |
-| 🎨 **Cute Tech 3D & Interactive Canvas** | วัตถุ 3 มิติโทนพาสเทล (Soft Torus, Sky Bubbles) หมุนและโต้ตอบตามเมาส์ พร้อม Scroll Parallax Physics และ Particle Constellation ด้วย Three.js |
-| 🔤 **Modern Loopless Typography** | ตัวอักษรภาษาไทยใช้ **Kanit** (ฟอนต์ไร้หัว/ไม่มีหัว สไตล์โมเดิร์นเทคโนโลยีระดับสากล) ผสานกับ **Plus Jakarta Sans** (อังกฤษ/ตัวเลข) และ **JetBrains Mono** สำหรับโค้ด |
-| 📱 **Flawless Layout & Auto Scroll** | จัดวางหัวข้อและปุ่มย้อนกลับอย่างสมดุล (Row Header) พร้อมระบบ **Auto Scroll to Top** เมื่อเปลี่ยนหน้าหรือเปิดดูผลงานทั้งหมด |
-| 🌓 **Dual Theme & Bilingual (TH / EN)** | สลับโหมดการแสดงผล **Light Mode (Clean Modern Sky)** และ **Dark Mode (Cyber Neon)** ได้อย่างไร้รอยต่อ พร้อมรองรับ 2 ภาษาเต็มรูปแบบ |
-| ⚡ **Extreme Asset Optimization (WebP)** | แปลงไฟล์รูปภาพทั้งหมดเป็น `.webp` ลดขนาดไฟล์ลงกว่า **94%** (จาก ~250MB เหลือเพียง ~15MB) โหลดหน้าเว็บได้รวดเร็วทันใจ |
-| 🔒 **Secure Discreet CMS** | ระบบหลังบ้านซ่อนปุ่มจากบุคคลภายนอก, ป้องกัน Timing Attacks ด้วย Timing-Safe Comparison และมี Client-Side Rate Limiting ป้องกัน Brute-force |
-| 🤖 **ComfyUI Automation Ready** | สคริปต์ Python สำหรับเชื่อมต่อ ComfyUI API เจนภาพและวิดีโออนิเมชันอัตโนมัติ สำหรับเครื่องสเปกประหยัด VRAM |
+| 🌊 **Lenis Smooth Momentum Scrolling** | ระบบเลื่อนหน้าจอระดับ 60–120fps ที่นุ่มนวลเป็นธรรมชาติ พร้อมตรวจจับ `prefers-reduced-motion` เพื่อการเข้าถึงที่ครอบคลุม |
+| 🎠 **Interactive Projects Carousel** | สไลด์ผลงานแบบกระจกหรู (Desktop 3 การ์ด / Tablet 2 การ์ด / Mobile 1 การ์ด) พร้อม Auto-play, Pause on Hover, Pagination Dots และปุ่ม CTA **"ดูผลงานเพิ่มเติม"** |
+| 🎯 **Spotlight Tracking & 3D Tilt** | เอฟเฟกต์แสงส่องตามตำแหน่งเมาส์ (Dynamic Radial Spotlight) และการเอียง 3 มิติแบบควบคุมมุม ($\le 6^\circ$) สุขุม นิ่ง ไม่เวียนหัว |
+| 🔗 **Instant Detail Navigation** | ปุ่ม `VIEW →` และการ์ดผลงานลิงก์เข้าสู่หน้ารายละเอียดเต็ม (`/projects/:id`) ทันที พร้อมแสดง Stack, คลังภาพ, เดโมสด และปุ่มแชร์ |
+| 💻 **Live Terminal Specs Streamer** | การ์ด Specs ในส่วน About ที่จำลองการพิมพ์โค้ดแบบ Live Streaming พร้อมเคอร์เซอร์กะพริบเสมือนระบบจริงเมื่อเลื่อนมาถึง |
+| 🔤 **Quiet Luxury Typography** | ตัวอักษรคมชัดสูงระดับพรีเมียม: **Inter** (Display/หัวข้อ), **IBM Plex Sans Thai** (เนื้อหาภาษาไทย อ่านง่าย สบายตา), และ **JetBrains Mono** (โค้ด/ตัวเลข) |
+| ⚡ **Hairline Glowing Progress** | แถบทักษะเส้นบางเฉียบ 4px สีฟ้าครามนีออน แทนที่แถบหนาแบบเดิม ให้ลุคโมเดิร์นระดับไฮเอนด์ |
+| 📬 **Cyber Glass Contact Transmission** | ฟอร์มติดต่อแบบกระจกพร้อม Cyber Focus Glow, ปุ่ม Copy Email พร้อม Toast Notification, ส่งอีเมลผ่าน EmailJS และบันทึกสู่ Google Sheets |
+| 🔒 **Secure Auth Passcode CMS** | ระบบหลังบ้านสำหรับแก้ไขเนื้อหาบนหน้าเว็บ พร้อมระบบหน่วงเวลาป้องกัน Brute-Force และ Timing Attack |
+
+---
+
+## 🔑 การเข้าสู่ระบบ Admin / CMS Access
+
+ระบบจัดการข้อมูล (Content Management System) ได้รับการออกแบบให้ปลอดภัยและซ่อนตัวอย่างแนบเนียน:
+
+### 1. การเปิดโหมดแก้ไข (2 ช่องทาง):
+- **ผ่าน URL**: เติม `?admin` หรือ `?edit` ต่อท้ายลิงก์ เช่น `http://localhost:5173/?admin`
+- **ผ่าน Keyboard Shortcut**: กดปุ่ม **`Ctrl` + `Shift` + `E`** (บน Mac: **`Cmd` + `Shift` + `E`**)
+
+### 2. รหัสผ่านเริ่มต้น (Default Passcode):
+```text
+1234
+```
+> เมื่อยืนยันรหัสผ่านแล้ว คุณจะเข้าสู่ **Live Edit Mode** ซึ่งสามารถคลิกเพื่อแก้ไขข้อความและเปอร์เซ็นต์ทักษะบนหน้าเว็บได้ทันที หรือคลิกปุ่ม **CMS** บน Navbar เพื่อเปิดแผงจัดการข้อมูลแบบละเอียด
 
 ---
 
@@ -86,65 +108,44 @@
 
 ## ⚡ การเพิ่มประสิทธิภาพและความปลอดภัย (Performance & Security)
 
-### 🚀 Performance Optimization (ลดขนาด 94%)
-- แปลงภาพ PNG ขนาดใหญ่ทั้งหมด (7-9 MB/ไฟล์) เป็น **WebP** คุณภาพสูง ทำให้ขนาดรวมทั้งโฟลเดอร์ลดลงเหลือเพียง ~15 MB
-- รองรับ Dynamic Lazy Loading และ HMR (Hot Module Replacement) ผ่าน Vite 7
-- ปรับปรุง Three.js Animation Loop ให้หยุดเรนเดอร์ชั่วคราวเมื่อผู้ใช้สลับแท็บเบราว์เซอร์ (`document.hidden`) เพื่อประหยัด CPU/GPU
+### 🚀 Performance Optimization
+- **WebP Assets (ลดขนาดลงกว่า 94%)**: บีบอัดรูปภาพทุกไฟล์เป็น WebP คุณภาพสูง ช่วยให้โหลดเว็บไซต์ได้ทันใจแม้เชื่อมต่อผ่านเครือข่ายมือถือ
+- **Vite 7 Production Build**: แยก Chunk และคอมไพล์โค้ดอย่างมีประสิทธิภาพ
+- **Smart Render Loop**: ปรับแต่ง Three.js Animation Loop ให้ลดการใช้ทรัพยากรเมื่อแท็บถูกย่อ (`document.hidden`)
 
-### 🛡️ Secure Coding Best Practices
-- **ไม่เปิดเผยข้อมูลลับ (Zero Secret Disclosure):** ซ่อนปุ่ม "แก้ไขเนื้อหา" (CMS) และสถานะการเชื่อมต่อฐานข้อมูลจากผู้เยี่ยมชมทั่วไป เข้าถึงได้เฉพาะผู้ดูแลระบบที่มีสิทธิ์
-- **Rate Limiting:** มีระบบหน่วงเวลาและล็อกอินเมื่อใส่รหัสผ่านผิดเกินกำหนด (Lockout 30 วินาที เมื่อผิดครบ 5 ครั้ง) ป้องกัน Brute-Force
-- **Timing-Safe Comparison:** ใช้ `timingSafeCompare()` ตรวจสอบค่าแฮชเพื่อป้องกัน Side-Channel Timing Attack
-- **Path Sanitization:** ตรวจสอบความถูกต้องของ URL รูปภาพ ไม่เปิดเผยไดเรกทอรีภายในเครื่องของเซิร์ฟเวอร์
-
----
-
-## 🤖 ComfyUI Generative AI Pipeline
-
-โปรเจกต์มีชุดเครื่องมือสำหรับรัน Generative AI ผ่าน **ComfyUI API** ในโฟลเดอร์ [`scripts/comfyui/`](scripts/comfyui/):
-- **เครื่องเป้าหมาย:** สเปกเบา/ประหยัดทรัพยากร (เช่น **NVIDIA GeForce RTX 2050 4GB VRAM**)
-- **โมเดลที่แนะนำ:**
-  - `SD 1.5 + AnimateDiff LCM` สำหรับสร้างวิดีโอลูปขนาดเล็ก
-  - `Depth Anything V2 (Small)` สำหรับทำ 2.5D Parallax Map
-  - `SDXL Lightning / SD 1.5 LoRA` สำหรับเจน Thumbnail โปรเจกต์สไตล์ Cute Tech
-
-### คำสั่งใช้งาน ComfyUI Scripts:
-```bash
-# ตรวจสอบสถานะ ComfyUI (Default: http://127.0.0.1:8188)
-python scripts/comfyui/check_status.py
-
-# ส่ง Prompt และดาวน์โหลดภาพอัตโนมัติมายัง public/img
-python scripts/comfyui/api_client.py
-```
+### 🛡️ Cybersecurity & Secure Coding
+- **Timing-Safe Password Comparison**: ป้องกัน Side-Channel Attacks โดยใช้ `timingSafeCompare()` ตรวจสอบ Hash ของรหัสผ่าน
+- **Client-Side Lockout Protection**: หน่วงเวลาและระงับการลองรหัส 30 วินาที เมื่อกรอกผิดติดต่อกัน 5 ครั้ง
+- **URL & Input Sanitization**: ตรวจสอบและทำความสะอาด External Link ด้วย `sanitizeUrl()` ป้องกันการโจมตีประเภท `javascript:` XSS
 
 ---
 
 ## 🛠️ เทคโนโลยีที่ใช้ (Tech Stack)
 
-### Frontend & Core
-- **[React 18](https://react.dev/)** — Component-Driven Architecture
-- **[Vite 7](https://vitejs.dev/)** — บิวด์ทูลประสิทธิภาพสูง
-- **[React Router 7](https://reactrouter.com/)** — SPA Routing พร้อมระบบ Route Scroll Restoration
+### Core & Frameworks
+- **[React 18](https://react.dev/)** — Component Architecture
+- **[Vite 7](https://vitejs.dev/)** — Next Generation Frontend Tooling
+- **[React Router 7](https://reactrouter.com/)** — Single Page Application Routing
 
-### 3D Graphics & Animations
-- **[Three.js](https://threejs.org/)** — WebGL 3D Rendering สำหรับ Soft Geometries และ Constellation Background
-- **[Framer Motion](https://www.framer.com/motion/)** — Motion UI, Stagger Animations, Parallax Effects
-- **[Canvas Confetti](https://www.npmjs.com/package/canvas-confetti)** — Interactive Particle Celebrations
+### Animation & Physics
+- **[Lenis](https://lenis.darkroom.engineering/)** — Smooth Momentum Scroll
+- **[Framer Motion](https://www.framer.com/motion/)** — Complex Gestures, Layout Spring & Page Transitions
+- **[Three.js](https://threejs.org/)** — WebGL Spatial Ambient & Floating Glass Polyhedrons
+- **[Canvas Confetti](https://www.npmjs.com/package/canvas-confetti)** — Micro-celebrations
 
 ### Typography & Styling
-- **[Kanit](https://fonts.google.com/specimen/Kanit)** — ฟอนต์ภาษาไทยไร้หัว สไตล์ Modern Tech & Clean Design
-- **[Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans)** — ฟอนต์ภาษาอังกฤษเรขาคณิตระดับสากล
-- **[JetBrains Mono](https://www.jetbrains.com/lp/mono/)** — ฟอนต์ Monospace สำหรับ Code & Terminal Badges
-- **CSS Design Tokens** — ระบบ Glassmorphism, CSS Variables, Responsive Clamping
+- **[Inter](https://fonts.google.com/specimen/Inter)** — ฟอนต์หัวข้อสากลระดับพรีเมียม
+- **[IBM Plex Sans Thai](https://fonts.google.com/specimen/IBM+Plex+Sans+Thai)** — ฟอนต์เนื้อหาภาษาไทย สบายตา อ่านง่าย
+- **[JetBrains Mono](https://www.jetbrains.com/lp/mono/)** — ฟอนต์โมโนสเปซสำหรับ Terminal & Tech Badges
+- **CSS Design Tokens** — ระบบตัวแปรคู่สี Quiet Cyber Luxury (Light: ฟ้า-ขาว / Dark: ฟ้า-ดำ)
 
 ---
 
 ## 🚀 การติดตั้งและเริ่มต้นใช้งาน (Getting Started)
 
 ### ความต้องการของระบบ (Prerequisites)
-- [Node.js](https://nodejs.org/) (เวอร์ชัน 18.0 ขึ้นไป แนะนำเวอร์ชัน 20+)
+- [Node.js](https://nodejs.org/) (เวอร์ชัน 18.0 ขึ้นไป แนะนำ 20+)
 - [Git](https://git-scm.com/)
-- [Python 3.10+](https://www.python.org/) *(ตัวเลือกเสริม สำหรับรันสคริปต์ ComfyUI)*
 
 ### ขั้นตอนการรันบนเครื่อง Local:
 
@@ -163,14 +164,11 @@ python scripts/comfyui/api_client.py
    ```bash
    npm run dev
    ```
-   > เข้าใช้งานที่: `http://localhost:5173/`
+   > เปิดเข้าใช้งานได้ที่: `http://localhost:5173/`
 
-4. **คำสั่งอื่นๆ ที่สำคัญ:**
+4. **คำสั่งสร้าง Production Bundle:**
    ```bash
-   # สร้าง Production Bundle
    npm run build
-
-   # ทดสอบเปิดดู Production Preview
    npm run preview
    ```
 
@@ -180,46 +178,42 @@ python scripts/comfyui/api_client.py
 
 ```plaintext
 portfolio/
-├── public/                     # ไฟล์สาธารณะและภาพ WebP ที่ผ่านการบีบอัด
-│   ├── img/*.webp              # คลังภาพมาสคอต, สื่อการสอน, ภาพโปรเจกต์
+├── public/                     # ไฟล์สาธารณะและภาพ WebP
+│   ├── img/*.webp              # คลังภาพผลงาน, สื่อการสอน, มาสคอต
 │   └── profile.jpg             # ภาพโปรไฟล์หลัก
-├── scripts/                    # สคริปต์ Automation
-│   └── comfyui/                # ComfyUI API Client & Prompt Workflows
-│       ├── api_client.py       # คิวคำสั่งและดาวน์โหลด Asset อัตโนมัติ
-│       ├── check_status.py     # เช็คสถานะ API ของ ComfyUI
-│       └── workflows/          # เทมเพลตพรอพต์ Cute Tech
+├── scripts/                    # สคริปต์เสริมและ AI Automation
 ├── src/
 │   ├── components/             # React UI Components
-│   │   ├── About.jsx           # ข้อมูลประวัติและ Tech Specs
-│   │   ├── AllProjectsPage.jsx # หน้ารวมโปรเจกต์ทั้งหมด (พร้อม Header แถวเดียว)
-│   │   ├── AuthModal.jsx       # Modal รหัสผ่านป้องกัน Brute-Force
-│   │   ├── BackgroundCanvas.jsx# Canvas พื้นหลังอนุภาคดวงดาว
-│   │   ├── Contact.jsx         # แบบฟอร์มและช่องทางติดต่อ
-│   │   ├── EditModal.jsx       # ระบบ Live Content CMS
-│   │   ├── Experience.jsx      # ประวัติการทำงานและเส้นทางวิชาชีพ
-│   │   ├── FloatingCyberObjects.jsx # โมเดล 3D ทรงเรขาคณิตแบบนุ่มนวล
-│   │   ├── Footer.jsx          # ส่วนท้ายเว็บ
-│   │   ├── Hero.jsx            # หน้าต้อนรับและปุ่ม Action หลัก
+│   │   ├── About.jsx           # ข้อมูลประวัติและ Live Terminal Specs
+│   │   ├── AllProjectsPage.jsx # หน้ารวมคลังผลงานทั้งหมด (Full Grid)
+│   │   ├── AuthModal.jsx       # Modal ยืนยันรหัสผ่าน Admin
+│   │   ├── BackgroundCanvas.jsx# Ambient Stardust Canvas
+│   │   ├── Contact.jsx         # แบบฟอร์มติดต่อและปุ่มคัดลอกอีเมล
+│   │   ├── EditModal.jsx       # Visual CMS Dialog
+│   │   ├── Experience.jsx      # ไทม์ไลน์ประวัติการทำงาน Minimalist
+│   │   ├── FloatingCyberObjects.jsx # วัตถุ 3D โพลีฮีดรอนกระจกฝ้า
+│   │   ├── Footer.jsx          # ส่วนท้ายเว็บและสถานะการเชื่อมต่อ
+│   │   ├── Hero.jsx            # หน้าต้อนรับและปุ่ม Action
 │   │   ├── Hero3D.jsx          # โมเดล 3D โต้ตอบกับเมาส์
-│   │   ├── Navbar.jsx          # เมนูนำทางและปุ่มสลับธีม/ภาษา
-│   │   ├── ProjectDetailPage.jsx # หน้ารายละเอียดโปรเจกต์
-│   │   ├── Projects.jsx        # แสดงผลงานและคลังโปรเจกต์ (Carousel/Grid)
-│   │   ├── ScrollToTop.jsx     # ปุ่มลอยเลื่อนกลับด้านบน
-│   │   └── Skills.jsx          # แสดงทักษะความเชี่ยวชาญ
+│   │   ├── Navbar.jsx          # เมนูนำทางแบบ Glass Capsule และตัวสลับธีม
+│   │   ├── ProjectDetailPage.jsx # หน้ารายละเอียดผลงานแบบเต็ม
+│   │   ├── Projects.jsx        # สไลด์ผลงาน Interactive Carousel & Filter
+│   │   ├── ScrollToTop.jsx     # ปุ่มเลื่อนกลับด้านบน
+│   │   └── Skills.jsx          # คลังทักษะพร้อม Hairline Glowing Indicators
 │   ├── context/
-│   │   └── PortfolioContext.jsx# Context จัดการ State ทั่วทั้งเว็บ (ธีม, ภาษา, ข้อมูล)
+│   │   └── PortfolioContext.jsx# State Management ทั่วระบบ (ธีม, ภาษา, ข้อมูล, CMS)
 │   ├── data/
-│   │   └── defaultData.js      # ข้อมูลตั้งต้น 2 ภาษา (TH / EN)
+│   │   └── defaultData.js      # ข้อมูลเนื้อหาตั้งต้น 2 ภาษา
 │   ├── utils/
-│   │   ├── crypto.js           # การเข้ารหัสและการเปรียบเทียบ Timing-Safe
-│   │   └── security.js         # การตรวจสอบความปลอดภัย URL และ Sanitization
-│   ├── App.css                 # Micro-Animations & Cute Tech Styles
-│   ├── App.jsx                 # Main Application Layout & Route Scroll Restoration
-│   ├── index.css               # Global Fonts (Kanit) & CSS Design Tokens
-│   └── main.jsx                # Application Entry Point
-├── index.html                  # HTML Shell พร้อม Google Fonts Preconnect
-├── package.json                # Project Dependencies & Scripts
-├── README.md                   # เอกสารประกอบโปรเจกต์
+│   │   ├── crypto.js           # ระบบแฮชรหัสผ่าน Timing-Safe
+│   │   └── security.js         # ฟังก์ชันตรวจสอบความปลอดภัย URL
+│   ├── App.css                 # สไตล์ Luxury Micro-Interactions
+│   ├── App.jsx                 # เลย์เอาต์หลักและระบบ Lenis Scroll
+│   ├── index.css               # Design Tokens โทน ฟ้า-ขาว และ ฟ้า-ดำ
+│   └── main.jsx                # จุดเริ่มต้นการทำงานของแอปพลิเคชัน
+├── index.html                  # HTML Shell
+├── package.json                # Dependencies & Build Scripts
+├── README.md                   # เอกสารประกอบโปรเจกต์ฉบับสมบูรณ์
 └── vite.config.js              # การตั้งค่า Vite
 ```
 
@@ -228,7 +222,7 @@ portfolio/
 ## 👤 เกี่ยวกับผู้จัดทำ (Author & Contact)
 
 **ครูเพชร IT (Phet Kamonphet)**  
-*ครูสาย IT, ผู้พัฒนานวัตกรรมการเรียนรู้ & นักพัฒนาเว็บแอปพลิเคชัน*
+*ครูสาย IT, ผู้พัฒนานวัตกรรมการเรียนรู้ & นักพัฒนาเทคโนโลยีสารสนเทศ*
 
 - 🐙 **GitHub:** [@Kamonphet](https://github.com/Kamonphet)
 - 💼 **Repository:** [Portfolio-Phet](https://github.com/Kamonphet/Portfolio-Phet)
@@ -238,5 +232,5 @@ portfolio/
 
 <div align="center">
   <p>⭐ หากโปรเจกต์นี้มีประโยชน์ อย่าลืมกด <b>Star</b> บน GitHub เพื่อเป็นกำลังใจให้ด้วยนะครับ! ⭐</p>
-  <sub>Crafted with 💙, Innovation and Next-Gen Web Technologies by Kru Petch IT</sub>
+  <sub>Crafted with 💙 and Quiet Cyber Luxury by Kru Petch IT</sub>
 </div>
