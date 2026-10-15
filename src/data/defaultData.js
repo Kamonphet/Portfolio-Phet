@@ -1,7 +1,7 @@
 export const defaultPortfolioData = {
   th: {
     hero: {
-      greeting: "<สวัสดีครับ_WORLD />",
+      greeting: "สวัสดีครับ ยินดีต้อนรับสู่พื้นที่แห่งการเรียนรู้",
       name: "ครูเพชร IT",
       title: "ครูสาย IT & Creative Technologist",
       tagline: "สอนให้คิด ใช้เทคโนโลยี สร้างอนาคต | ผสานวิทยาการคำนวณ ความมั่นคงปลอดภัยไซเบอร์ (Cybersecurity) และนวัตกรรมเว็บเทคโนโลยี",
@@ -11,7 +11,7 @@ export const defaultPortfolioData = {
       ctaSecondary: "ติดต่อพูดคุย"
     },
     about: {
-      badge: "SYSTEM_CORE // เกี่ยวกับฉัน",
+      badge: "วิสัยทัศน์ & ความเชี่ยวชาญ",
       heading: "ผสานพลังระหว่างการออกแบบการเรียนรู้ เทคโนโลยีไอที และความปลอดภัยไซเบอร์",
       paragraphs: [
         "สวัสดีครับ! ผม 'ครูเพชร IT' ครูผู้มีความหลงใหลในการประยุกต์ใช้เทคโนโลยีสมัยใหม่เพื่อยกระดับการจัดการเรียนรู้ให้มีประสิทธิภาพสูงสุด ทั้งในด้านวิทยาการคำนวณ ความมั่นคงปลอดภัยไซเบอร์ และการพัฒนาเว็บแอปพลิเคชัน",
@@ -177,7 +177,7 @@ export const defaultPortfolioData = {
   },
   en: {
     hero: {
-      greeting: "<HELLO_WORLD />",
+      greeting: "Hello & Welcome to the Learning Hub",
       name: "Kru Petch IT",
       title: "IT Educator & Creative Technologist",
       tagline: "Inspiring minds through technology | Integrating Computing Science, Cybersecurity, and Modern Web Innovation.",
@@ -187,7 +187,7 @@ export const defaultPortfolioData = {
       ctaSecondary: "Get in Touch"
     },
     about: {
-      badge: "SYSTEM_CORE // ABOUT_ME",
+      badge: "Vision & Expertise",
       heading: "Uniting pedagogy, software engineering, and cybersecurity.",
       paragraphs: [
         "Hello! I am 'Kru Petch IT', a passionate educator and creative technologist dedicated to transforming digital learning through active learning techniques, computing science, and cybersecurity.",

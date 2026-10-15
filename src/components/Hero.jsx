@@ -74,10 +74,10 @@ const Hero = () => {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="hero-content-col"
         >
-          {/* Eyebrow Label Tag */}
+          {/* Eyebrow Label Tag (Impeccable Clean Spec) */}
           <div style={{ marginBottom: "1.2rem" }}>
             <span className="eyebrow-label">
-              // 00 — INNOVATOR & CYBERSECURITY SPECIALIST
+              CREATIVE TECHNOLOGIST &amp; CYBERSECURITY EDUCATOR
             </span>
           </div>
 
