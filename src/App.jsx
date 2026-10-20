@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import "./App.css";
@@ -12,26 +12,24 @@ import Experience from "./components/Experience";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import BackgroundCanvas from "./components/BackgroundCanvas";
-import FloatingCyberObjects from "./components/FloatingCyberObjects";
-import EditModal from "./components/EditModal";
-import AuthModal from "./components/AuthModal";
 import ScrollToTop from "./components/ScrollToTop";
-import AllProjectsPage from "./components/AllProjectsPage";
-import ProjectDetailPage from "./components/ProjectDetailPage";
+
+// Lazy-load secondary routes and heavy admin modals for fast initial paint
+const EditModal = lazy(() => import("./components/EditModal"));
+const AuthModal = lazy(() => import("./components/AuthModal"));
+const AllProjectsPage = lazy(() => import("./components/AllProjectsPage"));
+const ProjectDetailPage = lazy(() => import("./components/ProjectDetailPage"));
 
 function PortfolioContent() {
   return (
     <div className="app-container">
-      {/* Quiet Luxury Ambient Space Canvas */}
+      {/* Unified GPU Shader Background Canvas (OKLab Mesh + Cursor Light + Simplex Grain) */}
       <BackgroundCanvas />
-
-      {/* Spatial Frosted Glass Polyhedrons */}
-      <FloatingCyberObjects />
 
       {/* Floating Glass Pill Navigation Bar */}
       <Navbar />
 
-      {/* Main Sections */}
+      {/* Main Narrative Sections */}
       <main>
         <Hero />
         <About />
@@ -44,13 +42,13 @@ function PortfolioContent() {
       {/* Footer */}
       <Footer />
 
-      {/* Visual Content Management Modal */}
-      <EditModal />
+      {/* Visual Content Management & Auth Modals */}
+      <Suspense fallback={null}>
+        <EditModal />
+        <AuthModal />
+      </Suspense>
 
-      {/* Security Auth Passcode Modal */}
-      <AuthModal />
-
-      {/* Floating Scroll To Top Button (Positioned bottom-right) */}
+      {/* Floating Scroll To Top Button */}
       <ScrollToTop />
     </div>
   );
@@ -73,7 +71,7 @@ function App() {
     if (prefersReducedMotion) return;
 
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 1.05,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       touchMultiplier: 1.5,
@@ -95,11 +93,13 @@ function App() {
   return (
     <PortfolioProvider>
       <ScrollToTopOnRoute />
-      <Routes>
-        <Route path="/" element={<PortfolioContent />} />
-        <Route path="/projects" element={<AllProjectsPage />} />
-        <Route path="/projects/:id" element={<ProjectDetailPage />} />
-      </Routes>
+      <Suspense fallback={<div className="app-container" />}>
+        <Routes>
+          <Route path="/" element={<PortfolioContent />} />
+          <Route path="/projects" element={<AllProjectsPage />} />
+          <Route path="/projects/:id" element={<ProjectDetailPage />} />
+        </Routes>
+      </Suspense>
     </PortfolioProvider>
   );
 }

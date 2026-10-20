@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { usePortfolio } from "../context/PortfolioContext";
 import EditableText from "./EditableText";
 import {
-  FiTerminal,
   FiShield,
   FiServer,
   FiCpu,
@@ -14,160 +13,74 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 
-const TerminalSpecs = ({ specs, isEditMode, updateAbout }) => {
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-60px" });
-  const [typedLines, setTypedLines] = useState(0);
-
-  // Typing effect when scrolled into view
-  useEffect(() => {
-    if (!isInView || isEditMode) {
-      if (isEditMode) setTypedLines(specs.length);
-      return;
-    }
-
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
-      setTypedLines(specs.length);
-      return;
-    }
-
-    let line = 0;
-    const interval = setInterval(() => {
-      line++;
-      setTypedLines(line);
-      if (line >= specs.length) {
-        clearInterval(interval);
-      }
-    }, 180);
-
-    return () => clearInterval(interval);
-  }, [isInView, specs.length, isEditMode]);
-
+const SpecificationList = ({ specs, updateAbout }) => {
   return (
     <div
-      ref={containerRef}
       style={{
         width: "100%",
-        background: "rgba(10, 10, 12, 0.9)",
-        borderRadius: "14px",
-        border: "1px solid var(--border-subtle)",
-        overflow: "hidden",
-        boxShadow: "0 12px 35px rgba(0, 0, 0, 0.35)",
-        fontFamily: "var(--font-mono)",
+        paddingTop: "1.25rem",
+        borderTop: "1px solid var(--border-subtle)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        textAlign: "left",
       }}
-      className="terminal-hud-card"
     >
-      {/* Terminal Header Bar */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "10px 14px",
-          background: "rgba(255, 255, 255, 0.03)",
-          borderBottom: "1px solid var(--border-subtle)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <span style={{ width: "9px", height: "9px", borderRadius: "50%", background: "#EF4444", opacity: 0.7 }} />
-          <span style={{ width: "9px", height: "9px", borderRadius: "50%", background: "#F59E0B", opacity: 0.7 }} />
-          <span style={{ width: "9px", height: "9px", borderRadius: "50%", background: "#10B981", opacity: 0.7 }} />
-        </div>
-        <span
+      {specs.map((spec, idx) => (
+        <div
+          key={idx}
           style={{
-            fontSize: "0.74rem",
-            color: "var(--text-tertiary)",
-            letterSpacing: "0.06em",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "baseline",
+            gap: "12px",
+            paddingBottom: idx !== specs.length - 1 ? "8px" : 0,
+            borderBottom:
+              idx !== specs.length - 1
+                ? "1px solid var(--border-subtle)"
+                : "none",
+            fontSize: "0.86rem",
           }}
         >
-          krupetch@sys-core:~# specs.env
-        </span>
-        <div style={{ width: "24px" }} />
-      </div>
-
-      {/* Terminal Content Body */}
-      <div
-        style={{
-          padding: "1.1rem 1.25rem",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          fontSize: "0.84rem",
-          lineHeight: "1.6",
-        }}
-      >
-        <div style={{ color: "var(--text-tertiary)", fontSize: "0.76rem" }}>
-          // SYSTEM HARDWARE & EXPERTISE SPECIFICATIONS
-        </div>
-
-        {specs.map((spec, idx) => {
-          const isVisible = isEditMode || idx < typedLines;
-          if (!isVisible) return null;
-
-          return (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.25 }}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "12px",
-                paddingBottom: idx !== specs.length - 1 ? "6px" : 0,
-                borderBottom: idx !== specs.length - 1 ? "1px dashed rgba(255, 255, 255, 0.05)" : "none",
+          <span
+            style={{
+              color: "var(--text-secondary)",
+              fontWeight: "500",
+            }}
+          >
+            <EditableText
+              value={spec.label}
+              onSave={(val) => {
+                const updated = [...specs];
+                updated[idx] = { ...updated[idx], label: val };
+                updateAbout({ systemSpecs: updated });
               }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ color: "var(--accent)", opacity: 0.8 }}>&gt;</span>
-                <span style={{ color: "var(--text-secondary)" }}>
-                  <EditableText
-                    value={spec.label}
-                    onSave={(val) => {
-                      const updated = [...specs];
-                      updated[idx] = { ...updated[idx], label: val };
-                      updateAbout({ systemSpecs: updated });
-                    }}
-                  />
-                  :
-                </span>
-              </div>
-              <span
-                style={{
-                  color: "var(--text-primary)",
-                  fontWeight: "600",
-                  textAlign: "right",
-                }}
-              >
-                <EditableText
-                  value={spec.value}
-                  onSave={(val) => {
-                    const updated = [...specs];
-                    updated[idx] = { ...updated[idx], value: val };
-                    updateAbout({ systemSpecs: updated });
-                  }}
-                />
-              </span>
-            </motion.div>
-          );
-        })}
-
-        {/* Terminal Cursor */}
-        {!isEditMode && typedLines < specs.length && (
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--accent)" }}>
-            <span>&gt;</span>
-            <span className="blinking-cursor">_</span>
-          </div>
-        )}
-      </div>
+            />
+          </span>
+          <span
+            style={{
+              color: "var(--text-primary)",
+              fontWeight: "600",
+              textAlign: "right",
+            }}
+          >
+            <EditableText
+              value={spec.value}
+              onSave={(val) => {
+                const updated = [...specs];
+                updated[idx] = { ...updated[idx], value: val };
+                updateAbout({ systemSpecs: updated });
+              }}
+            />
+          </span>
+        </div>
+      ))}
     </div>
   );
 };
 
 const About = () => {
-  const { data, updateAbout, t, isEditMode } = usePortfolio();
+  const { data, updateAbout, t } = usePortfolio();
 
   const education = data?.about?.education || [];
   const systemSpecs = data?.about?.systemSpecs || [];
@@ -176,19 +89,21 @@ const About = () => {
     <section id="about" className="content-section">
       {/* Section Header */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        style={{ textAlign: "center", marginBottom: "4rem" }}
+        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        style={{ textAlign: "center", marginBottom: "3.75rem" }}
       >
-        <span className="eyebrow-label">// 01 — IDENTITY & SYSTEM ARCHITECTURE</span>
         <h2 className="section-title">
-          {t.about.titlePre} <span className="gradient-text">{t.about.titleHighlight}</span>
+          {t.about.titlePre}{" "}
+          <span style={{ color: "var(--accent)" }}>
+            {t.about.titleHighlight}
+          </span>
         </h2>
         <div
           style={{
-            maxWidth: "680px",
+            maxWidth: "700px",
             margin: "0 auto",
             color: "var(--text-secondary)",
             fontSize: "1.05rem",
@@ -203,162 +118,147 @@ const About = () => {
         </div>
       </motion.div>
 
-      {/* Main Grid: Left (Terminal Specs + Avatar) | Right (Narrative + Pillars) */}
+      {/* Main Split Layout: Left (Portrait & Specifications) | Right (Narrative & Core Pillars) */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1.05fr 1.25fr",
-          gap: "2.5rem",
+          gridTemplateColumns: "1fr 1.35fr",
+          gap: "2.25rem",
           alignItems: "stretch",
-          marginBottom: "3.5rem",
+          marginBottom: "3rem",
         }}
         className="about-grid"
       >
-        {/* Left: Luxury Profile + Terminal Card */}
+        {/* Left Column: Portrait & Key Specifications (Single Card Surface) */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           className="glass-card"
           style={{
             padding: "2.25rem 2rem",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            justifyContent: "space-between",
             textAlign: "center",
             gap: "1.5rem",
           }}
         >
-          {/* Avatar with Crisp Hairline Glass Ring */}
           <div
             style={{
-              position: "relative",
-              width: "180px",
-              height: "180px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "1.1rem",
+              width: "100%",
             }}
           >
+            {/* Portrait with Crisp Hairline Frame */}
             <div
               style={{
-                position: "absolute",
-                inset: "-3px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, var(--accent), var(--border-glass))",
-                opacity: 0.45,
-              }}
-            />
-            <img
-              src={data.about.avatarUrl || "/profile.jpg"}
-              alt={data.hero.name || "ครูเพชร IT"}
-              style={{
                 position: "relative",
-                width: "100%",
-                height: "100%",
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: "2px solid var(--border-glass)",
-                boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
-              }}
-            />
-          </div>
-
-          <div>
-            <h3
-              style={{
-                fontSize: "1.4rem",
-                fontWeight: "700",
-                color: "var(--text-primary)",
-                fontFamily: "var(--font-display)",
-                letterSpacing: "-0.02em",
-                margin: "0 0 4px 0",
+                width: "168px",
+                height: "168px",
               }}
             >
-              {data.hero.name || "ครูเพชร IT"}
-            </h3>
-            <p
-              style={{
-                color: "var(--accent)",
-                fontSize: "0.88rem",
-                fontFamily: "var(--font-mono)",
-                margin: 0,
-                fontWeight: "500",
-              }}
-            >
-              {data.hero.title}
-            </p>
+              <img
+                src={data.about.avatarUrl || "/profile.jpg"}
+                alt={data.hero.name || "ครูเพชร IT"}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "2px solid var(--accent-border)",
+                  boxShadow: "0 12px 28px rgba(0, 0, 0, 0.22)",
+                }}
+              />
+            </div>
+
+            <div>
+              <h3
+                style={{
+                  fontSize: "1.45rem",
+                  fontWeight: "700",
+                  color: "var(--text-primary)",
+                  fontFamily: "var(--font-display)",
+                  letterSpacing: "-0.02em",
+                  margin: "0 0 4px 0",
+                }}
+              >
+                {data.hero.name || "ครูเพชร IT"}
+              </h3>
+              <p
+                style={{
+                  color: "var(--accent)",
+                  fontSize: "0.9rem",
+                  margin: 0,
+                  fontWeight: "600",
+                }}
+              >
+                {data.hero.title}
+              </p>
+            </div>
+
+            {/* Clean Hair-lined Specification Sheet */}
+            <SpecificationList specs={systemSpecs} updateAbout={updateAbout} />
           </div>
 
-          {/* Luxury Terminal Specs with Streaming Effect */}
-          <TerminalSpecs
-            specs={systemSpecs}
-            isEditMode={isEditMode}
-            updateAbout={updateAbout}
-          />
-
-          {/* Pedagogy Motto Bar */}
+          {/* Pedagogy Motto Footer (Divided by Hairline, Not a Nested Card) */}
           <div
             style={{
               width: "100%",
-              background: "var(--accent-muted)",
-              border: "1px solid var(--border-subtle)",
-              borderRadius: "12px",
-              padding: "10px 16px",
+              paddingTop: "1.1rem",
+              borderTop: "1px solid var(--border-subtle)",
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
               gap: "12px",
               textAlign: "left",
             }}
           >
-            <div
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "8px",
-                background: "var(--glass-bg)",
-                border: "1px solid var(--border-glass)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--accent)",
-                flexShrink: 0,
-              }}
-            >
-              <FiAward size={18} />
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: "0.7rem",
-                  color: "var(--accent)",
-                  fontFamily: "var(--font-mono)",
-                  fontWeight: "700",
-                  letterSpacing: "0.06em",
-                }}
-              >
-                PEDAGOGY MOTTO //
-              </div>
-              <div
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <FiAward
+                size={18}
+                style={{ color: "var(--accent)", flexShrink: 0 }}
+              />
+              <span
                 style={{
                   fontSize: "0.88rem",
                   fontWeight: "600",
                   color: "var(--text-primary)",
                 }}
               >
-                "การเรียนรู้ไม่มีที่สิ้นสุด :)"
-              </div>
+                “การเรียนรู้ไม่มีที่สิ้นสุด :)”
+              </span>
             </div>
+            <span
+              style={{
+                fontSize: "0.76rem",
+                color: "var(--text-tertiary)",
+                fontWeight: "500",
+              }}
+            >
+              Lifelong Learner
+            </span>
           </div>
         </motion.div>
 
-        {/* Right: Narrative Bio & 4 Pillars of Expertise */}
+        {/* Right Column: Narrative Bio & Core Pillars (Single Card Surface) */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{
+            duration: 0.65,
+            delay: 0.08,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="glass-card"
           style={{
-            padding: "2.5rem 2.25rem",
+            padding: "2.4rem 2.25rem",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -366,26 +266,30 @@ const About = () => {
           }}
         >
           <div>
-            {/* Header Tag */}
+            {/* Section Label */}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.78rem",
-                color: "var(--text-tertiary)",
-                letterSpacing: "0.06em",
-                marginBottom: "1.5rem",
-                textTransform: "uppercase",
+                fontSize: "0.82rem",
+                fontWeight: "600",
+                color: "var(--accent)",
+                marginBottom: "1.35rem",
               }}
             >
-              <FiTerminal size={14} style={{ color: "var(--accent)" }} />
-              <span>{t.about.terminal || "CORE_NARRATIVE // PHILOSOPHY"}</span>
+              <FiBookOpen size={15} />
+              <span>{t.about.terminal || "แนวคิดและปรัชญาการทำงาน"}</span>
             </div>
 
-            {/* Paragraphs */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+            {/* Narrative Paragraphs */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.2rem",
+              }}
+            >
               {(data?.about?.paragraphs || []).map((p, idx) => (
                 <p
                   key={idx}
@@ -409,44 +313,46 @@ const About = () => {
               ))}
             </div>
 
-            {/* 4 Pillars of Competencies (Minimalist Hairline Tech Badges) */}
+            {/* 4 Core Pillars (Divided by Hairline, No Nested Card Wrapper) */}
             <div
               style={{
                 marginTop: "2rem",
-                padding: "1.25rem",
-                background: "var(--accent-muted)",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: "14px",
+                paddingTop: "1.5rem",
+                borderTop: "1px solid var(--border-subtle)",
               }}
             >
               <div
                 style={{
-                  fontSize: "0.76rem",
-                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.82rem",
                   fontWeight: "600",
-                  color: "var(--accent)",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  marginBottom: "10px",
+                  color: "var(--text-secondary)",
+                  marginBottom: "12px",
                 }}
               >
-                // 4 CORE PILLARS OF EXPERTISE
+                แกนหลักความเชี่ยวชาญ 4 ด้าน
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
-                <div className="pillar-pill">
-                  <FiShield size={14} />
-                  <span>Cybersecurity & CTF</span>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: "10px",
+                }}
+                className="pillars-grid"
+              >
+                <div className="pillar-item">
+                  <FiShield size={15} />
+                  <span>Cybersecurity &amp; CTF</span>
                 </div>
-                <div className="pillar-pill">
-                  <FiServer size={14} />
+                <div className="pillar-item">
+                  <FiServer size={15} />
                   <span>IT Infrastructure</span>
                 </div>
-                <div className="pillar-pill">
-                  <FiCpu size={14} />
+                <div className="pillar-item">
+                  <FiCpu size={15} />
                   <span>Computing Science</span>
                 </div>
-                <div className="pillar-pill">
-                  <FiAward size={14} />
+                <div className="pillar-item">
+                  <FiAward size={15} />
                   <span>EdTech Innovation</span>
                 </div>
               </div>
@@ -463,14 +369,30 @@ const About = () => {
               justifyContent: "space-between",
               flexWrap: "wrap",
               gap: "1rem",
-              fontSize: "0.85rem",
+              fontSize: "0.86rem",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--accent)" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                color: "var(--accent)",
+              }}
+            >
               <FiCheckCircle />
-              <span style={{ fontWeight: "600" }}>{t.about.verified || "Verified Educator & Researcher"}</span>
+              <span style={{ fontWeight: "600" }}>
+                {t.about.verified || "Verified Educator & Researcher"}
+              </span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                color: "var(--text-secondary)",
+              }}
+            >
               <FiMapPin />
               <span>{data.contact.location || "Bangkok, Thailand"}</span>
             </div>
@@ -478,7 +400,7 @@ const About = () => {
         </motion.div>
       </div>
 
-      {/* Stats Counter Bar with Staggered Motion */}
+      {/* Metrics Strip with Tabular Numerals */}
       <div
         className="about-stats-grid"
         style={{
@@ -491,14 +413,18 @@ const About = () => {
         {(data?.about?.stats || []).map((stat, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
-            transition={{ delay: idx * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            whileHover={{ y: -6 }}
+            transition={{
+              delay: idx * 0.08,
+              duration: 0.55,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            whileHover={{ y: -4 }}
             className="glass-card"
             style={{
-              padding: "1.75rem 1.25rem",
+              padding: "1.6rem 1.25rem",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
@@ -507,13 +433,14 @@ const About = () => {
             }}
           >
             <span
+              className="tabular-nums"
               style={{
-                fontSize: "2.4rem",
+                fontSize: "2.35rem",
                 fontWeight: "700",
                 color: "var(--accent)",
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "-0.04em",
-                lineHeight: 1,
+                fontFamily: "var(--font-display)",
+                letterSpacing: "-0.035em",
+                lineHeight: 1.05,
               }}
             >
               <EditableText
@@ -545,17 +472,16 @@ const About = () => {
         ))}
       </div>
 
-      {/* Education Timeline Section */}
+      {/* Education & Academic Milestones Timeline */}
       {education.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-            <span className="eyebrow-label">// 01.2 — ACADEMIC MILESTONES</span>
-            <h3 className="section-title" style={{ fontSize: "2.2rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <h3 className="section-title" style={{ fontSize: "2.1rem" }}>
               {t.about.educationTitle || "ประวัติการศึกษา"}
             </h3>
           </div>
@@ -566,11 +492,17 @@ const About = () => {
             {education.map((edu, idx) => (
               <motion.div
                 key={edu.id || idx}
-                className={`edu-timeline-item ${idx % 2 === 0 ? "edu-timeline-left" : "edu-timeline-right"}`}
-                initial={{ opacity: 0, x: idx % 2 === 0 ? -40 : 40 }}
+                className={`edu-timeline-item ${
+                  idx % 2 === 0 ? "edu-timeline-left" : "edu-timeline-right"
+                }`}
+                initial={{ opacity: 0, x: idx % 2 === 0 ? -32 : 32 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.7, delay: idx * 0.15, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: 0.65,
+                  delay: idx * 0.12,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
               >
                 <div className="edu-timeline-node">
                   <div className="edu-timeline-node-inner" />
@@ -584,19 +516,31 @@ const About = () => {
                   <div className="edu-timeline-card-content">
                     {edu.image && (
                       <div className="edu-timeline-img-wrap">
-                        <img src={edu.image} alt={edu.institution} className="edu-timeline-img" />
+                        <img
+                          src={edu.image}
+                          alt={edu.institution}
+                          className="edu-timeline-img"
+                          loading="lazy"
+                        />
                       </div>
                     )}
 
                     <div className="edu-timeline-text">
-                      <span className="edu-timeline-period">
-                        <FiCalendar size={12} style={{ display: "inline", marginRight: "4px" }} />
+                      <span className="edu-timeline-period tabular-nums">
+                        <FiCalendar
+                          size={12}
+                          style={{ display: "inline", marginRight: "5px" }}
+                        />
                         {edu.period}
                       </span>
                       <h4 className="edu-timeline-degree">{edu.degree}</h4>
                       <p className="edu-timeline-field">{edu.field}</p>
-                      <p className="edu-timeline-institution">{edu.institution}</p>
-                      {edu.description && <p className="edu-timeline-desc">{edu.description}</p>}
+                      <p className="edu-timeline-institution">
+                        {edu.institution}
+                      </p>
+                      {edu.description && (
+                        <p className="edu-timeline-desc">{edu.description}</p>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -607,32 +551,24 @@ const About = () => {
       )}
 
       <style>{`
-        .blinking-cursor {
-          animation: blink 1s step-end infinite;
-        }
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        .pillar-pill {
+        .pillar-item {
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 8px 12px;
-          background: var(--glass-bg);
-          border: 1px solid var(--border-glass);
-          border-radius: 8px;
-          font-size: 0.82rem;
+          gap: 9px;
+          padding: 9px 12px;
+          background: var(--accent-muted);
+          border: 1px solid var(--border-subtle);
+          border-radius: 10px;
+          font-size: 0.84rem;
           color: var(--text-primary);
           font-weight: 500;
-          transition: all 0.2s ease;
+          transition: border-color 0.2s ease, color 0.2s ease;
         }
-        .pillar-pill:hover {
+        .pillar-item:hover {
           border-color: var(--accent-border);
           color: var(--accent);
-          transform: translateY(-1px);
         }
-        .pillar-pill svg {
+        .pillar-item svg {
           color: var(--accent);
           flex-shrink: 0;
         }
@@ -648,27 +584,26 @@ const About = () => {
             grid-template-columns: repeat(2, 1fr) !important;
             gap: 0.8rem !important;
           }
-          .pillar-pill {
-            grid-column: span 2;
+          .pillars-grid {
+            grid-template-columns: 1fr !important;
           }
         }
 
         /* ===== Education Timeline Styles ===== */
         .edu-timeline {
           position: relative;
-          max-width: 880px;
+          max-width: 900px;
           margin: 0 auto;
-          padding: 2rem 0;
+          padding: 1.5rem 0;
         }
         .edu-timeline-line {
           position: absolute;
           left: 50%;
           top: 0;
           bottom: 0;
-          width: 2px;
+          width: 1px;
           background: var(--border-subtle);
           transform: translateX(-50%);
-          border-radius: 2px;
         }
         .edu-timeline-item {
           position: relative;
@@ -687,7 +622,7 @@ const About = () => {
         }
         .edu-timeline-node {
           position: absolute;
-          top: 8px;
+          top: 14px;
           width: 16px;
           height: 16px;
           border-radius: 50%;
@@ -713,23 +648,23 @@ const About = () => {
         .edu-timeline-card {
           position: relative;
           overflow: hidden;
-          border-radius: 14px !important;
+          border-radius: 16px !important;
         }
         .edu-timeline-card-content {
-          padding: 1.25rem;
+          padding: 1.35rem;
           display: flex;
-          gap: 1rem;
+          gap: 1.15rem;
           align-items: flex-start;
         }
         .edu-timeline-left .edu-timeline-card-content {
           flex-direction: row-reverse;
         }
         .edu-timeline-img-wrap {
-          width: 48px;
-          height: 48px;
-          border-radius: 10px;
+          width: 68px;
+          height: 68px;
+          border-radius: 14px;
           overflow: hidden;
-          background: var(--glass-bg);
+          background: var(--bg-elevated);
           border: 1px solid var(--border-glass);
           flex-shrink: 0;
         }
@@ -740,33 +675,32 @@ const About = () => {
         }
         .edu-timeline-period {
           display: inline-block;
-          font-family: var(--font-mono);
-          font-size: 0.74rem;
+          font-size: 0.78rem;
           color: var(--accent);
           font-weight: 600;
           margin-bottom: 4px;
         }
         .edu-timeline-degree {
-          font-size: 1rem;
+          font-size: 1.04rem;
           font-weight: 700;
           color: var(--text-primary);
           margin-bottom: 2px;
         }
         .edu-timeline-field {
-          font-size: 0.85rem;
+          font-size: 0.88rem;
           color: var(--text-secondary);
-          margin-bottom: 2px;
+          margin-bottom: 3px;
         }
         .edu-timeline-institution {
-          font-size: 0.8rem;
+          font-size: 0.82rem;
           color: var(--text-tertiary);
-          font-family: var(--font-mono);
+          font-weight: 500;
           margin-bottom: 6px;
         }
         .edu-timeline-desc {
-          font-size: 0.84rem;
+          font-size: 0.86rem;
           color: var(--text-secondary);
-          line-height: 1.5;
+          line-height: 1.55;
         }
         @media (max-width: 768px) {
           .edu-timeline-line {

@@ -1,6 +1,6 @@
 import React from "react";
 import { usePortfolio } from "../context/PortfolioContext";
-import { FiTerminal, FiLoader, FiDatabase } from "react-icons/fi";
+import { FiLoader, FiDatabase } from "react-icons/fi";
 
 const Footer = () => {
   const { data, t, isSupabaseConfigured, isDbLoading, isDbSyncing, dbSyncedAt, isAuthenticated } = usePortfolio();
@@ -14,7 +14,7 @@ const Footer = () => {
         background: "var(--bg-surface)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
-        padding: "2rem 1.5rem",
+        padding: "2.25rem 1.5rem",
         transition: "background-color 0.3s ease, border-color 0.3s ease",
       }}
     >
@@ -29,40 +29,40 @@ const Footer = () => {
           gap: "1.5rem",
         }}
       >
-        {/* Left: Brand Logo & Admin Status Badge */}
+        {/* Left: Brand Identity & Admin Sync Status */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div
               style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "10px",
-                background: "var(--accent)",
+                width: "30px",
+                height: "30px",
+                borderRadius: "8px",
+                background: "var(--accent-muted)",
+                border: "1px solid var(--accent-border)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#FFFFFF",
-                fontWeight: "bold",
-                boxShadow: "0 0 15px var(--accent-glow)",
+                color: "var(--accent)",
+                fontWeight: "700",
+                fontSize: "0.82rem",
+                fontFamily: "var(--font-mono)",
               }}
             >
-              <FiTerminal size={17} />
+              KP
             </div>
             <span
               style={{
-                fontFamily: "var(--font-mono)",
+                fontFamily: "var(--font-display)",
                 fontWeight: "700",
                 color: "var(--text-primary)",
-                fontSize: "1rem",
-                letterSpacing: "-0.01em",
+                fontSize: "0.96rem",
+                letterSpacing: "-0.015em",
               }}
             >
-              {data?.hero?.name || "ครูเพชร IT"}{" "}
-              <span style={{ color: "var(--accent)", fontSize: "0.82rem" }}>// PORTFOLIO</span>
+              {data?.hero?.name || "ครูเพชร IT"}
             </span>
           </div>
 
-          {/* Sync Badge (Only visible when admin is authenticated to protect infrastructure privacy) */}
           {isAuthenticated && isSupabaseConfigured && (
             <div
               style={{
@@ -71,23 +71,19 @@ const Footer = () => {
                 gap: "7px",
                 padding: "4px 12px",
                 borderRadius: "100px",
-                fontSize: "0.76rem",
+                fontSize: "0.75rem",
                 fontWeight: "600",
                 fontFamily: "var(--font-mono)",
-                background: isDbLoading || isDbSyncing
-                  ? "rgba(245, 158, 11, 0.12)"
-                  : "rgba(16, 185, 129, 0.12)",
+                background:
+                  isDbLoading || isDbSyncing
+                    ? "rgba(245, 158, 11, 0.12)"
+                    : "rgba(16, 185, 129, 0.12)",
                 border: `1px solid ${
                   isDbLoading || isDbSyncing
                     ? "rgba(245, 158, 11, 0.35)"
                     : "rgba(16, 185, 129, 0.35)"
                 }`,
-                color: isDbLoading || isDbSyncing
-                  ? "#F59E0B"
-                  : "#10B981",
-                boxShadow: isDbLoading || isDbSyncing
-                  ? "0 0 12px rgba(245, 158, 11, 0.2)"
-                  : "0 0 12px rgba(16, 185, 129, 0.2)",
+                color: isDbLoading || isDbSyncing ? "#F59E0B" : "#10B981",
                 userSelect: "none",
               }}
               title={
@@ -99,7 +95,7 @@ const Footer = () => {
               {isDbLoading || isDbSyncing ? (
                 <>
                   <FiLoader size={12} style={{ animation: "spin 1s linear infinite" }} />
-                  <span>กำลังซิงค์ Google Sheets...</span>
+                  <span>กำลังซิงค์ข้อมูล...</span>
                 </>
               ) : (
                 <>
@@ -109,19 +105,18 @@ const Footer = () => {
                       height: "6px",
                       borderRadius: "50%",
                       background: "#10B981",
-                      boxShadow: "0 0 8px #10B981",
                       display: "inline-block",
                     }}
                   />
                   <FiDatabase size={12} />
-                  <span>Google Sheets Connected</span>
+                  <span>Cloud Connected</span>
                 </>
               )}
             </div>
           )}
         </div>
 
-        {/* Right: Copyright & Crafted info */}
+        {/* Right: Copyright & Tagline */}
         <div
           style={{
             display: "flex",
@@ -130,14 +125,13 @@ const Footer = () => {
             flexWrap: "wrap",
             fontSize: "0.84rem",
             color: "var(--text-secondary)",
-            fontFamily: "var(--font-sans)",
           }}
         >
           <div>
-            &copy; {new Date().getFullYear()} {data?.hero?.name || "ครูเพชร IT"}. {t?.footer?.rights || "สงวนลิขสิทธิ์"}
+            &copy; {new Date().getFullYear()} {data?.hero?.name || "ครูเพชร IT"} &middot; {t?.footer?.rights || "สงวนลิขสิทธิ์"}
           </div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "var(--text-tertiary)" }}>
-            {t?.footer?.crafted || "Crafted with Quiet Cyber Luxury"}
+          <div style={{ fontSize: "0.82rem", color: "var(--text-tertiary)" }}>
+            {t?.footer?.crafted || "สอนให้คิด ใช้เทคโนโลยี สร้างอนาคต"}
           </div>
         </div>
       </div>

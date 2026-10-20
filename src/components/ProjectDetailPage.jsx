@@ -15,7 +15,6 @@ import {
   FiArrowRight,
 } from "react-icons/fi";
 import BackgroundCanvas from "./BackgroundCanvas";
-import FloatingCyberObjects from "./FloatingCyberObjects";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
@@ -55,7 +54,6 @@ const ProjectDetailPage = () => {
     return (
       <div className="app-container">
         <BackgroundCanvas />
-        <FloatingCyberObjects />
         <Navbar />
 
         <main style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "8rem 1.5rem 4rem" }}>
@@ -116,7 +114,6 @@ const ProjectDetailPage = () => {
   return (
     <div className="app-container">
       <BackgroundCanvas />
-      <FloatingCyberObjects />
       <Navbar />
 
       <main style={{ padding: "7.5rem 1.5rem 5rem", maxWidth: "1240px", margin: "0 auto", position: "relative", zIndex: 1 }}>

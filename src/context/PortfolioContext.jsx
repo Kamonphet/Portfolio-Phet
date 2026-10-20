@@ -17,7 +17,7 @@ import {
 } from "../lib/portfolioService";
 import { isApiConfigured as isSupabaseConfigured, isApiConfigured } from "../lib/googleSheetsApi";
 
-const STORAGE_KEY = "cyber_portfolio_data_v5";
+const STORAGE_KEY = "cyber_portfolio_data_v6";
 const LANG_STORAGE_KEY = "cyber_portfolio_lang";
 const AUTH_STORAGE_KEY = "cyber_admin_authenticated";
 const THEME_STORAGE_KEY = "cyber_portfolio_theme_v4";
@@ -91,12 +91,41 @@ const deepMergeLangData = (defaultLang, savedLang) => {
           : defaultLang.about.stats,
       education:
         Array.isArray(savedLang.about?.education) && savedLang.about.education.length > 0
-          ? savedLang.about.education
+          ? savedLang.about.education.map((edu, idx) => {
+              const fallbackEdu = defaultLang.about.education[idx] || {};
+              const img = edu.image || fallbackEdu.image;
+              const upgradedImg =
+                img && img.includes("/img/edu-") && img.endsWith(".png")
+                  ? fallbackEdu.image || img.replace(".png", "-craft.jpg")
+                  : img;
+              return { ...edu, image: upgradedImg };
+            })
           : defaultLang.about.education,
     },
     skills:
       Array.isArray(savedLang.skills) && savedLang.skills.length > 0
-        ? savedLang.skills
+        ? savedLang.skills.map((skill, idx) => {
+            const fallbackSkill =
+              defaultLang.skills.find((s) => s.id === skill.id) ||
+              defaultLang.skills[idx];
+            if (!fallbackSkill) return skill;
+            const isLegacyDefaultIcon =
+              (skill.id === 1 && skill.icon === "FaPython") ||
+              (skill.id === 2 && skill.icon === "FaReact") ||
+              (skill.id === 6 && skill.icon === "FaDatabase") ||
+              (skill.id === 7 && skill.icon === "FaDocker") ||
+              (skill.id === 8 && skill.icon === "SiTailwindcss");
+            return {
+              ...skill,
+              icon: isLegacyDefaultIcon ? fallbackSkill.icon : skill.icon,
+              category:
+                ["Frontend", "Backend", "Security", "DevOps", "3D & Creative"].includes(
+                  skill.category
+                )
+                  ? fallbackSkill.category
+                  : skill.category,
+            };
+          })
         : defaultLang.skills,
     projects: sanitizedProjects,
     experience:
@@ -129,9 +158,7 @@ export const PortfolioProvider = ({ children }) => {
   // ── AllData (initialise from localStorage for instant paint) ─
   const [allData, setAllData] = useState(() => {
     try {
-      const saved =
-        localStorage.getItem(STORAGE_KEY) ||
-        localStorage.getItem("cyber_portfolio_data_v3");
+      const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         const savedTh = parsed.th || (parsed.hero ? parsed : null);

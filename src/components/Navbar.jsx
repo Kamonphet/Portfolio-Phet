@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePortfolio } from "../context/PortfolioContext";
 import {
-  FiTerminal,
+  FiCompass,
   FiUser,
-  FiCode,
+  FiLayers,
   FiFolder,
   FiBriefcase,
   FiMail,
@@ -20,7 +20,6 @@ import {
 const Navbar = () => {
   const {
     data,
-    theme,
     toggleTheme,
     isDarkMode,
     language,
@@ -34,13 +33,14 @@ const Navbar = () => {
   } = usePortfolio();
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
 
   const navItems = [
-    { name: t.nav.home, id: "home", icon: <FiTerminal /> },
+    { name: t.nav.home, id: "home", icon: <FiCompass /> },
     { name: t.nav.about, id: "about", icon: <FiUser /> },
-    { name: t.nav.skills, id: "skills", icon: <FiCode /> },
+    { name: t.nav.skills, id: "skills", icon: <FiLayers /> },
     { name: t.nav.projects, id: "projects", icon: <FiFolder /> },
     { name: t.nav.experience, id: "experience", icon: <FiBriefcase /> },
     { name: t.nav.contact, id: "contact", icon: <FiMail /> },
@@ -48,10 +48,14 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      const y = window.scrollY;
+      setIsScrolled(y > 40);
+
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docHeight > 0 ? Math.min(1, Math.max(0, y / docHeight)) : 0);
 
       const sections = ["contact", "experience", "projects", "skills", "about", "home"];
-      const scrollPos = window.scrollY + 200;
+      const scrollPos = y + 220;
 
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
@@ -112,9 +116,9 @@ const Navbar = () => {
 
   return (
     <motion.header
-      initial={{ y: -60, opacity: 0 }}
+      initial={{ y: -40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       style={{
         position: "fixed",
         top: isScrolled ? "12px" : "20px",
@@ -125,12 +129,14 @@ const Navbar = () => {
         justifyContent: "center",
         pointerEvents: "none",
         padding: "0 1rem",
-        transition: "top 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+        transition: "top 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
     >
       {/* Floating Glass Pill Container */}
       <div
         style={{
+          position: "relative",
+          overflow: "hidden",
           width: "100%",
           maxWidth: "960px",
           display: "flex",
@@ -138,8 +144,8 @@ const Navbar = () => {
           justifyContent: "space-between",
           padding: "7px 16px 7px 20px",
           background: "var(--nav-pill-bg)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
           border: "1px solid var(--nav-pill-border)",
           borderRadius: "100px",
           boxShadow: "var(--nav-pill-shadow)",
@@ -147,6 +153,30 @@ const Navbar = () => {
           transition: "all 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
+        {/* Subtle Scroll Progress Hairline at bottom of pill */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: "24px",
+            right: "24px",
+            height: "1.5px",
+            background: "transparent",
+            pointerEvents: "none",
+          }}
+        >
+          <div
+            style={{
+              height: "100%",
+              width: `${scrollProgress * 100}%`,
+              background: "var(--accent)",
+              transition: "width 0.1s linear",
+              opacity: scrollProgress > 0.02 ? 0.85 : 0,
+            }}
+          />
+        </div>
+
         {/* Brand Identity */}
         <div
           onClick={() => scrollToSection("home")}
@@ -169,38 +199,27 @@ const Navbar = () => {
               alignItems: "center",
               justifyContent: "center",
               color: "var(--accent)",
-              fontSize: "0.9rem",
+              fontSize: "0.85rem",
+              fontWeight: "700",
+              fontFamily: "var(--font-mono)",
             }}
           >
-            <FiTerminal />
+            KP
           </div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-            <span
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: "700",
-                fontSize: "0.98rem",
-                letterSpacing: "-0.02em",
-                color: "var(--text-primary)",
-              }}
-            >
-              ครูเพชร IT
-            </span>
-            <span
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.75rem",
-                color: "var(--accent)",
-                letterSpacing: "0.08em",
-                fontWeight: "600",
-              }}
-            >
-              // 00
-            </span>
-          </div>
+          <span
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: "700",
+              fontSize: "0.98rem",
+              letterSpacing: "-0.02em",
+              color: "var(--text-primary)",
+            }}
+          >
+            {data?.hero?.name || "ครูเพชร IT"}
+          </span>
         </div>
 
-        {/* Desktop Nav Items with Framer Motion Active Indicator */}
+        {/* Desktop Nav Items */}
         <nav
           style={{
             display: "none",
@@ -212,6 +231,7 @@ const Navbar = () => {
             border: "1px solid var(--border-subtle)",
           }}
           className="desktop-nav"
+          aria-label="Primary navigation"
         >
           {navItems.map((item) => {
             const isActive = activeSection === item.id;
@@ -225,7 +245,7 @@ const Navbar = () => {
                   border: "none",
                   color: isActive ? "var(--nav-link-active)" : "var(--nav-link-color)",
                   fontSize: "0.88rem",
-                  fontWeight: isActive ? "700" : "600",
+                  fontWeight: isActive ? "700" : "500",
                   fontFamily: "var(--font-display)",
                   letterSpacing: "-0.01em",
                   cursor: "pointer",
@@ -265,7 +285,7 @@ const Navbar = () => {
               alignItems: "center",
               gap: "4px",
               background: "var(--accent-muted)",
-              border: "1px solid var(--border-glass)",
+              border: "1px solid var(--border-subtle)",
               borderRadius: "100px",
               padding: "4px 10px",
               fontSize: "0.76rem",
@@ -276,11 +296,11 @@ const Navbar = () => {
             }}
             title={language === "th" ? "Switch to English" : "เปลี่ยนเป็นภาษาไทย"}
           >
-            <span style={{ color: language === "th" ? "var(--accent)" : "inherit", fontWeight: language === "th" ? "700" : "600" }}>
+            <span style={{ color: language === "th" ? "var(--accent)" : "inherit", fontWeight: language === "th" ? "700" : "500" }}>
               TH
             </span>
             <span style={{ opacity: 0.4 }}>/</span>
-            <span style={{ color: language === "en" ? "var(--accent)" : "inherit", fontWeight: language === "en" ? "700" : "600" }}>
+            <span style={{ color: language === "en" ? "var(--accent)" : "inherit", fontWeight: language === "en" ? "700" : "500" }}>
               EN
             </span>
           </button>
@@ -293,7 +313,7 @@ const Navbar = () => {
               height: "32px",
               borderRadius: "50%",
               background: "var(--accent-muted)",
-              border: "1px solid var(--border-glass)",
+              border: "1px solid var(--border-subtle)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -301,7 +321,8 @@ const Navbar = () => {
               cursor: "pointer",
               transition: "all 0.2s ease",
             }}
-            title={isDarkMode ? "เปลี่ยนเป็นโหมดสว่าง (ฟ้า-ขาว)" : "เปลี่ยนเป็นโหมดมืด (ฟ้า-ดำ)"}
+            title={isDarkMode ? "เปลี่ยนเป็นโหมดสว่าง" : "เปลี่ยนเป็นโหมดมืด"}
+            aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
             {isDarkMode ? <FiSun size={15} style={{ color: "var(--accent)" }} /> : <FiMoon size={15} style={{ color: "var(--accent)" }} />}
           </button>
@@ -316,7 +337,7 @@ const Navbar = () => {
                 gap: "6px",
                 background: isEditMode ? "var(--nav-active-bg)" : "var(--accent-muted)",
                 color: isEditMode ? "var(--accent)" : "var(--nav-link-color)",
-                border: isEditMode ? "1px solid var(--nav-active-border)" : "1px solid var(--border-glass)",
+                border: isEditMode ? "1px solid var(--nav-active-border)" : "1px solid var(--border-subtle)",
                 borderRadius: "100px",
                 padding: "5px 12px",
                 fontSize: "0.78rem",
@@ -343,7 +364,7 @@ const Navbar = () => {
                 gap: "6px",
                 background: "var(--accent-muted)",
                 color: "var(--nav-link-color)",
-                border: "1px solid var(--border-glass)",
+                border: "1px solid var(--border-subtle)",
                 borderRadius: "100px",
                 padding: "5px 12px",
                 fontSize: "0.78rem",
@@ -394,7 +415,7 @@ const Navbar = () => {
               height: "32px",
               borderRadius: "50%",
               background: "var(--accent-muted)",
-              border: "1px solid var(--border-glass)",
+              border: "1px solid var(--border-subtle)",
               color: "var(--text-primary)",
               cursor: "pointer",
             }}
@@ -406,7 +427,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu (High Contrast Glass Panel) */}
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -425,12 +446,12 @@ const Navbar = () => {
               backdropFilter: "blur(24px)",
               WebkitBackdropFilter: "blur(24px)",
               border: "1px solid var(--nav-pill-border)",
-              borderRadius: "20px",
-              padding: "1.25rem",
+              borderRadius: "16px",
+              padding: "1.1rem",
               boxShadow: "var(--nav-pill-shadow)",
               display: "flex",
               flexDirection: "column",
-              gap: "8px",
+              gap: "6px",
               pointerEvents: "auto",
             }}
           >
@@ -443,19 +464,19 @@ const Navbar = () => {
                   alignItems: "center",
                   gap: "12px",
                   background: activeSection === item.id ? "var(--nav-active-bg)" : "transparent",
-                  border: activeSection === item.id ? "1px solid var(--nav-active-border)" : "none",
+                  border: activeSection === item.id ? "1px solid var(--nav-active-border)" : "1px solid transparent",
                   color: activeSection === item.id ? "var(--accent)" : "var(--nav-link-color)",
-                  fontSize: "0.96rem",
+                  fontSize: "0.94rem",
                   fontFamily: "var(--font-display)",
                   textAlign: "left",
                   padding: "10px 14px",
                   borderRadius: "10px",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
-                  fontWeight: activeSection === item.id ? "700" : "600",
+                  fontWeight: activeSection === item.id ? "700" : "500",
                 }}
               >
-                <span style={{ color: "var(--accent)", fontSize: "1rem" }}>{item.icon}</span>
+                <span style={{ color: "var(--accent)", fontSize: "1rem", display: "flex" }}>{item.icon}</span>
                 <span>{item.name}</span>
               </button>
             ))}
@@ -471,7 +492,7 @@ const Navbar = () => {
                     justifyContent: "center",
                     gap: "8px",
                     background: "var(--glass-bg)",
-                    border: "1px solid var(--border-glass)",
+                    border: "1px solid var(--border-subtle)",
                     color: "var(--text-primary)",
                     padding: "10px",
                     borderRadius: "10px",

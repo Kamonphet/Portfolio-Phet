@@ -23,9 +23,9 @@ const Hero = () => {
     offset: ["start start", "end start"],
   });
 
-  const textY = useTransform(scrollYProgress, [0, 1], [0, 110]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, 90]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.15]);
-  const hero3DY = useTransform(scrollYProgress, [0, 1], [0, 70]);
+  const hero3DY = useTransform(scrollYProgress, [0, 1], [0, 60]);
 
   const scrollToProjects = () => {
     document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
@@ -38,6 +38,8 @@ const Hero = () => {
   const scrollToAbout = () => {
     document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const quickStats = (data?.about?.stats || []).slice(0, 3);
 
   return (
     <section
@@ -66,28 +68,21 @@ const Hero = () => {
         }}
         className="hero-grid"
       >
-        {/* Left Column: Hero Content with Staggered Split Reveal */}
+        {/* Left Column: Editorial Hero Narrative */}
         <motion.div
           style={{ y: textY, opacity: textOpacity }}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           className="hero-content-col"
         >
-          {/* Eyebrow Label Tag (Impeccable Clean Spec) */}
-          <div style={{ marginBottom: "1.2rem" }}>
-            <span className="eyebrow-label">
-              CREATIVE TECHNOLOGIST &amp; CYBERSECURITY EDUCATOR
-            </span>
-          </div>
-
-          {/* Status Badge: Available for Collaboration */}
+          {/* Status Pill */}
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "8px",
-              padding: "5px 14px",
+              gap: "10px",
+              padding: "6px 16px",
               borderRadius: "100px",
               background: "var(--accent-muted)",
               border: "1px solid var(--accent-border)",
@@ -97,40 +92,44 @@ const Hero = () => {
           >
             <span
               style={{
-                width: "7px",
-                height: "7px",
+                width: "8px",
+                height: "8px",
                 borderRadius: "50%",
                 background: "var(--accent)",
                 boxShadow: "0 0 10px var(--accent-glow)",
                 display: "inline-block",
                 animation: "pulseGlow 2.5s infinite ease-in-out",
+                flexShrink: 0,
               }}
             />
             <span
               style={{
-                fontSize: "0.82rem",
-                fontFamily: "var(--font-mono)",
+                fontSize: "0.84rem",
+                fontFamily: "var(--font-sans)",
                 color: "var(--text-primary)",
-                fontWeight: "500",
+                fontWeight: "600",
                 letterSpacing: "0.01em",
               }}
             >
               <EditableText
-                value={data.hero.status || "Available for collaboration & EdTech Innovation"}
+                value={
+                  data.hero.status ||
+                  "Available for collaboration & EdTech Innovation"
+                }
                 onSave={(val) => updateHero({ status: val })}
               />
             </span>
           </div>
 
-          {/* Main Headline (Fluid Luxury Typography) */}
+          {/* Primary Identity Headline */}
           <h1
             style={{
-              fontSize: "clamp(2.8rem, 6vw, 5.4rem)",
+              fontSize: "clamp(2.8rem, 6vw, 5.2rem)",
               fontWeight: "700",
-              lineHeight: 1.05,
-              letterSpacing: "-0.03em",
+              lineHeight: 1.04,
+              letterSpacing: "-0.035em",
               color: "var(--text-primary)",
-              margin: "0 0 1rem 0",
+              margin: "0 0 0.85rem 0",
               fontFamily: "var(--font-display)",
             }}
           >
@@ -140,13 +139,13 @@ const Hero = () => {
             />
           </h1>
 
-          {/* Subtitle / Role Statement */}
+          {/* Role & Positioning Statement */}
           <h2
             style={{
-              fontSize: "clamp(1.15rem, 2.2vw, 1.65rem)",
-              fontWeight: "500",
-              color: "var(--text-secondary)",
-              lineHeight: 1.4,
+              fontSize: "clamp(1.15rem, 2.1vw, 1.55rem)",
+              fontWeight: "600",
+              color: "var(--accent)",
+              lineHeight: 1.38,
               letterSpacing: "-0.015em",
               margin: "0 0 1.25rem 0",
               fontFamily: "var(--font-display)",
@@ -158,14 +157,14 @@ const Hero = () => {
             />
           </h2>
 
-          {/* Bio Tagline */}
+          {/* Narrative Tagline */}
           <p
             style={{
-              fontSize: "1rem",
+              fontSize: "1.04rem",
               color: "var(--text-secondary)",
               lineHeight: 1.75,
-              maxWidth: "540px",
-              margin: "0 0 2rem 0",
+              maxWidth: "560px",
+              margin: "0 0 2.1rem 0",
             }}
           >
             <EditableText
@@ -175,32 +174,103 @@ const Hero = () => {
             />
           </p>
 
-          {/* Luxury CTA Action Buttons */}
-          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+          {/* Primary & Secondary Action Buttons */}
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}
+          >
             <button onClick={scrollToProjects} className="btn-luxury-primary">
               <span>{data.hero.ctaPrimary || t.hero.explore}</span>
               <FiArrowRight style={{ transition: "transform 0.25s ease" }} />
             </button>
 
             <button onClick={scrollToContact} className="btn-luxury-secondary">
-              <FiMail style={{ opacity: 0.8 }} />
+              <FiMail style={{ opacity: 0.85 }} />
               <span>{data.hero.ctaSecondary || t.hero.contactMe}</span>
             </button>
           </div>
 
-          {/* Social Links (Minimalist Hairline Icons) */}
-          <div style={{ display: "flex", alignItems: "center", gap: "1.2rem", marginTop: "2.2rem" }}>
+          {/* Editorial Key Impact Strip */}
+          {quickStats.length > 0 && (
+            <div
+              className="hero-impact-strip"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1.75rem",
+                flexWrap: "wrap",
+                marginTop: "2.4rem",
+                paddingTop: "1.6rem",
+                borderTop: "1px solid var(--border-subtle)",
+              }}
+            >
+              {quickStats.map((stat, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "2px",
+                  }}
+                >
+                  <span
+                    className="tabular-nums"
+                    style={{
+                      fontSize: "1.45rem",
+                      fontWeight: "700",
+                      color: "var(--text-primary)",
+                      fontFamily: "var(--font-display)",
+                      letterSpacing: "-0.03em",
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {stat.value}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "0.78rem",
+                      color: "var(--text-secondary)",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Social Channels */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1.1rem",
+              marginTop: "1.75rem",
+            }}
+          >
             <span
               style={{
-                fontSize: "0.76rem",
+                fontSize: "0.78rem",
                 color: "var(--text-tertiary)",
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "0.06em",
+                fontWeight: "600",
+                letterSpacing: "0.04em",
                 textTransform: "uppercase",
               }}
             >
-              {t.hero.connect} //
+              {t.hero.connect}
             </span>
+            <span
+              style={{
+                width: "20px",
+                height: "1px",
+                background: "var(--border-subtle)",
+              }}
+            />
             {data.contact.github && (
               <a
                 href={sanitizeUrl(data.contact.github)}
@@ -258,52 +328,42 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* Right Column: 3D Holographic Core Presentation */}
+        {/* Right Column: Interactive 3D Presentation */}
         <motion.div
           style={{ y: hero3DY }}
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
           className="hero-3d-col"
         >
           <Hero3D />
         </motion.div>
       </div>
 
-      {/* Kinetic Scroll Cue Indicator */}
+      {/* Subtle Scroll Cue */}
       <motion.div
         onClick={scrollToAbout}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.8 }}
+        transition={{ delay: 0.75, duration: 0.75 }}
         style={{
           position: "absolute",
           bottom: "1.5rem",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "6px",
+          gap: "4px",
           cursor: "pointer",
           color: "var(--text-tertiary)",
           userSelect: "none",
         }}
         title="Scroll to explore"
       >
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.68rem",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-          }}
-        >
-          SCROLL
-        </span>
         <motion.div
           animate={{ y: [0, 5, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <FiChevronDown size={14} />
+          <FiChevronDown size={16} />
         </motion.div>
       </motion.div>
 
@@ -330,7 +390,7 @@ const Hero = () => {
             flex-direction: column;
             align-items: center;
           }
-          .eyebrow-label {
+          .hero-impact-strip {
             justify-content: center;
           }
         }

@@ -17,10 +17,11 @@ const Experience = () => {
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         style={{ textAlign: "center", marginBottom: "3.5rem" }}
       >
-        <span className="eyebrow-label">// 04 — JOURNEY & MILESTONES</span>
         <h2 className="section-title">
           {t.experience?.titlePre || "เส้นทางและ"}{" "}
-          <span className="gradient-text">{t.experience?.titleHighlight || "ประสบการณ์การทำงาน"}</span>
+          <span style={{ color: "var(--accent)" }}>
+            {t.experience?.titleHighlight || "ประสบการณ์การทำงาน"}
+          </span>
         </h2>
         <p className="section-subtitle">
           {t.experience?.subtitle ||
@@ -157,10 +158,8 @@ const Experience = () => {
                         color: "var(--accent)",
                         fontSize: "0.95rem",
                         fontWeight: "600",
-                        fontFamily: "var(--font-mono)",
                       }}
                     >
-                      @{" "}
                       <EditableText
                         value={exp.company}
                         onSave={(val) => {
@@ -174,6 +173,7 @@ const Experience = () => {
                   </div>
 
                   <div
+                    className="tabular-nums"
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -235,17 +235,17 @@ const Experience = () => {
                   <img
                     src={
                       index === 0
-                        ? "/img/work.png"
+                        ? "/img/work.webp"
                         : index === 1
-                        ? "/img/12.png"
-                        : "/img/15.png"
+                        ? "/img/12.webp"
+                        : "/img/15.webp"
                     }
                     alt="Milestone Avatar"
+                    loading="lazy"
                     style={{
                       width: "36px",
                       height: "36px",
                       objectFit: "contain",
-                      filter: "drop-shadow(0 2px 6px var(--accent-glow))",
                     }}
                   />
                   <span

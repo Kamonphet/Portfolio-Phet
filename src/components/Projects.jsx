@@ -442,10 +442,11 @@ const Projects = ({ showAll = false }) => {
           </div>
         )}
 
-        <span className="eyebrow-label">// 02 — INNOVATIVE WORK & ARTIFACTS</span>
         <h2 className="section-title">
           {t.projects?.titlePre || "คลังนวัตกรรมและ"}{" "}
-          <span className="gradient-text">{t.projects?.titleHighlight || "ผลงานสร้างสรรค์"}</span>
+          <span style={{ color: "var(--accent)" }}>
+            {t.projects?.titleHighlight || "ผลงานสร้างสรรค์"}
+          </span>
         </h2>
         <p className="section-subtitle">
           {t.projects?.subtitle ||
@@ -514,6 +515,220 @@ const Projects = ({ showAll = false }) => {
           })}
         </div>
       </motion.div>
+
+      {/* Featured Flagship Case Study Spotlight (Home View) */}
+      {!showAll && filteredProjects.some((p) => p.featured) && (
+        (() => {
+          const flagship =
+            filteredProjects.find((p) => p.featured) || filteredProjects[0];
+          if (!flagship) return null;
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              onClick={() => {
+                if (!isEditMode && flagship.id) {
+                  navigate(`/projects/${flagship.id}`);
+                }
+              }}
+              className="flagship-spotlight-card"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1.15fr 1fr",
+                gap: "0",
+                borderRadius: "24px",
+                overflow: "hidden",
+                background: "var(--color-card-bg)",
+                border: "1px solid var(--accent-border)",
+                boxShadow: "var(--color-card-shadow)",
+                marginBottom: "2.5rem",
+                cursor: isEditMode ? "default" : "pointer",
+              }}
+            >
+              {/* Left: Editorial Preview Visual */}
+              <div
+                style={{
+                  position: "relative",
+                  minHeight: "320px",
+                  background: "var(--bg-elevated)",
+                  overflow: "hidden",
+                }}
+              >
+                <img
+                  src={flagship.image}
+                  alt={flagship.title}
+                  loading="lazy"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "16px",
+                    left: "16px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "5px 12px",
+                    borderRadius: "100px",
+                    background: "var(--nav-pill-bg)",
+                    backdropFilter: "blur(12px)",
+                    border: "1px solid var(--accent-border)",
+                    color: "var(--accent)",
+                    fontSize: "0.75rem",
+                    fontWeight: "700",
+                  }}
+                >
+                  <FiStar size={12} />
+                  <span>FLAGSHIP CASE STUDY</span>
+                </div>
+              </div>
+
+              {/* Right: Narrative & Impact Details */}
+              <div
+                style={{
+                  padding: "2.25rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  gap: "1.5rem",
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontSize: "0.78rem",
+                      fontWeight: "600",
+                      color: "var(--accent)",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    {flagship.category}
+                  </div>
+                  <h3
+                    style={{
+                      fontSize: "clamp(1.35rem, 2.2vw, 1.75rem)",
+                      fontWeight: "700",
+                      color: "var(--text-primary)",
+                      fontFamily: "var(--font-display)",
+                      letterSpacing: "-0.02em",
+                      lineHeight: 1.28,
+                      margin: "0 0 12px 0",
+                    }}
+                  >
+                    <EditableText
+                      value={flagship.title}
+                      onSave={(val) => {
+                        const updated = allProjects.map((p) =>
+                          p.id === flagship.id ? { ...p, title: val } : p
+                        );
+                        updateProjects(updated);
+                      }}
+                    />
+                  </h3>
+                  <p
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.95rem",
+                      lineHeight: 1.7,
+                      margin: 0,
+                    }}
+                  >
+                    <EditableText
+                      value={flagship.desc}
+                      onSave={(val) => {
+                        const updated = allProjects.map((p) =>
+                          p.id === flagship.id ? { ...p, desc: val } : p
+                        );
+                        updateProjects(updated);
+                      }}
+                      multiline
+                    />
+                  </p>
+                </div>
+
+                <div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "6px",
+                      marginBottom: "1.25rem",
+                    }}
+                  >
+                    {(flagship.tech || []).map((tItem, i) => (
+                      <span
+                        key={i}
+                        style={{
+                          fontSize: "0.74rem",
+                          fontFamily: "var(--font-mono)",
+                          padding: "4px 10px",
+                          borderRadius: "6px",
+                          background: "var(--accent-muted)",
+                          border: "1px solid var(--border-subtle)",
+                          color: "var(--text-primary)",
+                        }}
+                      >
+                        {tItem}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      flexWrap: "wrap",
+                      paddingTop: "1rem",
+                      borderTop: "1px solid var(--border-subtle)",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/projects/${flagship.id}`);
+                      }}
+                      className="btn-luxury-primary"
+                      style={{
+                        padding: "9px 18px",
+                        fontSize: "0.84rem",
+                      }}
+                    >
+                      <span>เจาะลึกรายละเอียดผลงาน</span>
+                      <FiArrowRight size={14} />
+                    </button>
+
+                    {flagship.demoUrl && (
+                      <a
+                        href={sanitizeUrl(flagship.demoUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="btn-luxury-secondary"
+                        style={{
+                          padding: "9px 16px",
+                          fontSize: "0.84rem",
+                        }}
+                      >
+                        <span>ทดลองใช้งานจริง</span>
+                        <FiExternalLink size={14} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })()
+      )}
 
       {/* Main Display: Carousel on Home, Grid on AllProjectsPage */}
       {showAll ? (
@@ -908,15 +1123,13 @@ const Projects = ({ showAll = false }) => {
                 <div>
                   <div
                     style={{
-                      fontSize: "0.76rem",
-                      fontFamily: "var(--font-mono)",
+                      fontSize: "0.78rem",
+                      fontWeight: "600",
                       color: "var(--text-tertiary)",
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
                       marginBottom: "8px",
                     }}
                   >
-                    // TECH STACK & TOOLS
+                    เทคโนโลยีและเครื่องมือที่ใช้
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                     {(selectedProject.tech || []).map((t, idx) => (
@@ -995,6 +1208,11 @@ const Projects = ({ showAll = false }) => {
           border-color: var(--accent) !important;
           color: var(--accent) !important;
           transform: scale(1.08);
+        }
+        @media (max-width: 900px) {
+          .flagship-spotlight-card {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
     </section>

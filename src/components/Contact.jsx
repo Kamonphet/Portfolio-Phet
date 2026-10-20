@@ -80,10 +80,10 @@ const Contact = () => {
       // Trigger Confetti Fireworks
       try {
         confetti({
-          particleCount: 90,
-          spread: 80,
+          particleCount: 80,
+          spread: 75,
           origin: { y: 0.6 },
-          colors: ["#38BDF8", "#0284C7", "#00FF87", "#F59E0B"],
+          colors: ["#38BDF8", "#0284C7", "#10B981", "#F59E0B"],
         });
       } catch (err) {
         // fallback
@@ -105,16 +105,17 @@ const Contact = () => {
     <section id="contact" className="content-section">
       {/* Section Header */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        style={{ textAlign: "center", marginBottom: "3.5rem" }}
+        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        style={{ textAlign: "center", marginBottom: "3.25rem" }}
       >
-        <span className="eyebrow-label">// 05 — GET IN TOUCH & COLLABORATION</span>
         <h2 className="section-title">
           {t.contact?.titlePre || "ช่องทางการติดต่อและ"}{" "}
-          <span className="gradient-text">{t.contact?.titleHighlight || "ร่วมงาน"}</span>
+          <span style={{ color: "var(--accent)" }}>
+            {t.contact?.titleHighlight || "ร่วมงาน"}
+          </span>
         </h2>
         <p className="section-subtitle">
           {t.contact?.subtitle ||
@@ -122,88 +123,84 @@ const Contact = () => {
         </p>
       </motion.div>
 
-      {/* Main Grid: Info Cards + Form */}
+      {/* Main Grid: Unified Contact Directory + Form */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1.3fr",
-          gap: "2.5rem",
+          gap: "2.25rem",
           alignItems: "stretch",
         }}
         className="contact-grid"
       >
-        {/* Left Column: Direct Info & Social Cards */}
+        {/* Left Column: Unified Editorial Contact Directory */}
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
+          initial={{ opacity: 0, x: -24 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          className="glass-card"
+          style={{
+            padding: "2.25rem",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            gap: "1.75rem",
+          }}
         >
-          {/* Warm Welcome Mascot Card */}
+          {/* Warm Welcome Header */}
           <div
             style={{
-              padding: "1.4rem 1.6rem",
               display: "flex",
               alignItems: "center",
-              gap: "1.2rem",
-              borderRadius: "20px",
-              background: "var(--color-card-bg)",
-              border: "1px solid var(--accent-border)",
-              boxShadow: "var(--color-card-shadow)",
+              gap: "1.1rem",
+              paddingBottom: "1.5rem",
+              borderBottom: "1px solid var(--border-subtle)",
             }}
           >
             <img
               src="/img/13.webp"
               alt="ขอบคุณครับ"
+              loading="lazy"
               style={{
-                width: "56px",
-                height: "56px",
+                width: "54px",
+                height: "54px",
                 objectFit: "contain",
-                filter: "drop-shadow(0 4px 10px var(--accent-glow))",
+                flexShrink: 0,
               }}
             />
-            <div>
-              <div
-                style={{
-                  fontSize: "0.76rem",
-                  color: "var(--accent)",
-                  fontWeight: "700",
-                  fontFamily: "var(--font-mono)",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                // WARM WELCOME
-              </div>
-              <div
-                style={{
-                  fontSize: "0.92rem",
-                  fontWeight: "600",
-                  color: "var(--text-primary)",
-                  marginTop: "3px",
-                  lineHeight: 1.5,
-                }}
-              >
-                "ขอบคุณที่เข้ามาเยี่ยมชมครับ :) หากมีข้อเสนอแนะหรือต้องการร่วมงาน ทักทายมาได้เลยครับ"
-              </div>
+            <div
+              style={{
+                fontSize: "0.94rem",
+                fontWeight: "600",
+                color: "var(--text-primary)",
+                lineHeight: 1.55,
+              }}
+            >
+              “ขอบคุณที่เข้ามาเยี่ยมชมครับ :) หากมีข้อเสนอแนะหรือต้องการร่วมงาน
+              ทักทายมาได้เลยครับ”
             </div>
           </div>
 
-          {/* Quick Email Card */}
+          {/* Direct Email Section */}
           <div
             style={{
-              padding: "1.75rem",
-              borderRadius: "20px",
-              background: "var(--color-card-bg)",
-              border: "1px solid var(--border-subtle)",
-              boxShadow: "var(--color-card-shadow)",
+              paddingBottom: "1.5rem",
+              borderBottom: "1px solid var(--border-subtle)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "1.2rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "14px",
+                marginBottom: "1rem",
+              }}
+            >
               <div
                 style={{
-                  width: "44px",
-                  height: "44px",
+                  width: "42px",
+                  height: "42px",
                   borderRadius: "12px",
                   background: "var(--accent-muted)",
                   color: "var(--accent)",
@@ -211,7 +208,8 @@ const Contact = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "1.25rem",
+                  fontSize: "1.2rem",
+                  flexShrink: 0,
                 }}
               >
                 <FiMail />
@@ -219,16 +217,20 @@ const Contact = () => {
               <div>
                 <span
                   style={{
-                    fontSize: "0.74rem",
+                    fontSize: "0.76rem",
                     color: "var(--text-tertiary)",
-                    textTransform: "uppercase",
-                    fontFamily: "var(--font-mono)",
-                    letterSpacing: "0.06em",
+                    fontWeight: "600",
                   }}
                 >
-                  {t.contact?.directTitle || "DIRECT EMAIL"}
+                  {t.contact?.directTitle || "อีเมลติดต่อโดยตรง"}
                 </span>
-                <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "1.05rem" }}>
+                <div
+                  style={{
+                    fontWeight: "700",
+                    color: "var(--text-primary)",
+                    fontSize: "1.02rem",
+                  }}
+                >
                   <EditableText
                     value={data?.contact?.email || ""}
                     onSave={(val) => updateContact({ email: val })}
@@ -251,25 +253,33 @@ const Contact = () => {
               }}
             >
               {copiedEmail ? <FiCheck /> : <FiCopy />}
-              <span>{copiedEmail ? (t.contact?.copiedEmail || "คัดลอกอีเมลแล้ว!") : (t.contact?.copyEmail || "คัดลอกอีเมล")}</span>
+              <span>
+                {copiedEmail
+                  ? t.contact?.copiedEmail || "คัดลอกอีเมลแล้ว!"
+                  : t.contact?.copyEmail || "คัดลอกอีเมล"}
+              </span>
             </button>
           </div>
 
-          {/* Location & Availability Card */}
+          {/* Location & Status Section */}
           <div
             style={{
-              padding: "1.75rem",
-              borderRadius: "20px",
-              background: "var(--color-card-bg)",
-              border: "1px solid var(--border-subtle)",
-              boxShadow: "var(--color-card-shadow)",
+              paddingBottom: "1.5rem",
+              borderBottom: "1px solid var(--border-subtle)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "1rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "14px",
+                marginBottom: "0.9rem",
+              }}
+            >
               <div
                 style={{
-                  width: "44px",
-                  height: "44px",
+                  width: "42px",
+                  height: "42px",
                   borderRadius: "12px",
                   background: "rgba(16, 185, 129, 0.12)",
                   color: "#10B981",
@@ -277,7 +287,8 @@ const Contact = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "1.25rem",
+                  fontSize: "1.2rem",
+                  flexShrink: 0,
                 }}
               >
                 <FiMapPin />
@@ -285,16 +296,20 @@ const Contact = () => {
               <div>
                 <span
                   style={{
-                    fontSize: "0.74rem",
+                    fontSize: "0.76rem",
                     color: "var(--text-tertiary)",
-                    textTransform: "uppercase",
-                    fontFamily: "var(--font-mono)",
-                    letterSpacing: "0.06em",
+                    fontWeight: "600",
                   }}
                 >
-                  {t.contact?.locationTitle || "LOCATION & STATUS"}
+                  {t.contact?.locationTitle || "สถานที่และสถานะ"}
                 </span>
-                <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "1.05rem" }}>
+                <div
+                  style={{
+                    fontWeight: "700",
+                    color: "var(--text-primary)",
+                    fontSize: "1.02rem",
+                  }}
+                >
                   <EditableText
                     value={data?.contact?.location || ""}
                     onSave={(val) => updateContact({ location: val })}
@@ -319,35 +334,33 @@ const Contact = () => {
             >
               <FiCheckCircle />
               <EditableText
-                value={data?.contact?.availability || "Available for Opportunities"}
+                value={
+                  data?.contact?.availability || "Available for Opportunities"
+                }
                 onSave={(val) => updateContact({ availability: val })}
               />
             </div>
           </div>
 
           {/* Social Network Channels */}
-          <div
-            style={{
-              padding: "1.75rem",
-              borderRadius: "20px",
-              background: "var(--color-card-bg)",
-              border: "1px solid var(--border-subtle)",
-              boxShadow: "var(--color-card-shadow)",
-            }}
-          >
+          <div>
             <div
               style={{
-                fontSize: "0.74rem",
-                color: "var(--text-tertiary)",
-                marginBottom: "1rem",
-                textTransform: "uppercase",
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "0.08em",
+                fontSize: "0.78rem",
+                color: "var(--text-secondary)",
+                fontWeight: "600",
+                marginBottom: "0.85rem",
               }}
             >
-              {t.contact?.networksTitle || "// NETWORK CHANNELS"}
+              {t.contact?.networksTitle || "ช่องทางโซเชียลและเครือข่าย"}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "10px",
+              }}
+            >
               {data?.contact?.github && (
                 <a
                   href={sanitizeUrl(data.contact.github)}
@@ -410,42 +423,29 @@ const Contact = () => {
                     cursor: "default",
                   }}
                 >
-                  <FiMessageSquare size={16} /> <span>{data.contact.discord}</span>
+                  <FiMessageSquare size={16} />{" "}
+                  <span>{data.contact.discord}</span>
                 </div>
               )}
             </div>
           </div>
         </motion.div>
 
-        {/* Right Column: Encrypted-Feel Transmission Form */}
+        {/* Right Column: Direct Message Form */}
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
+          initial={{ opacity: 0, x: 24 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          className="glass-card"
           style={{
             padding: "2.5rem",
-            borderRadius: "24px",
-            background: "var(--color-card-bg)",
-            border: "1px solid var(--border-subtle)",
-            boxShadow: "var(--color-card-shadow)",
           }}
         >
           <div style={{ marginBottom: "1.75rem" }}>
-            <span
-              style={{
-                fontSize: "0.74rem",
-                color: "var(--accent)",
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-              }}
-            >
-              // SECURE TRANSMISSION
-            </span>
             <h3
               style={{
-                margin: "4px 0 0 0",
+                margin: 0,
                 fontSize: "1.5rem",
                 fontWeight: "700",
                 color: "var(--text-primary)",
@@ -455,15 +455,35 @@ const Contact = () => {
             >
               {t.contact?.formTitle || "ส่งข้อความถึงครูเพชร"}
             </h3>
+            <p
+              style={{
+                margin: "6px 0 0 0",
+                fontSize: "0.88rem",
+                color: "var(--text-secondary)",
+              }}
+            >
+              กรอกข้อมูลด้านล่างเพื่อส่งข้อความถึงครูเพชรโดยตรง
+            </p>
           </div>
 
-          <form ref={formRef} onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }} className="form-row">
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1rem",
+              }}
+              className="form-row"
+            >
               <div>
                 <label
                   style={{
                     display: "block",
-                    fontSize: "0.82rem",
+                    fontSize: "0.84rem",
                     fontWeight: "600",
                     color: "var(--text-primary)",
                     marginBottom: "6px",
@@ -477,7 +497,9 @@ const Contact = () => {
                   name="from_name"
                   placeholder={t.contact?.namePlaceholder || "สมชาย ใจดี"}
                   value={formState.name}
-                  onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormState({ ...formState, name: e.target.value })
+                  }
                   style={{
                     width: "100%",
                     padding: "12px 16px",
@@ -490,21 +512,13 @@ const Contact = () => {
                     boxSizing: "border-box",
                     transition: "border-color 0.2s ease, box-shadow 0.2s ease",
                   }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "var(--accent)";
-                    e.target.style.boxShadow = "0 0 0 3px var(--accent-glow)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "var(--border-subtle)";
-                    e.target.style.boxShadow = "none";
-                  }}
                 />
               </div>
               <div>
                 <label
                   style={{
                     display: "block",
-                    fontSize: "0.82rem",
+                    fontSize: "0.84rem",
                     fontWeight: "600",
                     color: "var(--text-primary)",
                     marginBottom: "6px",
@@ -516,9 +530,13 @@ const Contact = () => {
                   required
                   type="email"
                   name="from_email"
-                  placeholder={t.contact?.emailPlaceholder || "somchai@example.com"}
+                  placeholder={
+                    t.contact?.emailPlaceholder || "somchai@example.com"
+                  }
                   value={formState.email}
-                  onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormState({ ...formState, email: e.target.value })
+                  }
                   style={{
                     width: "100%",
                     padding: "12px 16px",
@@ -531,14 +549,6 @@ const Contact = () => {
                     boxSizing: "border-box",
                     transition: "border-color 0.2s ease, box-shadow 0.2s ease",
                   }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "var(--accent)";
-                    e.target.style.boxShadow = "0 0 0 3px var(--accent-glow)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "var(--border-subtle)";
-                    e.target.style.boxShadow = "none";
-                  }}
                 />
               </div>
             </div>
@@ -547,7 +557,7 @@ const Contact = () => {
               <label
                 style={{
                   display: "block",
-                  fontSize: "0.82rem",
+                  fontSize: "0.84rem",
                   fontWeight: "600",
                   color: "var(--text-primary)",
                   marginBottom: "6px",
@@ -558,9 +568,14 @@ const Contact = () => {
               <input
                 type="text"
                 name="subject"
-                placeholder={t.contact?.subjectPlaceholder || "ปรึกษาโปรเจกต์ / บรรยาย Cybersecurity"}
+                placeholder={
+                  t.contact?.subjectPlaceholder ||
+                  "ปรึกษาโปรเจกต์ / บรรยาย Cybersecurity"
+                }
                 value={formState.subject}
-                onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
+                onChange={(e) =>
+                  setFormState({ ...formState, subject: e.target.value })
+                }
                 style={{
                   width: "100%",
                   padding: "12px 16px",
@@ -573,14 +588,6 @@ const Contact = () => {
                   boxSizing: "border-box",
                   transition: "border-color 0.2s ease, box-shadow 0.2s ease",
                 }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "var(--accent)";
-                  e.target.style.boxShadow = "0 0 0 3px var(--accent-glow)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "var(--border-subtle)";
-                  e.target.style.boxShadow = "none";
-                }}
               />
             </div>
 
@@ -588,7 +595,7 @@ const Contact = () => {
               <label
                 style={{
                   display: "block",
-                  fontSize: "0.82rem",
+                  fontSize: "0.84rem",
                   fontWeight: "600",
                   color: "var(--text-primary)",
                   marginBottom: "6px",
@@ -600,9 +607,14 @@ const Contact = () => {
                 required
                 rows="5"
                 name="message"
-                placeholder={t.contact?.messagePlaceholder || "พิมพ์รายละเอียดที่ท่านต้องการพูดคุยที่นี่..."}
+                placeholder={
+                  t.contact?.messagePlaceholder ||
+                  "พิมพ์รายละเอียดที่ท่านต้องการพูดคุยที่นี่..."
+                }
                 value={formState.message}
-                onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                onChange={(e) =>
+                  setFormState({ ...formState, message: e.target.value })
+                }
                 style={{
                   width: "100%",
                   padding: "12px 16px",
@@ -617,14 +629,6 @@ const Contact = () => {
                   resize: "vertical",
                   transition: "border-color 0.2s ease, box-shadow 0.2s ease",
                 }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "var(--accent)";
-                  e.target.style.boxShadow = "0 0 0 3px var(--accent-glow)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "var(--border-subtle)";
-                  e.target.style.boxShadow = "none";
-                }}
               />
             </div>
 
@@ -635,7 +639,7 @@ const Contact = () => {
               style={{
                 width: "100%",
                 padding: "14px",
-                fontSize: "0.98rem",
+                fontSize: "0.96rem",
                 borderRadius: "12px",
                 marginTop: "0.5rem",
                 justifyContent: "center",
@@ -644,7 +648,11 @@ const Contact = () => {
               }}
             >
               <FiSend />
-              <span>{isSubmitting ? (t.contact?.sendingBtn || "กำลังส่งข้อมูล...") : (t.contact?.sendBtn || "ส่งข้อความ (Transmit)")}</span>
+              <span>
+                {isSubmitting
+                  ? t.contact?.sendingBtn || "กำลังส่งข้อมูล..."
+                  : t.contact?.sendBtn || "ส่งข้อความ"}
+              </span>
             </button>
 
             {/* Success Message Banner */}
@@ -670,15 +678,27 @@ const Contact = () => {
                     width: "48px",
                     height: "48px",
                     objectFit: "contain",
-                    filter: "drop-shadow(0 2px 8px rgba(16, 185, 129, 0.4))",
                   }}
                 />
                 <div>
-                  <div style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                  <div
+                    style={{
+                      fontSize: "0.98rem",
+                      fontWeight: "700",
+                      color: "var(--text-primary)",
+                    }}
+                  >
                     เยี่ยมเลย! ได้รับข้อความเรียบร้อย 👍
                   </div>
-                  <div style={{ fontSize: "0.85rem", color: "#10B981", marginTop: "2px" }}>
-                    {t.contact?.successMsg || "ขอบคุณที่ติดต่อเข้ามาครับ ครูเพชรจะตอบกลับโดยเร็วที่สุด"}
+                  <div
+                    style={{
+                      fontSize: "0.85rem",
+                      color: "#10B981",
+                      marginTop: "2px",
+                    }}
+                  >
+                    {t.contact?.successMsg ||
+                      "ขอบคุณที่ติดต่อเข้ามาครับ ครูเพชรจะตอบกลับโดยเร็วที่สุด"}
                   </div>
                 </div>
               </motion.div>
